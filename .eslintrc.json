@@ -6,6 +6,10 @@
     "node": true
   },
   "settings": {
+    // to support @/ path
+    "import/resolver": {
+      "typescript": {} // this loads <rootdir>/tsconfig.json to eslint
+    },
     "react": {
       "version": "detect"
     }
@@ -19,7 +23,6 @@
     "ecmaVersion": 12,
     "sourceType": "module"
   },
-
   // all plugins (eslint-plugin-xxx) go here:
   "plugins": [
     "@typescript-eslint",
@@ -28,6 +31,7 @@
 
   // all configs (eslint-config-xxx) go here:
   "extends": [
+    "plugin:import/typescript",
     "eslint:recommended",
     "plugin:react/recommended",
     "plugin:@typescript-eslint/recommended",
