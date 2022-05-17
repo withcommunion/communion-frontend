@@ -46,7 +46,8 @@ const Index: NextPage = () => {
         <h1 className="text-3xl">Welcome to Communion</h1>
         <h1 className="text-2xl">Good stuff coming soon!</h1>
         <Authenticator
-          initialState="signUp"
+          className="mt-5"
+          initialState="signIn"
           signUpAttributes={['email', 'given_name', 'family_name']}
           formFields={formFields}
           loginMechanisms={['email']}
