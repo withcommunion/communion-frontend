@@ -1,7 +1,19 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
+import { Authenticator } from '@aws-amplify/ui-react';
+import router from 'next/router';
+import { useAuthenticator } from '@aws-amplify/ui-react';
 
 const Index: NextPage = () => {
+  useAuthenticator((context) => {
+    console.log(context.user);
+    const { user } = context;
+    if (user?.attributes?.email_verified) {
+      router.push('/demo');
+    }
+    return [context.user];
+  });
+
   return (
     <div className="h-screen">
       <Head>
@@ -14,6 +26,7 @@ const Index: NextPage = () => {
         <h1 className="text-2xl">👋 Hey friend</h1>
         <h1 className="text-3xl">Welcome to Communion</h1>
         <h1 className="text-2xl">Good stuff coming soon!</h1>
+        <Authenticator />
       </main>
     </div>
   );
