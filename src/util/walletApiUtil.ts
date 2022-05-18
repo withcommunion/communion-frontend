@@ -6,10 +6,18 @@ export const DEV_API_URL =
 interface GetWalletByUserIdResponse {
   privateKeyWithLeadingHex: string;
 }
-export async function fetchWalletByUserId(): Promise<string> {
+export async function fetchWalletByUserId(
+  userId: string,
+  jwtToken: string
+): Promise<string> {
   try {
     const rawWallet = await axios.get<GetWalletByUserIdResponse>(
-      `${DEV_API_URL}/wallet/1`
+      `${DEV_API_URL}/wallet/${userId}`,
+      {
+        headers: {
+          Authorization: jwtToken,
+        },
+      }
     );
     return rawWallet.data.privateKeyWithLeadingHex;
   } catch (error) {
