@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import router from 'next/router';
 import { ethers } from 'ethers';
-import { Authenticator } from '@aws-amplify/ui-react';
-import { useAuthenticator } from '@aws-amplify/ui-react';
+import { Amplify } from 'aws-amplify';
+import { Authenticator, useAuthenticator } from '@aws-amplify/ui-react';
 
 import { fetchWalletByUserId } from '@/util/walletApiUtil';
 import { getEthersWallet, getBalanceOfAddress } from '@/util/avaxEthersUtil';
@@ -11,13 +11,27 @@ const BasicWalletDemo = () => {
   const [userPrivateKey, setUserPrivateKey] = useState<string>('');
   const [ethersWallet, setEthersWallet] = useState<ethers.Wallet>();
   const [accountBalance, setAccountBalance] = useState<string>();
+  const [userJwt, setUserJwt] = useState<string>();
 
   const { user, signOut } = useAuthenticator((context) => {
     if (!context.user) {
       router.push('/');
     }
+
     return [context.user];
   });
+
+  useEffect(() => {
+    if (user) {
+      // @ts-expect-error TODO: Clean up
+      // eslint-disable-next-line
+      Amplify.Auth.currentSession().then((res) => {
+        // eslint-disable-next-line
+        const jwt = res.getAccessToken().getJwtToken() as string;
+        setUserJwt(jwt);
+      });
+    }
+  }, [user]);
 
   useEffect(() => {
     if (userPrivateKey) {
@@ -39,15 +53,20 @@ const BasicWalletDemo = () => {
   return (
     <Authenticator>
       <div className="h-screen container flex flex-col justify-center items-center">
-        <button
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-          onClick={async () => {
-            const userPrivateKey = await fetchWalletByUserId();
-            setUserPrivateKey(userPrivateKey);
-          }}
-        >
-          Connect to wallet
-        </button>
+        {userJwt && (
+          <button
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            onClick={async () => {
+              const userPrivateKey = await fetchWalletByUserId(
+                user.username || '',
+                userJwt
+              );
+              setUserPrivateKey(userPrivateKey);
+            }}
+          >
+            Connect to wallet
+          </button>
+        )}
         {ethersWallet && (
           <div className="w-screen">
             <p>Your address:</p>
