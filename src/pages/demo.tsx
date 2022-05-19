@@ -4,7 +4,7 @@ import { ethers } from 'ethers';
 import { Amplify } from 'aws-amplify';
 import { Authenticator, useAuthenticator } from '@aws-amplify/ui-react';
 
-import { fetchWalletByUserId } from '@/util/walletApiUtil';
+import { fetchSelf, Self } from '@/util/walletApiUtil';
 import { getEthersWallet, getBalanceOfAddress } from '@/util/avaxEthersUtil';
 
 const BasicWalletDemo = () => {
@@ -12,6 +12,7 @@ const BasicWalletDemo = () => {
   const [ethersWallet, setEthersWallet] = useState<ethers.Wallet>();
   const [accountBalance, setAccountBalance] = useState<string>();
   const [userJwt, setUserJwt] = useState<string>();
+  const [self, setSelf] = useState<Self>();
 
   const { user, signOut } = useAuthenticator((context) => {
     if (!context.user) {
@@ -57,16 +58,17 @@ const BasicWalletDemo = () => {
           <button
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
             onClick={async () => {
-              const userPrivateKey = await fetchWalletByUserId(
-                user.username || '',
-                userJwt
-              );
+              const self = await fetchSelf(userJwt);
+              const userPrivateKey = self.wallet.privateKeyWithLeadingHex;
+
+              setSelf(self);
               setUserPrivateKey(userPrivateKey);
             }}
           >
             Connect to wallet
           </button>
         )}
+        {self && <h3>Hi {self.first_name}</h3>}
         {ethersWallet && (
           <div className="w-screen">
             <p>Your address:</p>
