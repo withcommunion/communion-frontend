@@ -3,10 +3,8 @@ import Head from 'next/head';
 import { Amplify } from 'aws-amplify';
 import { Authenticator } from '@aws-amplify/ui-react';
 import router from 'next/router';
-import { useAuthenticator } from '@aws-amplify/ui-react';
-
+import { useAuthenticator, SelectField } from '@aws-amplify/ui-react';
 import { AMPLIFY_CONFIG } from '../util/cognitoAuthUtil';
-
 // https://docs.amplify.aws/lib/client-configuration/configuring-amplify-categories/q/platform/js/#general-configuration
 Amplify.configure({ ...AMPLIFY_CONFIG, ssr: false });
 
@@ -20,7 +18,6 @@ const Index: NextPage = () => {
   });
 
   useAuthenticator((context) => {
-    console.log(context.user);
     const { user } = context;
     if (user?.attributes?.email_verified) {
       router.push('/demo');
@@ -31,19 +28,24 @@ const Index: NextPage = () => {
   const formFields = {
     signUp: {
       email: {
-        order: 1,
+        order: 2,
+        isRequired: true,
       },
       family_name: {
-        order: 2,
+        order: 3,
+        isRequired: true,
       },
       given_name: {
-        order: 3,
+        order: 4,
+        isRequired: true,
       },
       password: {
-        order: 4,
+        order: 5,
+        isRequired: true,
       },
       confirm_password: {
-        order: 5,
+        order: 6,
+        isRequired: true,
       },
     },
   };
@@ -70,6 +72,27 @@ const Index: NextPage = () => {
               signUpAttributes={['email', 'given_name', 'family_name']}
               formFields={formFields}
               loginMechanisms={['email']}
+              components={{
+                SignUp: {
+                  FormFields() {
+                    return (
+                      <>
+                        {/* Re-use default `Authenticator.SignUp.FormFields` */}
+                        <SelectField
+                          label="Organization"
+                          labelHidden={true}
+                          id="organization"
+                          name="custom:organization"
+                          defaultValue="org-jacks-pizza-1"
+                        >
+                          <option value="org-jacks-pizza-1">Jacks Pizza</option>
+                        </SelectField>
+                        <Authenticator.SignUp.FormFields />
+                      </>
+                    );
+                  },
+                },
+              }}
             />
           )}
         </div>
