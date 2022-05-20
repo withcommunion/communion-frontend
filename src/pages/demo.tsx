@@ -15,13 +15,12 @@ import { getUserJwtTokenOnServer } from '@/util/cognitoAuthUtil';
 Amplify.configure({ ...AMPLIFY_CONFIG, ssr: true });
 
 const BasicWalletDemo = ({ userJwt }: { userJwt: string }) => {
-  console.log(userJwt);
   const [userPrivateKey, setUserPrivateKey] = useState<string>('');
   const [ethersWallet, setEthersWallet] = useState<ethers.Wallet>();
   const [accountBalance, setAccountBalance] = useState<string>();
   const [self, setSelf] = useState<Self>();
 
-  const { signOut } = useAuthenticator();
+  const { signOut } = useAuthenticator((context) => [context.signOut]);
 
   useEffect(() => {
     if (userPrivateKey) {
@@ -47,7 +46,6 @@ const BasicWalletDemo = ({ userJwt }: { userJwt: string }) => {
         <button
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
           onClick={async () => {
-            console.log(userJwt);
             const self = await fetchSelf(userJwt);
             const userPrivateKey = self.wallet.privateKeyWithLeadingHex;
 
