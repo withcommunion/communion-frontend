@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import { IndexHeader } from './indexHeader';
+import IndexHeader from './indexHeader';
 
 describe('Index', () => {
   it('renders a heading', () => {
