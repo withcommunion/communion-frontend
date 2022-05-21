@@ -26,7 +26,7 @@ const formFields = {
   },
 };
 
-export const AuthComponent = () => {
+const AuthComponent = () => {
   return (
     <Authenticator
       className="mt-5"
@@ -58,3 +58,5 @@ export const AuthComponent = () => {
     />
   );
 };
+
+export default AuthComponent;

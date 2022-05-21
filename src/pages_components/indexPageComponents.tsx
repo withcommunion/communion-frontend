@@ -1,2 +1,3 @@
-export * from './index/indexHeader';
-export * from './index/authComponent';
+export { default as IndexHeader } from './index/indexHeader';
+
+export { default as AuthComponent } from './index/authComponent';

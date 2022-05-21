@@ -1,4 +1,4 @@
-export const IndexHeader = () => {
+const IndexHeader = () => {
   return (
     <>
       <h1 className="text-2xl">👋 Hey friend</h1>
@@ -7,3 +7,5 @@ export const IndexHeader = () => {
     </>
   );
 };
+
+export default IndexHeader;
