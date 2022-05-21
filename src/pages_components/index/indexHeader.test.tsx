@@ -1,9 +1,9 @@
 import { render, screen } from '@testing-library/react';
-import Index from '../pages/index';
+import { IndexHeader } from './indexHeader';
 
 describe('Index', () => {
   it('renders a heading', () => {
-    render(<Index />);
+    render(<IndexHeader />);
 
     const heading = screen.getByRole('heading', {
       name: /welcome to communion/i,

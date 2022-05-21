@@ -1,16 +1,19 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import { Amplify } from 'aws-amplify';
-import { Authenticator } from '@aws-amplify/ui-react';
 import router from 'next/router';
-import { useAuthenticator, SelectField } from '@aws-amplify/ui-react';
+import { useAuthenticator } from '@aws-amplify/ui-react';
 import { AMPLIFY_CONFIG } from '../util/cognitoAuthUtil';
+import {
+  AuthComponent,
+  IndexHeader,
+} from '../pages_components/indexPageComponents';
+
 // https://docs.amplify.aws/lib/client-configuration/configuring-amplify-categories/q/platform/js/#general-configuration
 Amplify.configure({ ...AMPLIFY_CONFIG, ssr: false });
 
 const Index: NextPage = () => {
   const { route } = useAuthenticator((context) => {
-    console.log(context.route);
     if (context.user?.attributes?.email_verified === 'true') {
       router.push('/demo');
     }
@@ -25,31 +28,6 @@ const Index: NextPage = () => {
     return [context.user];
   });
 
-  const formFields = {
-    signUp: {
-      email: {
-        order: 2,
-        isRequired: true,
-      },
-      family_name: {
-        order: 3,
-        isRequired: true,
-      },
-      given_name: {
-        order: 4,
-        isRequired: true,
-      },
-      password: {
-        order: 5,
-        isRequired: true,
-      },
-      confirm_password: {
-        order: 6,
-        isRequired: true,
-      },
-    },
-  };
-
   return (
     <div className="h-screen">
       <Head>
@@ -59,41 +37,12 @@ const Index: NextPage = () => {
       </Head>
 
       <main className="h-full flex flex-col justify-center items-center ">
-        <h1 className="text-2xl">👋 Hey friend</h1>
-        <h1 className="text-3xl">Welcome to Communion</h1>
-        <h1 className="text-2xl">Good stuff coming soon!</h1>
+        <IndexHeader />
         <div className="">
           {route === 'idle' || !route ? (
             <h1 className="my-32">loading</h1>
           ) : (
-            <Authenticator
-              className="mt-5"
-              initialState="signIn"
-              signUpAttributes={['email', 'given_name', 'family_name']}
-              formFields={formFields}
-              loginMechanisms={['email']}
-              components={{
-                SignUp: {
-                  FormFields() {
-                    return (
-                      <>
-                        {/* Re-use default `Authenticator.SignUp.FormFields` */}
-                        <SelectField
-                          label="Organization"
-                          labelHidden={true}
-                          id="organization"
-                          name="custom:organization"
-                          defaultValue="org-jacks-pizza-1"
-                        >
-                          <option value="org-jacks-pizza-1">Jacks Pizza</option>
-                        </SelectField>
-                        <Authenticator.SignUp.FormFields />
-                      </>
-                    );
-                  },
-                },
-              }}
-            />
+            <AuthComponent />
           )}
         </div>
       </main>
