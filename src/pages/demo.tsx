@@ -69,7 +69,7 @@ const BasicWalletDemo = ({ userJwt }: { userJwt: string }) => {
       {accountBalance && (
         <div className="">
           <p>Your balance:</p>
-          <p>{accountBalance}</p>
+          <p>{accountBalance} AVAX</p>
         </div>
       )}
       {userJwt && (
