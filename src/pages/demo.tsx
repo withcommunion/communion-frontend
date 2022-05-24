@@ -5,7 +5,7 @@ import { Amplify } from 'aws-amplify';
 import { useAuthenticator } from '@aws-amplify/ui-react';
 
 import { fetchSelf, Self } from '@/util/walletApiUtil';
-import { getEthersWallet, getBalanceOfAddress } from '@/util/avaxEthersUtil';
+import { getEthersWallet } from '@/util/avaxEthersUtil';
 import { AMPLIFY_CONFIG } from '@/util/cognitoAuthUtil';
 import Router from 'next/router';
 
@@ -24,18 +24,21 @@ const BasicWalletDemo = ({ userJwt }: { userJwt: string }) => {
 
   useEffect(() => {
     if (userPrivateKey) {
+      console.log('here');
       setEthersWallet(getEthersWallet(userPrivateKey));
     }
   }, [userPrivateKey]);
 
   useEffect(() => {
-    const fetchBalance = async (address: string) => {
-      const balance = await getBalanceOfAddress(address);
-      setAccountBalance(ethers.utils.formatEther(balance));
+    const fetchBalance = async (wallet: ethers.Wallet) => {
+      const balanceBigNumber = await wallet.getBalance();
+      console.log(balanceBigNumber);
+      console.log(ethers.utils.formatEther(balanceBigNumber));
+      setAccountBalance(ethers.utils.formatEther(balanceBigNumber));
     };
 
     if (ethersWallet) {
-      fetchBalance(ethersWallet.address);
+      fetchBalance(ethersWallet);
     }
   }, [ethersWallet]);
 
@@ -58,13 +61,13 @@ const BasicWalletDemo = ({ userJwt }: { userJwt: string }) => {
       )}
       {self && <h3>Hi {self.first_name}</h3>}
       {ethersWallet && (
-        <div className="w-screen">
+        <div className="">
           <p>Your address:</p>
           <p>{ethersWallet.address}</p>
         </div>
       )}
       {accountBalance && (
-        <div className="w-screen">
+        <div className="">
           <p>Your balance:</p>
           <p>{accountBalance}</p>
         </div>
