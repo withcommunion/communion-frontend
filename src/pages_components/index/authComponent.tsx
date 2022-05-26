@@ -7,13 +7,15 @@ const formFields = {
       order: 2,
       isRequired: true,
     },
-    family_name: {
+    given_name: {
       order: 3,
       isRequired: true,
+      placeholder: 'First Name',
     },
-    given_name: {
+    family_name: {
       order: 4,
       isRequired: true,
+      placeholder: 'Last Name',
     },
     password: {
       order: 5,
