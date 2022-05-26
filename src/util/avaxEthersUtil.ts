@@ -11,8 +11,3 @@ export function getEthersWallet(
 ): ethers.Wallet {
   return new ethers.Wallet(privateKeyWithLeadingHex, HTTPSProvider);
 }
-
-export async function getBalanceOfAddress(address: string) {
-  const balance = await HTTPSProvider.getBalance(address);
-  return balance;
-}
