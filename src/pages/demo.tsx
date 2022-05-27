@@ -10,7 +10,7 @@ import {
   fetchOrganization,
   Organization,
 } from '@/util/walletApiUtil';
-import { getEthersWallet } from '@/util/avaxEthersUtil';
+import { getEthersWallet, sendAvax } from '@/util/avaxEthersUtil';
 import { AMPLIFY_CONFIG } from '@/util/cognitoAuthUtil';
 import Router from 'next/router';
 
@@ -25,19 +25,30 @@ interface Props {
 }
 
 const BasicWalletDemo = ({ userJwt, self }: Props) => {
+  console.log('render');
   const [userPrivateKey, setUserPrivateKey] = useState<string>('');
   const [ethersWallet, setEthersWallet] = useState<ethers.Wallet>();
   const [accountBalance, setAccountBalance] = useState<string>();
   const [organization, setOrganization] = useState<Organization>();
-  // const [self, setSelf] = useState<Self>();
+  const [latestTransaction, setLatestTransaction] = useState<{
+    toAddress?: string;
+    estimatedTxnCost?: string;
+    actualTxnCost?: string;
+    isInProgress: boolean;
+    txnHash?: string;
+    txnExplorerUrl?: string;
+  }>();
 
   const { signOut } = useAuthenticator((context) => [context.signOut]);
 
   useEffect(() => {
     if (!userPrivateKey && self && self.wallet.privateKeyWithLeadingHex) {
       setUserPrivateKey(self.wallet.privateKeyWithLeadingHex);
+      console.log(self.wallet.privateKeyWithLeadingHex);
       setEthersWallet(getEthersWallet(self.wallet.privateKeyWithLeadingHex));
     }
+
+    console.log('set key and wallet useeffect');
   }, [self, userPrivateKey]);
 
   useEffect(() => {
@@ -49,6 +60,8 @@ const BasicWalletDemo = ({ userJwt, self }: Props) => {
     if (ethersWallet && !accountBalance) {
       fetchBalance(ethersWallet);
     }
+
+    console.log('fetchBalance useffect');
   }, [ethersWallet, accountBalance]);
 
   useEffect(() => {
@@ -61,7 +74,45 @@ const BasicWalletDemo = ({ userJwt, self }: Props) => {
     if (!organization && self && userJwt) {
       fetchOrg();
     }
+
+    console.log('fetch org use effect');
   }, [self, organization, userJwt]);
+
+  const getUserTxnIsTo = (toAddress: string) => {
+    return organization?.users.find(
+      (user) => user.wallet.addressC === toAddress
+    );
+  };
+
+  const sendUserAvax = async (wallet: ethers.Wallet, toAddress: string) => {
+    setLatestTransaction({ isInProgress: true });
+    const txnInProgress = await sendAvax(wallet, '0.00000001', toAddress);
+
+    const txn = {
+      toAddress: toAddress,
+      estimatedTxnCost: ethers.utils.formatEther(txnInProgress.estimatedCost),
+      isInProgress: true,
+      txnHash: txnInProgress.txHash,
+      txnExplorerUrl: txnInProgress.explorerUrl,
+    };
+
+    setLatestTransaction(txn);
+
+    const finishedTransaction = await txnInProgress.transaction.wait();
+
+    const actualCost = finishedTransaction.effectiveGasPrice.mul(
+      finishedTransaction.gasUsed
+    );
+
+    setLatestTransaction({
+      ...txn,
+      actualTxnCost: ethers.utils.formatEther(actualCost),
+      isInProgress: false,
+    });
+
+    const balanceBigNumber = await wallet.getBalance();
+    setAccountBalance(ethers.utils.formatEther(balanceBigNumber));
+  };
 
   return (
     <div className="h-screen w-screen p-5">
@@ -82,33 +133,79 @@ const BasicWalletDemo = ({ userJwt, self }: Props) => {
           {accountBalance && (
             <>
               <p>Your balance:</p>
-              <p>{accountBalance} AVAX</p>
+              <p>
+                {latestTransaction?.isInProgress && <small>♻️</small>}
+                {accountBalance} AVAX
+              </p>
             </>
           )}
         </div>
       )}
 
       {organization && (
-        <ul className="mt-5 flex flex-col gap-y-4">
+        <ul className="mt-5 flex flex-col items-start gap-y-3">
           {organization.users.map((user) => (
             <li
-              className="flex items-center gap-x-1"
+              className="flex items-center gap-x-2"
               key={`${user.wallet.addressC}`}
             >
-              <p>
-                {user.first_name} {user.last_name}
-              </p>
               <button
-                className="bg-blue-500 hover:bg-blue-700 text-white py-1 px-2 rounded"
-                onClick={() => {
-                  console.log(`Sending txn to ${user.wallet.addressC}`);
+                className="bg-blue-500 disabled:bg-gray-400 hover:bg-blue-700 text-white py-1 px-2 rounded"
+                disabled={latestTransaction?.isInProgress}
+                onClick={async () => {
+                  if (ethersWallet) {
+                    await sendUserAvax(ethersWallet, user.wallet.addressC);
+                  }
                 }}
               >
                 Send
               </button>
+              <p>
+                {user.first_name} {user.last_name}
+              </p>
             </li>
           ))}
         </ul>
+      )}
+      {latestTransaction && (
+        <div className="mt-10">
+          <ul>
+            {latestTransaction.isInProgress && (
+              <li>♻️ Transaction in progress!</li>
+            )}
+            {!latestTransaction.isInProgress && (
+              <li>✅ Transaction completed!</li>
+            )}
+            {latestTransaction.toAddress && (
+              <li>
+                To: {getUserTxnIsTo(latestTransaction.toAddress)?.first_name}{' '}
+                {getUserTxnIsTo(latestTransaction.toAddress)?.last_name}
+              </li>
+            )}
+            {latestTransaction.txnExplorerUrl && (
+              <li>
+                View Txn:
+                <a
+                  className="underline text-blue-600 hover:text-blue-800 visited:text-purple-600"
+                  href={latestTransaction.txnExplorerUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {latestTransaction.txnHash?.substring(0, 5)}...
+                  {latestTransaction.txnHash?.substring(60)}
+                </a>
+              </li>
+            )}
+            {latestTransaction.estimatedTxnCost && (
+              <li>
+                Estimated Gas Cost: {latestTransaction.estimatedTxnCost} AVAX
+              </li>
+            )}
+            {latestTransaction.actualTxnCost && (
+              <li>Actual Gas Cost: {latestTransaction.actualTxnCost} AVAX</li>
+            )}
+          </ul>
+        </div>
       )}
 
       {userJwt && (

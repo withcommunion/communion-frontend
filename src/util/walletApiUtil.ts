@@ -11,7 +11,6 @@ export interface BaseUserWallet {
 }
 
 export interface User {
-  urn: string;
   id: string;
   email?: string;
   first_name: string;
