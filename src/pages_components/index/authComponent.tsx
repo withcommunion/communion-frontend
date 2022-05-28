@@ -4,25 +4,25 @@ import { SelectField } from '@aws-amplify/ui-react';
 const formFields = {
   signUp: {
     email: {
-      order: 2,
+      order: 3,
       isRequired: true,
     },
     given_name: {
-      order: 3,
+      order: 4,
       isRequired: true,
       placeholder: 'First Name',
     },
     family_name: {
-      order: 4,
+      order: 5,
       isRequired: true,
       placeholder: 'Last Name',
     },
     password: {
-      order: 5,
+      order: 6,
       isRequired: true,
     },
     confirm_password: {
-      order: 6,
+      order: 7,
       isRequired: true,
     },
   },
@@ -50,6 +50,18 @@ const AuthComponent = () => {
                   defaultValue="org-jacks-pizza-1"
                 >
                   <option value="org-jacks-pizza-1">Jacks Pizza</option>
+                </SelectField>
+
+                <SelectField
+                  label="Role"
+                  labelHidden={true}
+                  id="role"
+                  name="custom:role"
+                  defaultValue="worker"
+                >
+                  <option value="worker">Worker</option>
+                  <option value="manager">Manager</option>
+                  <option value="owner">Owner</option>
                 </SelectField>
                 <Authenticator.SignUp.FormFields />
               </>

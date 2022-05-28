@@ -36,7 +36,7 @@ const Index: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="h-full flex flex-col justify-center items-center ">
+      <main className="min-h-screen py-4 flex flex-col justify-center items-center">
         <IndexHeader />
         <div>
           {route === 'idle' || !route ? (
