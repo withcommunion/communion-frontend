@@ -115,7 +115,7 @@ const BasicWalletDemo = ({ userJwt, self }: Props) => {
 
   return (
     <div className="py-4 flex flex-col items-center ">
-      <div className="w-full md:w-1/4">
+      <div className="w-full md:w-1/4 px-5">
         {self && (
           <div className="container flex flex-col items-center">
             <h2>👋 Welcome {self.first_name}!</h2>
@@ -155,7 +155,7 @@ const BasicWalletDemo = ({ userJwt, self }: Props) => {
         )}
 
         {organization && (
-          <ul className="mt-5 flex flex-col items-start gap-y-3 px-5">
+          <ul className="mt-5 flex flex-col items-start gap-y-3 ">
             {organization.users.map((user) => (
               <li
                 className="flex justify-between items-center w-full gap-x-2"
