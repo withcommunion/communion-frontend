@@ -17,9 +17,9 @@ export const AMPLIFY_CONFIG = {
   //   'us-east-1:f602c14b-0fde-409c-9a7e-0baccbfd87d0', // (optional) - Amazon Cognito Identity Pool ID
   aws_mandatory_sign_in: 'enable', // (optional) - Users are not allowed to get the aws credentials unless they are signed in
   cookieStorage: {
-    domain: 'localhost',
+    domain: 'communion-frontend.vercel.app',
     // Set true if is a domain with https. For localhost set it to false
-    secure: false,
+    secure: true,
     path: '/',
     expires: 2,
   },
