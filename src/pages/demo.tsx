@@ -25,7 +25,6 @@ interface Props {
 }
 
 const BasicWalletDemo = ({ userJwt, self }: Props) => {
-  console.log('render');
   const [userPrivateKey, setUserPrivateKey] = useState<string>('');
   const [ethersWallet, setEthersWallet] = useState<ethers.Wallet>();
   const [accountBalance, setAccountBalance] = useState<string>();
@@ -115,117 +114,131 @@ const BasicWalletDemo = ({ userJwt, self }: Props) => {
   };
 
   return (
-    <div className="h-screen w-screen p-5">
-      {self && (
-        <div className="container flex flex-col items-center">
-          <h2>👋 Welcome {self.first_name}!</h2>
-          {ethersWallet && (
-            <>
-              <p>Your address:</p>
-              <div className="whitespace-normal break-words">
+    <div className="min-h-screen py-4 flex flex-col items-center ">
+      <div className="w-full md:w-1/4">
+        {self && (
+          <div className="container flex flex-col items-center">
+            <h2>👋 Welcome {self.first_name}!</h2>
+            {ethersWallet && (
+              <>
+                <p>Your address:</p>
+                <div className="whitespace-normal break-words">
+                  <p>
+                    <small>
+                      <a
+                        className="underline text-blue-600 hover:text-blue-800 visited:text-purple-600"
+                        target="_blank"
+                        rel="noreferrer"
+                        href={`https://testnet.snowtrace.io/address/${ethersWallet.address}`}
+                      >
+                        {`${ethersWallet.address.substring(
+                          0,
+                          10
+                        )}...${ethersWallet.address.substring(32)}`}
+                      </a>
+                    </small>
+                  </p>
+                </div>
+              </>
+            )}
+
+            {accountBalance && (
+              <>
+                <p>Your balance:</p>
                 <p>
-                  <small>{ethersWallet.address}</small>
+                  {latestTransaction?.isInProgress && <small>♻️</small>}
+                  {accountBalance} AVAX
                 </p>
-              </div>
-            </>
-          )}
+              </>
+            )}
+          </div>
+        )}
 
-          {accountBalance && (
-            <>
-              <p>Your balance:</p>
-              <p>
-                {latestTransaction?.isInProgress && <small>♻️</small>}
-                {accountBalance} AVAX
-              </p>
-            </>
-          )}
-        </div>
-      )}
+        {organization && (
+          <ul className="mt-5 flex flex-col items-start gap-y-3 px-5">
+            {organization.users.map((user) => (
+              <li
+                className="flex justify-between items-center w-full gap-x-2"
+                key={`${user.wallet.addressC}`}
+              >
+                <p>
+                  {user.first_name} {user.last_name}
+                </p>
+                <button
+                  className="bg-blue-500 disabled:bg-gray-400 hover:bg-blue-700 text-white py-1 px-2 rounded"
+                  disabled={latestTransaction?.isInProgress}
+                  onClick={async () => {
+                    if (ethersWallet) {
+                      await sendUserAvax(ethersWallet, user.wallet.addressC);
+                    }
+                  }}
+                >
+                  Send
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+        {latestTransaction && (
+          <div className="mt-10">
+            <ul>
+              {latestTransaction.isInProgress && (
+                <li>♻️ Transaction in progress!</li>
+              )}
+              {!latestTransaction.isInProgress && (
+                <li>✅ Transaction completed!</li>
+              )}
+              {latestTransaction.toAddress && (
+                <li>
+                  To: {getUserTxnIsTo(latestTransaction.toAddress)?.first_name}{' '}
+                  {getUserTxnIsTo(latestTransaction.toAddress)?.last_name}
+                </li>
+              )}
+              {latestTransaction.txnExplorerUrl && (
+                <li>
+                  View Txn:
+                  <a
+                    className="underline text-blue-600 hover:text-blue-800 visited:text-purple-600"
+                    href={latestTransaction.txnExplorerUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {latestTransaction.txnHash?.substring(0, 5)}...
+                    {latestTransaction.txnHash?.substring(60)}
+                  </a>
+                </li>
+              )}
+              {latestTransaction.estimatedTxnCost && (
+                <li>
+                  Estimated Txn Cost: {latestTransaction.estimatedTxnCost} AVAX
+                </li>
+              )}
+              {latestTransaction.actualTxnCost && (
+                <li>Actual Txn Cost: {latestTransaction.actualTxnCost} AVAX</li>
+              )}
+            </ul>
+          </div>
+        )}
 
-      {organization && (
-        <ul className="mt-5 flex flex-col items-start gap-y-3">
-          {organization.users.map((user) => (
-            <li
-              className="flex items-center gap-x-2"
-              key={`${user.wallet.addressC}`}
-            >
+        {userJwt && (
+          <div className="flex justify-center">
+            <div className="absolute bottom-5 mt-5">
               <button
-                className="bg-blue-500 disabled:bg-gray-400 hover:bg-blue-700 text-white py-1 px-2 rounded"
-                disabled={latestTransaction?.isInProgress}
-                onClick={async () => {
-                  if (ethersWallet) {
-                    await sendUserAvax(ethersWallet, user.wallet.addressC);
-                  }
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                onClick={() => {
+                  signOut();
+                  // TODO: This is hacky af
+                  setTimeout(() => {
+                    Router.push('/');
+                  }, 500);
                 }}
               >
-                Send
+                Sign out
               </button>
-              <p>
-                {user.first_name} {user.last_name}
-              </p>
-            </li>
-          ))}
-        </ul>
-      )}
-      {latestTransaction && (
-        <div className="mt-10">
-          <ul>
-            {latestTransaction.isInProgress && (
-              <li>♻️ Transaction in progress!</li>
-            )}
-            {!latestTransaction.isInProgress && (
-              <li>✅ Transaction completed!</li>
-            )}
-            {latestTransaction.toAddress && (
-              <li>
-                To: {getUserTxnIsTo(latestTransaction.toAddress)?.first_name}{' '}
-                {getUserTxnIsTo(latestTransaction.toAddress)?.last_name}
-              </li>
-            )}
-            {latestTransaction.txnExplorerUrl && (
-              <li>
-                View Txn:
-                <a
-                  className="underline text-blue-600 hover:text-blue-800 visited:text-purple-600"
-                  href={latestTransaction.txnExplorerUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  {latestTransaction.txnHash?.substring(0, 5)}...
-                  {latestTransaction.txnHash?.substring(60)}
-                </a>
-              </li>
-            )}
-            {latestTransaction.estimatedTxnCost && (
-              <li>
-                Estimated Gas Cost: {latestTransaction.estimatedTxnCost} AVAX
-              </li>
-            )}
-            {latestTransaction.actualTxnCost && (
-              <li>Actual Gas Cost: {latestTransaction.actualTxnCost} AVAX</li>
-            )}
-          </ul>
-        </div>
-      )}
-
-      {userJwt && (
-        <div className="flex justify-center">
-          <div className="absolute bottom-5 mt-5">
-            <button
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-              onClick={() => {
-                signOut();
-                // TODO: This is hacky af
-                setTimeout(() => {
-                  Router.push('/');
-                }, 500);
-              }}
-            >
-              Sign out
-            </button>
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };
