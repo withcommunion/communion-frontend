@@ -114,7 +114,7 @@ const BasicWalletDemo = ({ userJwt, self }: Props) => {
   };
 
   return (
-    <div className="min-h-screen py-4 flex flex-col items-center ">
+    <div className="py-4 flex flex-col items-center ">
       <div className="w-full md:w-1/4">
         {self && (
           <div className="container flex flex-col items-center">
@@ -221,8 +221,8 @@ const BasicWalletDemo = ({ userJwt, self }: Props) => {
         )}
 
         {userJwt && (
-          <div className="flex justify-center mt-5">
-            <div className="absolute bottom-5 ">
+          <div className="flex justify-center mt-10">
+            <div className="">
               <button
                 className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                 onClick={() => {
