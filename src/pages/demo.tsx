@@ -221,8 +221,8 @@ const BasicWalletDemo = ({ userJwt, self }: Props) => {
         )}
 
         {userJwt && (
-          <div className="flex justify-center">
-            <div className="absolute bottom-5 mt-5">
+          <div className="flex justify-center mt-5">
+            <div className="absolute bottom-5 ">
               <button
                 className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                 onClick={() => {
