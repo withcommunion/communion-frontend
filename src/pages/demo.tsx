@@ -43,11 +43,8 @@ const BasicWalletDemo = ({ userJwt, self }: Props) => {
   useEffect(() => {
     if (!userPrivateKey && self && self.wallet.privateKeyWithLeadingHex) {
       setUserPrivateKey(self.wallet.privateKeyWithLeadingHex);
-      console.log(self.wallet.privateKeyWithLeadingHex);
       setEthersWallet(getEthersWallet(self.wallet.privateKeyWithLeadingHex));
     }
-
-    console.log('set key and wallet useeffect');
   }, [self, userPrivateKey]);
 
   useEffect(() => {
@@ -59,22 +56,17 @@ const BasicWalletDemo = ({ userJwt, self }: Props) => {
     if (ethersWallet && !accountBalance) {
       fetchBalance(ethersWallet);
     }
-
-    console.log('fetchBalance useffect');
   }, [ethersWallet, accountBalance]);
 
   useEffect(() => {
     const fetchOrg = async () => {
       const org = await fetchOrganization(self.organization, userJwt);
-      console.log(org);
       setOrganization(org);
     };
 
     if (!organization && self && userJwt) {
       fetchOrg();
     }
-
-    console.log('fetch org use effect');
   }, [self, organization, userJwt]);
 
   const getUserTxnIsTo = (toAddress: string) => {

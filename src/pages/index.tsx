@@ -14,9 +14,7 @@ Amplify.configure({ ...AMPLIFY_CONFIG, ssr: false });
 
 const Index: NextPage = () => {
   const { route, user } = useAuthenticator(({ authStatus, route, user }) => {
-    console.log('First use auth', { authStatus });
     if (authStatus === 'authenticated') {
-      console.log('router.push');
       router.push('/demo');
     }
     return [route, user];

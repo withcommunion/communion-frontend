@@ -48,8 +48,6 @@ export const AMPLIFY_CONFIG = {
   cookieStorage: getCookieStorage(),
 };
 
-console.log('AMPLIFY_CONFIG', AMPLIFY_CONFIG);
-
 export async function getUserJwtTokenOnServer(
   serverSidePropsContext: GetServerSidePropsContext
 ) {
