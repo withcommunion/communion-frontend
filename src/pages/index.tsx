@@ -13,19 +13,13 @@ import {
 Amplify.configure({ ...AMPLIFY_CONFIG, ssr: false });
 
 const Index: NextPage = () => {
-  const { route } = useAuthenticator((context) => {
-    if (context.user?.attributes?.email_verified === 'true') {
+  const { route, user } = useAuthenticator(({ authStatus, route, user }) => {
+    console.log('First use auth', { authStatus });
+    if (authStatus === 'authenticated') {
+      console.log('router.push');
       router.push('/demo');
     }
-    return [context.route];
-  });
-
-  useAuthenticator((context) => {
-    const { user } = context;
-    if (user?.attributes?.email_verified) {
-      router.push('/demo');
-    }
-    return [context.user];
+    return [route, user];
   });
 
   return (
@@ -37,7 +31,7 @@ const Index: NextPage = () => {
       </Head>
 
       <main className="min-h-screen py-4 flex flex-col justify-center items-center">
-        <IndexHeader />
+        <IndexHeader userName={user?.attributes?.given_name} />
         <div>
           {route === 'idle' || !route ? (
             <h1 className="my-36">loading</h1>
