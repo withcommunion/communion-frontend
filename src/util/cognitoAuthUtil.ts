@@ -21,7 +21,7 @@ const cookieStorageLocal = {
 };
 
 const cookieStorageVercel = {
-  domain: 'communion-frontend.vercel.app',
+  domain: '*.vercel.app',
   // Set true if is a domain with https. For localhost set it to false
   secure: true,
   path: '/',
