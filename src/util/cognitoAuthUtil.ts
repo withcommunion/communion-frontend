@@ -9,10 +9,11 @@ export const USER_POOL_ID_PROD = 'us-east-1_SeeaUyuuH';
 export const USER_POOL_CLIENT_ID_DEV = '4eerlu1taf72c8r20pv2tmmvmt';
 export const USER_POOL_CLIENT_ID_PROD = '66eoq77778g7d8e36v6pobj0b6';
 
-console.log(process.env.NEXT_PUBLIC_STAGE);
-const isDev = Boolean(process.env.NEXT_PUBLIC_STAGE == 'dev');
+console.log('Process stage', process.env.NEXT_PUBLIC_VERCEL_STAGE);
+const isDev = Boolean(process.env.NEXT_PUBLIC_VERCEL_STAGE !== 'prod');
 
 console.log(process.env.NEXT_PUBLIC_VERCEL_URL);
+console.log('isDev', isDev);
 
 const cookieStorageDev = {
   domain: process.env.NEXT_PUBLIC_VERCEL_URL || 'localhost',
