@@ -20,8 +20,8 @@ const cookieStorageLocal = {
   expires: 30,
 };
 
-const cookieStorageVercel = {
-  domain: 'communion-frontend.vercel.app',
+const cookieStorageProdDomain = {
+  domain: 'withcommunion.com',
   // Set true if is a domain with https. For localhost set it to false
   secure: true,
   path: '/',
@@ -35,7 +35,7 @@ export const AMPLIFY_CONFIG = {
   // aws_cognito_identity_pool_id:
   //   'us-east-1:f602c14b-0fde-409c-9a7e-0baccbfd87d0', // (optional) - Amazon Cognito Identity Pool ID
   aws_mandatory_sign_in: 'enable', // (optional) - Users are not allowed to get the aws credentials unless they are signed in
-  cookieStorage: isDev ? cookieStorageLocal : cookieStorageVercel, // (optional) - Cookie storage options
+  cookieStorage: isDev ? cookieStorageLocal : cookieStorageProdDomain, // (optional) - Cookie storage options
 };
 
 export async function getUserJwtTokenOnServer(
