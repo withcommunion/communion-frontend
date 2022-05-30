@@ -12,8 +12,10 @@ export const USER_POOL_CLIENT_ID_PROD = '66eoq77778g7d8e36v6pobj0b6';
 console.log(process.env.NEXT_PUBLIC_STAGE);
 const isDev = Boolean(process.env.NEXT_PUBLIC_STAGE == 'dev');
 
+console.log(process.env.VERCEL_URL);
+
 const cookieStorageLocal = {
-  domain: 'localhost',
+  domain: process.env.VERCEL_URL || 'localhost',
   // Set true if is a domain with https. For localhost set it to false
   secure: false,
   path: '/',
