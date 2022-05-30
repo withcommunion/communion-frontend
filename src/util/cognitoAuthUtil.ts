@@ -19,17 +19,21 @@ function getCookieStorage() {
     path: '/',
     expires: 30,
   };
+
   if (isProd) {
     return { ...cookieStorageBase, domain: 'withcommunion.com', secure: true };
   }
 
   if (isDev) {
-    // <project-name>-git-<branch-name>-<scope-slug>.vercel.app
-    // https://communion-frontend-git-testdevdeploy-communion.vercel.app/
+    /**
+     * This is only for the URL linked to PRs'.
+     * If manually you go to the Vercel build, the other URL generated won't work
+     * <project-name>-git-<branch-name>-<scope-slug>.vercel.app
+     * https://communion-frontend-git-testdevdeploy-communion.vercel.app/
+     */
+    // NEXT_PUBLIC_VERCEL_GIT_COMMIT_REF will be populated
     // eslint-disable-next-line
-    const prBranchDomainName = process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_REF
-      ? `communion-frontend-git-${process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_REF}-communion.vercel.app`
-      : false;
+    const prBranchDomainName = `communion-frontend-git-${process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_REF}-communion.vercel.app`;
     return { ...cookieStorageBase, domain: prBranchDomainName, secure: true };
   }
 
