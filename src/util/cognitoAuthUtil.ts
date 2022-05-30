@@ -9,37 +9,46 @@ export const USER_POOL_ID_PROD = 'us-east-1_SeeaUyuuH';
 export const USER_POOL_CLIENT_ID_DEV = '4eerlu1taf72c8r20pv2tmmvmt';
 export const USER_POOL_CLIENT_ID_PROD = '66eoq77778g7d8e36v6pobj0b6';
 
-console.log('Process stage', process.env.NEXT_PUBLIC_VERCEL_STAGE);
-const isDev = Boolean(process.env.NEXT_PUBLIC_VERCEL_STAGE !== 'prod');
+const isProd = Boolean(process.env.NEXT_PUBLIC_VERCEL_STAGE === 'prod');
+const isDev = Boolean(process.env.NEXT_PUBLIC_VERCEL_STAGE === 'dev');
 
-console.log(process.env.NEXT_PUBLIC_VERCEL_URL);
-console.log('isDev', isDev);
+function getCookieStorage() {
+  const cookieStorageBase = {
+    domain: undefined,
+    secure: undefined,
+    path: '/',
+    expires: 30,
+  };
 
-const cookieStorageDev = {
-  domain: process.env.NEXT_PUBLIC_VERCEL_URL || 'localhost',
-  // Set true if is a domain with https. For localhost set it to false
-  secure: process.env.NEXT_PUBLIC_VERCEL_URL ? true : false,
-  path: '/',
-  expires: 30,
-};
+  if (isProd) {
+    return { ...cookieStorageBase, domain: 'withcommunion.com', secure: true };
+  }
 
-const cookieStorageProd = {
-  domain: 'withcommunion.com',
-  // Set true if is a domain with https. For localhost set it to false
-  secure: true,
-  path: '/',
-  expires: 30,
-};
+  if (isDev) {
+    /**
+     * This is only for the URL linked to PRs'.
+     * If manually you go to the Vercel build, the other URL generated won't work
+     * <project-name>-git-<branch-name>-<scope-slug>.vercel.app
+     * https://communion-frontend-git-testdevdeploy-communion.vercel.app/
+     */
+    // NEXT_PUBLIC_VERCEL_GIT_COMMIT_REF will be populated
+    // eslint-disable-next-line
+    const prBranchDomainName = `communion-frontend-git-${process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_REF}-communion.vercel.app`;
+    return { ...cookieStorageBase, domain: prBranchDomainName, secure: true };
+  }
+
+  return { ...cookieStorageBase, domain: 'localhost', secure: false };
+}
 
 export const AMPLIFY_CONFIG = {
-  aws_cognito_region: 'us-east-1', // (required) - Region where Amazon Cognito project was created
-  aws_user_pools_id: USER_POOL_ID_DEV, // (optional) -  Amazon Cognito User Pool ID
-  aws_user_pools_web_client_id: USER_POOL_CLIENT_ID_DEV, // (optional) - Amazon Cognito App Client ID (App client secret needs to be disabled)
-  // aws_cognito_identity_pool_id:
-  //   'us-east-1:f602c14b-0fde-409c-9a7e-0baccbfd87d0', // (optional) - Amazon Cognito Identity Pool ID
-  aws_mandatory_sign_in: 'enable', // (optional) - Users are not allowed to get the aws credentials unless they are signed in
-  cookieStorage: isDev ? cookieStorageDev : cookieStorageProd, // (optional) - Cookie storage options
+  aws_cognito_region: 'us-east-1',
+  aws_user_pools_id: USER_POOL_ID_DEV,
+  aws_user_pools_web_client_id: USER_POOL_CLIENT_ID_DEV,
+  aws_mandatory_sign_in: 'enable',
+  cookieStorage: getCookieStorage(),
 };
+
+console.log('AMPLIFY_CONFIG', AMPLIFY_CONFIG);
 
 export async function getUserJwtTokenOnServer(
   serverSidePropsContext: GetServerSidePropsContext
