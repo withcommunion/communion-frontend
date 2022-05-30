@@ -11,14 +11,19 @@ export const USER_POOL_CLIENT_ID_PROD = '66eoq77778g7d8e36v6pobj0b6';
 
 console.log('Process stage', process.env.NEXT_PUBLIC_VERCEL_STAGE);
 const isDev = Boolean(process.env.NEXT_PUBLIC_VERCEL_STAGE !== 'prod');
-
-console.log(process.env.NEXT_PUBLIC_VERCEL_URL);
 console.log('isDev', isDev);
 
+console.log(process.env.NEXT_PUBLIC_VERCEL_URL);
+
+// <project-name>-git-<branch-name>-<scope-slug>.vercel.app
+// https://communion-frontend-git-testdevdeploy-communion.vercel.app/
+// eslint-disable-next-line
+const branchDomainName = `communion-frontend-git-${process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_REF}-communion.vercel.app`;
+
 const cookieStorageDev = {
-  domain: process.env.NEXT_PUBLIC_VERCEL_URL || 'localhost',
+  domain: branchDomainName || 'localhost',
   // Set true if is a domain with https. For localhost set it to false
-  secure: process.env.NEXT_PUBLIC_VERCEL_URL ? true : false,
+  secure: branchDomainName ? true : false,
   path: '/',
   expires: 30,
 };
