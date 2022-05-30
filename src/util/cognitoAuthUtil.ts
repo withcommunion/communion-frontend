@@ -9,18 +9,21 @@ export const USER_POOL_ID_PROD = 'us-east-1_SeeaUyuuH';
 export const USER_POOL_CLIENT_ID_DEV = '4eerlu1taf72c8r20pv2tmmvmt';
 export const USER_POOL_CLIENT_ID_PROD = '66eoq77778g7d8e36v6pobj0b6';
 
-console.log(process.env.NEXT_PUBLIC_STAGE);
-const isDev = Boolean(process.env.NEXT_PUBLIC_STAGE == 'dev');
+console.log('Process stage', process.env.NEXT_PUBLIC_VERCEL_STAGE);
+const isDev = Boolean(process.env.NEXT_PUBLIC_VERCEL_STAGE !== 'prod');
 
-const cookieStorageLocal = {
-  domain: 'localhost',
+console.log(process.env.NEXT_PUBLIC_VERCEL_URL);
+console.log('isDev', isDev);
+
+const cookieStorageDev = {
+  domain: process.env.NEXT_PUBLIC_VERCEL_URL || 'localhost',
   // Set true if is a domain with https. For localhost set it to false
-  secure: false,
+  secure: process.env.NEXT_PUBLIC_VERCEL_URL ? true : false,
   path: '/',
   expires: 30,
 };
 
-const cookieStorageProdDomain = {
+const cookieStorageProd = {
   domain: 'withcommunion.com',
   // Set true if is a domain with https. For localhost set it to false
   secure: true,
@@ -35,7 +38,7 @@ export const AMPLIFY_CONFIG = {
   // aws_cognito_identity_pool_id:
   //   'us-east-1:f602c14b-0fde-409c-9a7e-0baccbfd87d0', // (optional) - Amazon Cognito Identity Pool ID
   aws_mandatory_sign_in: 'enable', // (optional) - Users are not allowed to get the aws credentials unless they are signed in
-  cookieStorage: isDev ? cookieStorageLocal : cookieStorageProdDomain, // (optional) - Cookie storage options
+  cookieStorage: isDev ? cookieStorageDev : cookieStorageProd, // (optional) - Cookie storage options
 };
 
 export async function getUserJwtTokenOnServer(
