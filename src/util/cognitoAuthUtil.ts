@@ -9,41 +9,39 @@ export const USER_POOL_ID_PROD = 'us-east-1_SeeaUyuuH';
 export const USER_POOL_CLIENT_ID_DEV = '4eerlu1taf72c8r20pv2tmmvmt';
 export const USER_POOL_CLIENT_ID_PROD = '66eoq77778g7d8e36v6pobj0b6';
 
-console.log('Process stage', process.env.NEXT_PUBLIC_VERCEL_STAGE);
-const isDev = Boolean(process.env.NEXT_PUBLIC_VERCEL_STAGE !== 'prod');
-console.log('isDev', isDev);
+const isProd = Boolean(process.env.NEXT_PUBLIC_VERCEL_STAGE === 'prod');
+const isDev = Boolean(process.env.NEXT_PUBLIC_VERCEL_STAGE === 'dev');
 
-console.log(process.env.NEXT_PUBLIC_VERCEL_URL);
+function getCookieStorage() {
+  const cookieStorageBase = {
+    domain: undefined,
+    secure: undefined,
+    path: '/',
+    expires: 30,
+  };
+  if (isProd) {
+    return { ...cookieStorageBase, domain: 'withcommunion.com', secure: true };
+  }
 
-// <project-name>-git-<branch-name>-<scope-slug>.vercel.app
-// https://communion-frontend-git-testdevdeploy-communion.vercel.app/
-// eslint-disable-next-line
-const branchDomainName = `communion-frontend-git-${process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_REF}-communion.vercel.app`;
+  if (isDev) {
+    // <project-name>-git-<branch-name>-<scope-slug>.vercel.app
+    // https://communion-frontend-git-testdevdeploy-communion.vercel.app/
+    // eslint-disable-next-line
+    const prBranchDomainName = process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_REF
+      ? `communion-frontend-git-${process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_REF}-communion.vercel.app`
+      : false;
+    return { ...cookieStorageBase, domain: prBranchDomainName, secure: true };
+  }
 
-const cookieStorageDev = {
-  domain: branchDomainName || 'localhost',
-  // Set true if is a domain with https. For localhost set it to false
-  secure: branchDomainName ? true : false,
-  path: '/',
-  expires: 30,
-};
-
-const cookieStorageProd = {
-  domain: 'withcommunion.com',
-  // Set true if is a domain with https. For localhost set it to false
-  secure: true,
-  path: '/',
-  expires: 30,
-};
+  return { ...cookieStorageBase, domain: 'localhost', secure: false };
+}
 
 export const AMPLIFY_CONFIG = {
-  aws_cognito_region: 'us-east-1', // (required) - Region where Amazon Cognito project was created
-  aws_user_pools_id: USER_POOL_ID_DEV, // (optional) -  Amazon Cognito User Pool ID
-  aws_user_pools_web_client_id: USER_POOL_CLIENT_ID_DEV, // (optional) - Amazon Cognito App Client ID (App client secret needs to be disabled)
-  // aws_cognito_identity_pool_id:
-  //   'us-east-1:f602c14b-0fde-409c-9a7e-0baccbfd87d0', // (optional) - Amazon Cognito Identity Pool ID
-  aws_mandatory_sign_in: 'enable', // (optional) - Users are not allowed to get the aws credentials unless they are signed in
-  cookieStorage: isDev ? cookieStorageDev : cookieStorageProd, // (optional) - Cookie storage options
+  aws_cognito_region: 'us-east-1',
+  aws_user_pools_id: USER_POOL_ID_DEV,
+  aws_user_pools_web_client_id: USER_POOL_CLIENT_ID_DEV,
+  aws_mandatory_sign_in: 'enable',
+  cookieStorage: getCookieStorage(),
 };
 
 console.log('AMPLIFY_CONFIG', AMPLIFY_CONFIG);
