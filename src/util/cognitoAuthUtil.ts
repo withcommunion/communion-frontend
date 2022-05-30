@@ -17,7 +17,7 @@ console.log(process.env.NEXT_PUBLIC_VERCEL_URL);
 const cookieStorageDev = {
   domain: process.env.NEXT_PUBLIC_VERCEL_URL || 'localhost',
   // Set true if is a domain with https. For localhost set it to false
-  secure: false,
+  secure: process.env.NEXT_PUBLIC_VERCEL_URL ? true : false,
   path: '/',
   expires: 30,
 };
