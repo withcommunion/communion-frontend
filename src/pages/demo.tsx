@@ -50,7 +50,9 @@ const BasicWalletDemo = ({ userJwt, self }: Props) => {
   useEffect(() => {
     const fetchBalance = async (wallet: ethers.Wallet) => {
       const balanceBigNumber = await wallet.getBalance();
-      setAccountBalance(ethers.utils.formatEther(balanceBigNumber));
+      const balance = ethers.utils.formatEther(balanceBigNumber);
+      console.log(balanceBigNumber.isZero());
+      setAccountBalance(balance);
     };
 
     if (ethersWallet && !accountBalance) {
@@ -147,7 +149,7 @@ const BasicWalletDemo = ({ userJwt, self }: Props) => {
         )}
 
         {organization && (
-          <ul className="mt-5 flex flex-col items-start gap-y-3 ">
+          <ul className="mt-5 h-50vh flex flex-col items-start gap-y-3 overflow-auto">
             {organization.users.map((user) => (
               <li
                 className="flex justify-between items-center w-full gap-x-2"
