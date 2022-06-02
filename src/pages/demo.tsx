@@ -28,6 +28,10 @@ const BasicWalletDemo = ({ userJwt, self }: Props) => {
   const [userPrivateKey, setUserPrivateKey] = useState<string>('');
   const [ethersWallet, setEthersWallet] = useState<ethers.Wallet>();
   const [accountBalance, setAccountBalance] = useState<string>();
+  const [isAccountBalanceZero, setIsAccountBalanceZero] =
+    useState<boolean>(false);
+  const [isAccountBalanceZeroLoading, setIsAccountBalanceZeroLoading] =
+    useState<boolean>(false);
   const [organization, setOrganization] = useState<Organization>();
   const [latestTransaction, setLatestTransaction] = useState<{
     toAddress?: string;
@@ -51,7 +55,7 @@ const BasicWalletDemo = ({ userJwt, self }: Props) => {
     const fetchBalance = async (wallet: ethers.Wallet) => {
       const balanceBigNumber = await wallet.getBalance();
       const balance = ethers.utils.formatEther(balanceBigNumber);
-      console.log(balanceBigNumber.isZero());
+      setIsAccountBalanceZero(balanceBigNumber.isZero());
       setAccountBalance(balance);
     };
 
@@ -104,6 +108,7 @@ const BasicWalletDemo = ({ userJwt, self }: Props) => {
     });
 
     const balanceBigNumber = await wallet.getBalance();
+    setIsAccountBalanceZero(balanceBigNumber.isZero());
     setAccountBalance(ethers.utils.formatEther(balanceBigNumber));
   };
 
@@ -143,6 +148,21 @@ const BasicWalletDemo = ({ userJwt, self }: Props) => {
                   {latestTransaction?.isInProgress && <small>♻️</small>}
                   {accountBalance} AVAX
                 </p>
+                {isAccountBalanceZero && ethersWallet && (
+                  <button
+                    className="bg-blue-500 disabled:bg-gray-400 hover:bg-blue-700 text-white py-1 px-2 rounded"
+                    disabled={isAccountBalanceZeroLoading}
+                    onClick={async () => {
+                      setIsAccountBalanceZeroLoading(true);
+                      const balance = await ethersWallet.getBalance();
+                      setIsAccountBalanceZero(balance.isZero());
+                      setAccountBalance(ethers.utils.formatEther(balance));
+                      setIsAccountBalanceZeroLoading(false);
+                    }}
+                  >
+                    Balance is zero? Refresh!
+                  </button>
+                )}
               </>
             )}
           </div>
