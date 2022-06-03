@@ -1,8 +1,10 @@
+import axios from 'axios';
 import Avalanche from 'avalanche';
 import { ethers } from 'ethers';
 
 export const avaxTestNetworkNodeUrl =
   'https://api.avax-test.network/ext/bc/C/rpc';
+
 const HTTPSProvider = new ethers.providers.JsonRpcProvider(
   avaxTestNetworkNodeUrl
 );
@@ -133,3 +135,56 @@ export const sendAvax = async (
     explorerUrl,
   };
 };
+
+export interface HistoricalTxn {
+  blockNumber: string;
+  timeStamp: string;
+  hash: string;
+  nonce: string;
+  blockHash: string;
+  transactionIndex: string;
+  from: string;
+  to: string;
+  value: string;
+  gas: string;
+  gasPrice: string;
+  isError: string;
+  txreceipt_status: string;
+  input: string;
+  contractAddress: string;
+  cumulativeGasUsed: string;
+  gasUsed: string;
+  confirmations: string;
+}
+
+export async function getAddressHistory(address: string) {
+  interface TxListResponse {
+    message: string;
+    result: HistoricalTxn[];
+    status: string;
+  }
+  const rawHistoryResp = await axios.get<TxListResponse>(
+    // TODO: Support dev and prod environment
+    'https://api-testnet.snowtrace.io/api',
+    {
+      params: {
+        module: 'account',
+        action: 'txlist',
+        address,
+        startblock: 1,
+        endblock: 99999999,
+        sort: 'desc',
+      },
+    }
+  );
+
+  return rawHistoryResp.data.result;
+}
+
+export function formatWalletAddress(address: string) {
+  return `${address.substring(0, 10)}...${address.substring(32)}`;
+}
+
+export function formatTxnHash(txnHash: string) {
+  return `${txnHash.substring(0, 6)}...${txnHash.substring(60)}`;
+}
