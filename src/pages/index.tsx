@@ -1,7 +1,7 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import { Amplify } from 'aws-amplify';
-import router from 'next/router';
+import { useRouter } from 'next/router';
 import { useAuthenticator } from '@aws-amplify/ui-react';
 import { AMPLIFY_CONFIG } from '../util/cognitoAuthUtil';
 import {
@@ -13,9 +13,10 @@ import {
 Amplify.configure({ ...AMPLIFY_CONFIG, ssr: false });
 
 const Index: NextPage = () => {
+  const router = useRouter();
   const { route, user } = useAuthenticator(({ authStatus, route, user }) => {
     if (authStatus === 'authenticated') {
-      router.push('/demo');
+      router.push('/home');
     }
     return [route, user];
   });

@@ -2,7 +2,7 @@ import type { GetServerSideProps } from 'next';
 import { ethers } from 'ethers';
 import { Amplify } from 'aws-amplify';
 import { useState, useEffect } from 'react';
-import Router from 'next/router';
+import { useRouter } from 'next/router';
 
 import {
   getEthersWallet,
@@ -24,6 +24,7 @@ interface Props {
   self: Self;
 }
 const Home = ({ self }: Props) => {
+  const router = useRouter();
   const [ethersWallet, setEthersWallet] = useState<ethers.Wallet>();
   const [accountBalance, setAccountBalance] = useState<string>();
   const [isAccountBalanceZero, setIsAccountBalanceZero] =
@@ -120,7 +121,7 @@ const Home = ({ self }: Props) => {
             <ul className="mt-2 flex flex-col items-start gap-y-3 overflow-auto">
               <li>
                 <button
-                  onClick={() => Router.push('/demo')}
+                  onClick={() => router.push('/demo')}
                   className="bg-blue-500 disabled:bg-gray-400 hover:bg-blue-700 text-white py-1 px-2 rounded"
                 >
                   5 token tip: Kindness
@@ -128,7 +129,7 @@ const Home = ({ self }: Props) => {
               </li>
               <li>
                 <button
-                  onClick={() => Router.push('/demo')}
+                  onClick={() => router.push('/demo')}
                   className="bg-blue-500 disabled:bg-gray-400 hover:bg-blue-700 text-white py-1 px-2 rounded"
                 >
                   10 token tip: Support

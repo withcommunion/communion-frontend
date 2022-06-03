@@ -12,7 +12,7 @@ import {
 } from '@/util/walletApiUtil';
 import { getEthersWallet, sendAvax } from '@/util/avaxEthersUtil';
 import { AMPLIFY_CONFIG } from '@/util/cognitoAuthUtil';
-import Router from 'next/router';
+import { useRouter } from 'next/router';
 
 import { getUserJwtTokenOnServer } from '@/util/cognitoAuthUtil';
 
@@ -25,6 +25,8 @@ interface Props {
 }
 
 const BasicWalletDemo = ({ userJwt, self }: Props) => {
+  const router = useRouter();
+
   const [userPrivateKey, setUserPrivateKey] = useState<string>('');
   const [ethersWallet, setEthersWallet] = useState<ethers.Wallet>();
   const [accountBalance, setAccountBalance] = useState<string>();
@@ -243,7 +245,7 @@ const BasicWalletDemo = ({ userJwt, self }: Props) => {
                   signOut();
                   // TODO: This is hacky af
                   setTimeout(() => {
-                    Router.push('/');
+                    router.push('/');
                   }, 500);
                 }}
               >
