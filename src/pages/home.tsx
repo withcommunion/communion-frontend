@@ -2,6 +2,7 @@ import type { GetServerSideProps } from 'next';
 import { ethers } from 'ethers';
 import { Amplify } from 'aws-amplify';
 import { useState, useEffect } from 'react';
+import Router from 'next/router';
 
 import {
   getEthersWallet,
@@ -118,12 +119,18 @@ const Home = ({ self }: Props) => {
             <h2 className="text-xl">Shortcut Actions:</h2>
             <ul className="mt-2 flex flex-col items-start gap-y-3 overflow-auto">
               <li>
-                <button className="bg-blue-500 disabled:bg-gray-400 hover:bg-blue-700 text-white py-1 px-2 rounded">
+                <button
+                  onClick={() => Router.push('/demo')}
+                  className="bg-blue-500 disabled:bg-gray-400 hover:bg-blue-700 text-white py-1 px-2 rounded"
+                >
                   5 token tip: Kindness
                 </button>
               </li>
               <li>
-                <button className="bg-blue-500 disabled:bg-gray-400 hover:bg-blue-700 text-white py-1 px-2 rounded">
+                <button
+                  onClick={() => Router.push('/demo')}
+                  className="bg-blue-500 disabled:bg-gray-400 hover:bg-blue-700 text-white py-1 px-2 rounded"
+                >
                   10 token tip: Support
                 </button>
               </li>
