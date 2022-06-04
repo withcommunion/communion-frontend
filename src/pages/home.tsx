@@ -126,12 +126,12 @@ const Home = ({ self }: Props) => {
                 <ul className="mt-2 flex flex-col items-start gap-y-3 overflow-auto">
                   <li>
                     <button className="bg-blue-500 disabled:bg-gray-400 hover:bg-blue-700 text-white py-1 px-2 rounded">
-                      <Link href="/demo">5 token tip: Kindness</Link>
+                      <Link href="/send">5 token tip: Kindness</Link>
                     </button>
                   </li>
                   <li>
                     <button className="bg-blue-500 disabled:bg-gray-400 hover:bg-blue-700 text-white py-1 px-2 rounded">
-                      <Link href="/demo">10 token tip: Support</Link>
+                      <Link href="/send">10 token tip: Support</Link>
                     </button>
                   </li>
                 </ul>
