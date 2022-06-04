@@ -3,7 +3,7 @@ import { ethers } from 'ethers';
 import { Amplify } from 'aws-amplify';
 import { useAuthenticator } from '@aws-amplify/ui-react';
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
+import Link from 'next/link';
 
 import {
   getEthersWallet,
@@ -26,7 +26,6 @@ interface Props {
   self: Self;
 }
 const Home = ({ self }: Props) => {
-  const router = useRouter();
   const { signOut } = useAuthenticator((context) => [context.signOut]);
   const [ethersWallet, setEthersWallet] = useState<ethers.Wallet>();
   const [accountBalance, setAccountBalance] = useState<string>();
@@ -126,19 +125,13 @@ const Home = ({ self }: Props) => {
                 <h2 className="text-xl">Shortcut Actions:</h2>
                 <ul className="mt-2 flex flex-col items-start gap-y-3 overflow-auto">
                   <li>
-                    <button
-                      onClick={() => router.push('/demo')}
-                      className="bg-blue-500 disabled:bg-gray-400 hover:bg-blue-700 text-white py-1 px-2 rounded"
-                    >
-                      5 token tip: Kindness
+                    <button className="bg-blue-500 disabled:bg-gray-400 hover:bg-blue-700 text-white py-1 px-2 rounded">
+                      <Link href="/demo">5 token tip: Kindness</Link>
                     </button>
                   </li>
                   <li>
-                    <button
-                      onClick={() => router.push('/demo')}
-                      className="bg-blue-500 disabled:bg-gray-400 hover:bg-blue-700 text-white py-1 px-2 rounded"
-                    >
-                      10 token tip: Support
+                    <button className="bg-blue-500 disabled:bg-gray-400 hover:bg-blue-700 text-white py-1 px-2 rounded">
+                      <Link href="/demo">10 token tip: Support</Link>
                     </button>
                   </li>
                 </ul>
