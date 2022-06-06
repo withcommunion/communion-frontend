@@ -3,13 +3,6 @@ import axios from 'axios';
 export const DEV_API_URL =
   'https://p0rddetfk8.execute-api.us-east-1.amazonaws.com';
 
-export interface BaseUserWallet {
-  privateKeyWithLeadingHex?: string;
-  addressC: string;
-  addressP: string;
-  addressX: string;
-}
-
 export interface User {
   id: string;
   email?: string;
@@ -17,11 +10,14 @@ export interface User {
   last_name: string;
   organization: string;
   role: 'worker' | 'manager' | 'owner' | 'seeder' | string;
-  wallet: BaseUserWallet;
+  walletPrivateKeyWithLeadingHex?: string;
+  walletAddressC: string;
+  walletAddressP: string;
+  walletAddressX: string;
 }
 
 export interface Self extends User {
-  wallet: BaseUserWallet;
+  walletPrivateKeyWithLeadingHex: string;
 }
 
 export async function fetchSelf(jwtToken: string): Promise<Self> {
