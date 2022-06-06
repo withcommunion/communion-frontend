@@ -45,9 +45,9 @@ const BasicWalletDemo = ({ userJwt, self }: Props) => {
   const { signOut } = useAuthenticator((context) => [context.signOut]);
 
   useEffect(() => {
-    if (!userPrivateKey && self && self.wallet.privateKeyWithLeadingHex) {
-      setUserPrivateKey(self.wallet.privateKeyWithLeadingHex);
-      setEthersWallet(getEthersWallet(self.wallet.privateKeyWithLeadingHex));
+    if (!userPrivateKey && self && self.walletPrivateKeyWithLeadingHex) {
+      setUserPrivateKey(self.walletPrivateKeyWithLeadingHex);
+      setEthersWallet(getEthersWallet(self.walletPrivateKeyWithLeadingHex));
     }
   }, [self, userPrivateKey]);
 
@@ -77,7 +77,7 @@ const BasicWalletDemo = ({ userJwt, self }: Props) => {
 
   const getUserTxnIsTo = (toAddress: string) => {
     return organization?.users.find(
-      (user) => user.wallet.addressC === toAddress
+      (user) => user.walletAddressC === toAddress
     );
   };
 
@@ -175,7 +175,7 @@ const BasicWalletDemo = ({ userJwt, self }: Props) => {
               {organization.users.map((user) => (
                 <li
                   className="flex justify-between items-center w-full gap-x-2"
-                  key={`${user.wallet.addressC}`}
+                  key={`${user.walletAddressC}`}
                 >
                   <p>
                     {user.first_name} {user.last_name}
@@ -185,7 +185,7 @@ const BasicWalletDemo = ({ userJwt, self }: Props) => {
                     disabled={latestTransaction?.isInProgress}
                     onClick={async () => {
                       if (ethersWallet) {
-                        await sendUserAvax(ethersWallet, user.wallet.addressC);
+                        await sendUserAvax(ethersWallet, user.walletAddressC);
                       }
                     }}
                   >

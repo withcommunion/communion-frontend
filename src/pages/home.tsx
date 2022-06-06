@@ -40,8 +40,8 @@ const Home = ({ self }: Props) => {
   }>({ isLoading: false, txns: [] });
 
   useEffect(() => {
-    if (self && self.wallet.privateKeyWithLeadingHex) {
-      setEthersWallet(getEthersWallet(self.wallet.privateKeyWithLeadingHex));
+    if (self && self.walletPrivateKeyWithLeadingHex) {
+      setEthersWallet(getEthersWallet(self.walletPrivateKeyWithLeadingHex));
     }
   }, [self]);
 
