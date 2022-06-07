@@ -35,6 +35,46 @@ export async function fetchSelf(jwtToken: string): Promise<Self> {
   }
 }
 
+export interface HistoricalTxn {
+  fromUser: User;
+  toUser: User;
+  blockNumber: string;
+  timeStamp: string;
+  hash: string;
+  nonce: string;
+  blockHash: string;
+  transactionIndex: string;
+  from: string;
+  to: string;
+  value: string;
+  gas: string;
+  gasPrice: string;
+  isError: string;
+  txreceipt_status: string;
+  input: string;
+  contractAddress: string;
+  cumulativeGasUsed: string;
+  gasUsed: string;
+  confirmations: string;
+}
+export async function fetchSelfTxs(jwtToken: string): Promise<HistoricalTxn[]> {
+  try {
+    const rawWallet = await axios.get<{ txs: HistoricalTxn[] }>(
+      `${DEV_API_URL}/user/self/tx`,
+      {
+        headers: {
+          Authorization: jwtToken,
+        },
+      }
+    );
+    const selfTxs = rawWallet.data;
+    return selfTxs.txs;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
 export interface Organization {
   name: string;
   users: User[];
