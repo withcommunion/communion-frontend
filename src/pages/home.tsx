@@ -64,7 +64,6 @@ const Home = ({ self, userJwt }: Props) => {
   useEffect(() => {
     const fetchHistory = async (jwt: string) => {
       const history = await fetchSelfTxs(jwt);
-      console.log(history);
       setAddressHistory({ isLoading: false, txns: history });
     };
 
@@ -162,31 +161,28 @@ const Home = ({ self, userJwt }: Props) => {
                   <h2 className="text-xl">Recent Transactions:</h2>
                 </div>
                 <ul className="mt-2 max-h-35vh flex flex-col items-start gap-y-3 overflow-auto">
-                  {console.log(addressHistory)}
-                  {addressHistory &&
-                    addressHistory.txns.map((txn) => (
-                      <li key={txn.hash}>
-                        <a
-                          className="underline text-blue-600 hover:text-blue-800 visited:text-purple-600"
-                          target="_blank"
-                          rel="noreferrer"
-                          href={`https://testnet.snowtrace.io/tx/${txn.hash}`}
-                        >
-                          {formatTxnHash(txn.hash)}
-                        </a>
-                        <p>
-                          From: {txn.fromUser.first_name}{' '}
-                          {txn.fromUser.last_name}
-                        </p>
-                        <p>
-                          To: {txn.toUser.first_name} {txn.toUser.last_name}
-                        </p>
-                        <p>
-                          Amount: {ethers.utils.formatUnits(txn.value, 'ether')}
-                        </p>
-                        <p>Status: {txn.txreceipt_status}</p>
-                      </li>
-                    ))}
+                  {addressHistory.txns.map((txn) => (
+                    <li key={txn.hash}>
+                      <a
+                        className="underline text-blue-600 hover:text-blue-800 visited:text-purple-600"
+                        target="_blank"
+                        rel="noreferrer"
+                        href={`https://testnet.snowtrace.io/tx/${txn.hash}`}
+                      >
+                        {formatTxnHash(txn.hash)}
+                      </a>
+                      <p>
+                        From: {txn.fromUser.first_name} {txn.fromUser.last_name}
+                      </p>
+                      <p>
+                        To: {txn.toUser.first_name} {txn.toUser.last_name}
+                      </p>
+                      <p>
+                        Amount: {ethers.utils.formatUnits(txn.value, 'ether')}
+                      </p>
+                      <p>Status: {txn.txreceipt_status}</p>
+                    </li>
+                  ))}
                 </ul>
               </div>
             </div>
