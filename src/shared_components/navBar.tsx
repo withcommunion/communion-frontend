@@ -26,7 +26,7 @@ export default function NavBar({ signOut, active }: Props) {
             <button
               className={cx(buttonClass, { 'bg-blue-200': active === 'send' })}
             >
-              <Link href="/send">Send</Link>
+              <Link href="/community">Community</Link>
             </button>
           </li>
 

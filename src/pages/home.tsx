@@ -129,12 +129,12 @@ const Home = ({ self, userJwt }: Props) => {
                 <ul className="mt-2 flex flex-col items-start gap-y-3 overflow-auto">
                   <li>
                     <button className="bg-blue-500 disabled:bg-gray-400 hover:bg-blue-700 text-white py-1 px-2 rounded">
-                      <Link href="/send">5 token tip: Kindness</Link>
+                      <Link href="/community">5 token tip: Kindness</Link>
                     </button>
                   </li>
                   <li>
                     <button className="bg-blue-500 disabled:bg-gray-400 hover:bg-blue-700 text-white py-1 px-2 rounded">
-                      <Link href="/send">10 token tip: Support</Link>
+                      <Link href="/community">10 token tip: Support</Link>
                     </button>
                   </li>
                 </ul>
@@ -163,6 +163,15 @@ const Home = ({ self, userJwt }: Props) => {
                 <ul className="mt-2 max-h-35vh flex flex-col items-start gap-y-3 overflow-auto">
                   {addressHistory.txns.map((txn) => (
                     <li key={txn.hash}>
+                      <p>
+                        Amount: {ethers.utils.formatUnits(txn.value, 'ether')}
+                      </p>
+                      <p>
+                        From: {txn.fromUser.first_name} {txn.fromUser.last_name}
+                      </p>
+                      <p>
+                        To: {txn.toUser.first_name} {txn.toUser.last_name}
+                      </p>
                       <a
                         className="underline text-blue-600 hover:text-blue-800 visited:text-purple-600"
                         target="_blank"
@@ -171,15 +180,6 @@ const Home = ({ self, userJwt }: Props) => {
                       >
                         {formatTxnHash(txn.hash)}
                       </a>
-                      <p>
-                        From: {txn.fromUser.first_name} {txn.fromUser.last_name}
-                      </p>
-                      <p>
-                        To: {txn.toUser.first_name} {txn.toUser.last_name}
-                      </p>
-                      <p>
-                        Amount: {ethers.utils.formatUnits(txn.value, 'ether')}
-                      </p>
                       <p>Status: {txn.txreceipt_status}</p>
                     </li>
                   ))}
