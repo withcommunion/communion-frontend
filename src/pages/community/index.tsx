@@ -10,11 +10,12 @@ import {
   fetchOrganization,
   Organization,
 } from '@/util/walletApiUtil';
-import { getEthersWallet, sendAvax } from '@/util/avaxEthersUtil';
+import { getEthersWallet } from '@/util/avaxEthersUtil';
 import { AMPLIFY_CONFIG } from '@/util/cognitoAuthUtil';
 
 import { getUserJwtTokenOnServer } from '@/util/cognitoAuthUtil';
 import NavBar from '@/shared_components/navBar';
+import SendTokensModal from '@/shared_components/sendTokensModal';
 
 // https://docs.amplify.aws/lib/client-configuration/configuring-amplify-categories/q/platform/js/#general-configuration
 Amplify.configure({ ...AMPLIFY_CONFIG, ssr: true });
@@ -33,14 +34,6 @@ const BasicWalletDemo = ({ userJwt, self }: Props) => {
   const [isAccountBalanceZeroLoading, setIsAccountBalanceZeroLoading] =
     useState<boolean>(false);
   const [organization, setOrganization] = useState<Organization>();
-  const [latestTransaction, setLatestTransaction] = useState<{
-    toAddress?: string;
-    estimatedTxnCost?: string;
-    actualTxnCost?: string;
-    isInProgress: boolean;
-    txnHash?: string;
-    txnExplorerUrl?: string;
-  }>();
 
   const { signOut } = useAuthenticator((context) => [context.signOut]);
 
@@ -74,43 +67,6 @@ const BasicWalletDemo = ({ userJwt, self }: Props) => {
       fetchOrg();
     }
   }, [self, organization, userJwt]);
-
-  const getUserTxnIsTo = (toAddress: string) => {
-    return organization?.users.find(
-      (user) => user.walletAddressC === toAddress
-    );
-  };
-
-  const sendUserAvax = async (wallet: ethers.Wallet, toAddress: string) => {
-    setLatestTransaction({ isInProgress: true });
-    const txnInProgress = await sendAvax(wallet, '0.00000001', toAddress);
-
-    const txn = {
-      toAddress: toAddress,
-      estimatedTxnCost: ethers.utils.formatEther(txnInProgress.estimatedCost),
-      isInProgress: true,
-      txnHash: txnInProgress.txHash,
-      txnExplorerUrl: txnInProgress.explorerUrl,
-    };
-
-    setLatestTransaction(txn);
-
-    const finishedTransaction = await txnInProgress.transaction.wait();
-
-    const actualCost = finishedTransaction.effectiveGasPrice.mul(
-      finishedTransaction.gasUsed
-    );
-
-    setLatestTransaction({
-      ...txn,
-      actualTxnCost: ethers.utils.formatEther(actualCost),
-      isInProgress: false,
-    });
-
-    const balanceBigNumber = await wallet.getBalance();
-    setIsAccountBalanceZero(balanceBigNumber.isZero());
-    setAccountBalance(ethers.utils.formatEther(balanceBigNumber));
-  };
 
   return (
     <>
@@ -146,10 +102,7 @@ const BasicWalletDemo = ({ userJwt, self }: Props) => {
               {accountBalance && (
                 <>
                   <p>Your balance:</p>
-                  <p>
-                    {latestTransaction?.isInProgress && <small>♻️</small>}
-                    {accountBalance} AVAX
-                  </p>
+                  <p>{accountBalance} AVAX</p>
                   {isAccountBalanceZero && ethersWallet && (
                     <button
                       className="bg-blue-500 disabled:bg-gray-400 hover:bg-blue-700 text-white py-1 px-2 rounded"
@@ -171,7 +124,7 @@ const BasicWalletDemo = ({ userJwt, self }: Props) => {
           )}
 
           {organization && (
-            <ul className="mt-5 h-50vh flex flex-col items-start gap-y-3 overflow-auto">
+            <ul className="mt-5 h-75vh flex flex-col items-start gap-y-3 overflow-auto">
               {organization.users.map((user) => (
                 <li
                   className="flex justify-between items-center w-full gap-x-2"
@@ -180,64 +133,19 @@ const BasicWalletDemo = ({ userJwt, self }: Props) => {
                   <p>
                     {user.first_name} {user.last_name}
                   </p>
-                  <button
-                    className="bg-blue-500 disabled:bg-gray-400 hover:bg-blue-700 text-white py-1 px-2 rounded"
-                    disabled={latestTransaction?.isInProgress}
-                    onClick={async () => {
-                      if (ethersWallet) {
-                        await sendUserAvax(ethersWallet, user.walletAddressC);
-                      }
-                    }}
-                  >
-                    Send
-                  </button>
+                  {ethersWallet && (
+                    <SendTokensModal
+                      fromUsersWallet={ethersWallet}
+                      toUser={user}
+                    >
+                      <button className="bg-blue-500 disabled:bg-gray-400 hover:bg-blue-700 text-white py-1 px-2 rounded">
+                        Send
+                      </button>
+                    </SendTokensModal>
+                  )}
                 </li>
               ))}
             </ul>
-          )}
-          {latestTransaction && (
-            <div className="my-10">
-              <ul>
-                {latestTransaction.isInProgress && (
-                  <li>♻️ Transaction in progress!</li>
-                )}
-                {!latestTransaction.isInProgress && (
-                  <li>✅ Transaction completed!</li>
-                )}
-                {latestTransaction.toAddress && (
-                  <li>
-                    To:{' '}
-                    {getUserTxnIsTo(latestTransaction.toAddress)?.first_name}{' '}
-                    {getUserTxnIsTo(latestTransaction.toAddress)?.last_name}
-                  </li>
-                )}
-                {latestTransaction.txnExplorerUrl && (
-                  <li>
-                    View Txn:
-                    <a
-                      className="underline text-blue-600 hover:text-blue-800 visited:text-purple-600"
-                      href={latestTransaction.txnExplorerUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      {latestTransaction.txnHash?.substring(0, 5)}...
-                      {latestTransaction.txnHash?.substring(60)}
-                    </a>
-                  </li>
-                )}
-                {latestTransaction.estimatedTxnCost && (
-                  <li>
-                    Estimated Txn Cost: {latestTransaction.estimatedTxnCost}{' '}
-                    AVAX
-                  </li>
-                )}
-                {latestTransaction.actualTxnCost && (
-                  <li>
-                    Actual Txn Cost: {latestTransaction.actualTxnCost} AVAX
-                  </li>
-                )}
-              </ul>
-            </div>
           )}
         </div>
       </div>
