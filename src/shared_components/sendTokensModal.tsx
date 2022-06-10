@@ -52,6 +52,24 @@ export default function SendTokensModal({
     toAddress: string
   ) => {
     setLatestTransaction({ isInProgress: true });
+    /**
+     * Get how much the txn will cost
+     * Check if user has Avax / Enough to make txn
+     * If they don't reach out to API to seed user
+     *  Get response - Make txn
+     * If they do
+     *  Make txn
+     *
+     */
+
+    const usersBalance = await wallet.getBalance();
+    const userBalanceFloat = parseFloat(ethers.utils.formatEther(usersBalance));
+    const estimatedTxnCost = 5.0;
+
+    if (userBalanceFloat < estimatedTxnCost) {
+      console.log('Seed user');
+    }
+
     const txnInProgress = await sendAvax(wallet, amount, toAddress);
 
     const txn = {
