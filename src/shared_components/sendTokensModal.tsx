@@ -94,7 +94,7 @@ export default function SendTokensModal({
           hidden={!isOpen}
           className="absolute left-0 top-0 w-full h-screen overflow-hidden bg-gray-900 bg-opacity-80 z-10"
         >
-          <div className="text-white justify-center items-center flex py-32 px-4">
+          <div className="text-white justify-center items-center flex md:py-32 px-4">
             <div className="w-96 py-4 px-4 md:px-24 md:w-auto bg-gray-800 relative flex flex-col justify-center items-center ">
               <div className="mt-2">
                 <h1
