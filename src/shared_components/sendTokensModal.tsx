@@ -2,7 +2,8 @@
 import { useState, useEffect, ReactNode } from 'react';
 import { ethers } from 'ethers';
 import { User } from '@/util/walletApiUtil';
-import { sendAvax } from '@/util/avaxEthersUtil';
+import { sendAvax, formatWalletAddress } from '@/util/avaxEthersUtil';
+import Transaction from '@/shared_components/transaction';
 
 interface Props {
   onClose?: () => void;
@@ -11,7 +12,6 @@ interface Props {
   toUser: User;
   children?: ReactNode;
 }
-
 export default function SendTokensModal({
   fromUsersWallet,
   toUser,
@@ -92,10 +92,10 @@ export default function SendTokensModal({
         <div
           id="menu"
           hidden={!isOpen}
-          className="absolute left-0 top-0 text-white z-10 w-full h-full bg-gray-900 bg-opacity-80 top-0 fixed sticky-0"
+          className="absolute left-0 top-0 w-full h-screen overflow-hidden bg-gray-900 bg-opacity-80 z-10"
         >
-          <div className="py-32 px-4 flex justify-center items-center">
-            <div className="w-96 py-4 px-4 md:w-auto bg-gray-800 relative flex flex-col justify-center items-center  md:px-24">
+          <div className="text-white justify-center items-center flex py-32 px-4">
+            <div className="w-96 py-4 px-4 md:px-24 md:w-auto bg-gray-800 relative flex flex-col justify-center items-center ">
               <div className="mt-2">
                 <h1
                   role="main"
@@ -117,10 +117,7 @@ export default function SendTokensModal({
                           rel="noreferrer"
                           href={`https://testnet.snowtrace.io/address/${toAddress}`}
                         >
-                          {`${toAddress.substring(
-                            0,
-                            10
-                          )}...${toAddress.substring(32)}`}
+                          {formatWalletAddress(toAddress)}
                         </a>
                       </small>
                     </p>
@@ -210,48 +207,11 @@ export default function SendTokensModal({
               <div>
                 {latestTransaction && (
                   <div className="my-8">
-                    <ul>
-                      {latestTransaction.isInProgress && (
-                        <li>♻️ Transaction in progress!</li>
-                      )}
-                      {!latestTransaction.isInProgress && (
-                        <li>✅ Transaction completed!</li>
-                      )}
-                      {latestTransaction.amount && (
-                        <li>Amount: {latestTransaction.amount}</li>
-                      )}
-                      {latestTransaction.toAddress && (
-                        <li>
-                          To: {toUser.first_name} {toUser.last_name}
-                        </li>
-                      )}
-                      {latestTransaction.txnExplorerUrl && (
-                        <li>
-                          View Txn:
-                          <a
-                            className="underline text-blue-600 hover:text-blue-800 visited:text-purple-600"
-                            href={latestTransaction.txnExplorerUrl}
-                            target="_blank"
-                            rel="noreferrer"
-                          >
-                            {latestTransaction.txnHash?.substring(0, 5)}...
-                            {latestTransaction.txnHash?.substring(60)}
-                          </a>
-                        </li>
-                      )}
-                      {latestTransaction.estimatedTxnCost && (
-                        <li>
-                          Estimated Txn Cost:{' '}
-                          {latestTransaction.estimatedTxnCost} AVAX
-                        </li>
-                      )}
-                      {latestTransaction.actualTxnCost && (
-                        <li>
-                          Actual Txn Cost: {latestTransaction.actualTxnCost}{' '}
-                          AVAX
-                        </li>
-                      )}
-                    </ul>
+                    <Transaction
+                      transaction={latestTransaction}
+                      toFirstName={toUser.first_name}
+                      toLastName={toUser.last_name}
+                    />
                   </div>
                 )}
               </div>
