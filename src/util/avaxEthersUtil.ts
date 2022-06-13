@@ -2,6 +2,7 @@ import axios from 'axios';
 import Avalanche from 'avalanche';
 import { ethers } from 'ethers';
 
+// TODO: Deal with prod and dev env
 export const avaxTestNetworkNodeUrl =
   'https://api.avax-test.network/ext/bc/C/rpc';
 
