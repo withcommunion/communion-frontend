@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { ethers } from 'ethers';
 
 export const DEV_API_URL =
   'https://p0rddetfk8.execute-api.us-east-1.amazonaws.com';
@@ -98,4 +99,20 @@ export async function fetchOrganization(
     console.log(error);
     throw error;
   }
+}
+
+export async function postSeedSelf(jwtToken: string) {
+  const rawSeedResp = await axios.post<ethers.Transaction>(
+    `${DEV_API_URL}/user/self/seed`,
+    {},
+    {
+      headers: {
+        Authorization: jwtToken,
+      },
+    }
+  );
+
+  const seedTxn = rawSeedResp.data;
+
+  return seedTxn;
 }

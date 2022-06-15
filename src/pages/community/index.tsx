@@ -25,7 +25,7 @@ interface Props {
   self: Self;
 }
 
-const BasicWalletDemo = ({ userJwt, self }: Props) => {
+const CommunityIndex = ({ userJwt, self }: Props) => {
   const [userPrivateKey, setUserPrivateKey] = useState<string>('');
   const [ethersWallet, setEthersWallet] = useState<ethers.Wallet>();
   const [accountBalance, setAccountBalance] = useState<string>();
@@ -135,6 +135,7 @@ const BasicWalletDemo = ({ userJwt, self }: Props) => {
                   </p>
                   {ethersWallet && (
                     <SendTokensModal
+                      userJwt={userJwt}
                       fromUsersWallet={ethersWallet}
                       toUser={user}
                     >
@@ -177,4 +178,4 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 };
 
-export default BasicWalletDemo;
+export default CommunityIndex;
