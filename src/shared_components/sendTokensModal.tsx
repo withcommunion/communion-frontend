@@ -5,7 +5,8 @@ import { User, postSeedSelf } from '@/util/walletApiUtil';
 import {
   sendAvax,
   formatWalletAddress,
-  getEstimatedTxnCost,
+  getEstimatedTxnCosts,
+  createBaseTxn,
 } from '@/util/avaxEthersUtil';
 import Transaction from '@/shared_components/transaction';
 
@@ -70,26 +71,22 @@ export default function SendTokensModal({
      */
 
     const usersBalance = await wallet.getBalance();
-    // const userBalanceFloat = parseFloat(ethers.utils.formatEther(usersBalance));
-    const estimatedTxnCost = await getEstimatedTxnCost(
-      wallet.address,
-      amount,
-      toAddress
-    );
+    const baseTxn = await createBaseTxn(wallet.address, amount, toAddress);
+    const { estimatedTotalTxnCost } = await getEstimatedTxnCosts(baseTxn);
 
-    if (usersBalance.lt(estimatedTxnCost)) {
+    if (usersBalance.lt(estimatedTotalTxnCost)) {
       console.log('Seeding user, not enough for Gas');
       await postSeedSelf(userJwt);
     }
 
-    const txnInProgress = await sendAvax(wallet, amount, toAddress);
+    const txnInProgress = await sendAvax(baseTxn, wallet);
 
     const txn = {
       amount: ethers.utils.formatEther(txnInProgress.transaction.value),
       toAddress: toAddress,
       estimatedTxnCost: ethers.utils.formatEther(txnInProgress.estimatedCost),
       isInProgress: true,
-      txnHash: txnInProgress.txHash,
+      txnHash: txnInProgress.txnHash,
       txnExplorerUrl: txnInProgress.explorerUrl,
     };
 
