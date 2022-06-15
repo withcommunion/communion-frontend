@@ -1,11 +1,16 @@
 // TODO: This will make this component real smoove https://reactjs.org/docs/animation.html
 import { useState, useEffect, ReactNode } from 'react';
 import { ethers } from 'ethers';
-import { User } from '@/util/walletApiUtil';
-import { sendAvax, formatWalletAddress } from '@/util/avaxEthersUtil';
+import { User, postSeedSelf } from '@/util/walletApiUtil';
+import {
+  sendAvax,
+  formatWalletAddress,
+  getEstimatedTxnCost,
+} from '@/util/avaxEthersUtil';
 import Transaction from '@/shared_components/transaction';
 
 interface Props {
+  userJwt: string;
   onClose?: () => void;
   onOpen?: () => void;
   fromUsersWallet: ethers.Wallet;
@@ -13,6 +18,7 @@ interface Props {
   children?: ReactNode;
 }
 export default function SendTokensModal({
+  userJwt,
   fromUsersWallet,
   toUser,
   children,
@@ -47,6 +53,7 @@ export default function SendTokensModal({
   };
 
   const sendUserAvax = async (
+    userJwt: string,
     amount: string,
     wallet: ethers.Wallet,
     toAddress: string
@@ -63,11 +70,16 @@ export default function SendTokensModal({
      */
 
     const usersBalance = await wallet.getBalance();
-    const userBalanceFloat = parseFloat(ethers.utils.formatEther(usersBalance));
-    const estimatedTxnCost = 5.0;
+    // const userBalanceFloat = parseFloat(ethers.utils.formatEther(usersBalance));
+    const estimatedTxnCost = await getEstimatedTxnCost(
+      wallet.address,
+      amount,
+      toAddress
+    );
 
-    if (userBalanceFloat < estimatedTxnCost) {
-      console.log('Seed user');
+    if (usersBalance.lt(estimatedTxnCost)) {
+      console.log('Seeding user, not enough for Gas');
+      await postSeedSelf(userJwt);
     }
 
     const txnInProgress = await sendAvax(wallet, amount, toAddress);
@@ -149,6 +161,7 @@ export default function SendTokensModal({
                   onSubmit={(event) => {
                     event.preventDefault();
                     sendUserAvax(
+                      userJwt,
                       amountToSend.toString(),
                       fromUsersWallet,
                       toAddress
@@ -208,13 +221,6 @@ export default function SendTokensModal({
                       disabled={
                         latestTransaction?.isInProgress || !amountToSend
                       }
-                      onClick={() => {
-                        sendUserAvax(
-                          amountToSend.toString(),
-                          fromUsersWallet,
-                          toAddress
-                        );
-                      }}
                       className="bg-white disabled:bg-gray-500 text-gray-800 mt-14 text-base text-center text-white py-6 px-16 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800"
                     >
                       Send

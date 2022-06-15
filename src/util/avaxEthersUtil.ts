@@ -36,7 +36,7 @@ const cchain = avalanche.CChain();
  * maxFeePerGas: This is the total amount of gas used in the transaction.  Tip + Bare minimum set by network
  * Gwei and nAvax are the same thing
  */
-export const calcFeeData = async () => {
+export const calcBaseFee = async () => {
   const baseFee = parseInt(await cchain.getBaseFee(), 16) / 1e9;
   const maxPriorityFeePerGas =
     parseInt(await cchain.getMaxPriorityFeePerGas(), 16) / 1e9;
@@ -54,14 +54,12 @@ export const calcFeeData = async () => {
     maxPriorityFeePerGasGwei: maxPriorityFeePerGas.toString(),
   };
 
-  console.log('maxFees', maxFees);
-
   return maxFees;
 };
 
 // TODO: Support prod and dev environment
-export const sendAvax = async (
-  fromWallet: ethers.Wallet,
+export const createBaseTxn = async (
+  fromAddress: string,
   amount: string,
   toAddress: string
 ) => {
@@ -70,15 +68,9 @@ export const sendAvax = async (
   const nodeURL = 'https://api.avax-test.network/ext/bc/C/rpc';
   const HTTPSProvider = new ethers.providers.JsonRpcProvider(nodeURL);
 
-  const fromAddress = fromWallet.address;
-
-  /*
-   * Through doing getTransactionCount + 1, we will not wait for previous txns to finish before sending a new one.
-   * https://ethereum.stackexchange.com/questions/82456/can-using-gettransactioncount-1-prevent-waiting-for-pending-transactions
-   */
   const nonce = await HTTPSProvider.getTransactionCount(fromAddress);
 
-  const { maxFeePerGasGwei, maxPriorityFeePerGasGwei } = await calcFeeData();
+  const { maxFeePerGasGwei, maxPriorityFeePerGasGwei } = await calcBaseFee();
 
   if (maxFeePerGasGwei > MAX_GAS_WILLING_TO_SPEND_GWEI) {
     console.log(`Spending more than MAX_GWEI_GAS_WILLING_TO_SPEND`, {
@@ -104,6 +96,37 @@ export const sendAvax = async (
     value: ethers.utils.parseEther(amount),
     chainId,
   };
+
+  return baseTx;
+};
+
+// TODO: Support prod and dev environment
+export const getEstimatedTxnCost = async (
+  fromAddress: string,
+  amount: string,
+  toAddress: string
+) => {
+  const nodeURL = 'https://api.avax-test.network/ext/bc/C/rpc';
+  const HTTPSProvider = new ethers.providers.JsonRpcProvider(nodeURL);
+
+  const baseTx = await createBaseTxn(fromAddress, amount, toAddress);
+
+  // Gas is burned by chain
+  const estimatedGasCost = await HTTPSProvider.estimateGas(baseTx);
+  const estimatedTxnCost = estimatedGasCost.mul(
+    // MaxFeePerGas is the minimum avax required for a miner to pick it up and put it on chain
+    ethers.BigNumber.from(baseTx.maxFeePerGas)
+  );
+  return estimatedTxnCost;
+};
+
+// TODO: Support prod and dev environment
+export const sendAvax = async (
+  fromWallet: ethers.Wallet,
+  amount: string,
+  toAddress: string
+) => {
+  const baseTx = await createBaseTxn(fromWallet.address, amount, toAddress);
   const estimatedGasCost = await HTTPSProvider.estimateGas(baseTx);
 
   const fullTx: ethers.providers.TransactionRequest = {
@@ -124,7 +147,7 @@ export const sendAvax = async (
 
   console.log(estimatedGasCost);
   const totalEstimatedCost = estimatedGasCost.mul(
-    ethers.BigNumber.from(maxFeePerGasInAvax)
+    ethers.BigNumber.from(baseTx.maxFeePerGas)
   );
   const res = await HTTPSProvider.sendTransaction(signedTx);
 
