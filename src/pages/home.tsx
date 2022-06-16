@@ -10,14 +10,10 @@ import {
   formatWalletAddress,
   formatTxnHash,
 } from '@/util/avaxEthersUtil';
-import {
-  fetchSelf,
-  Self,
-  fetchSelfTxs,
-  HistoricalTxn,
-} from '@/util/walletApiUtil';
+import { fetchSelfTxs, HistoricalTxn } from '@/util/walletApiUtil';
 import { AMPLIFY_CONFIG } from '@/util/cognitoAuthUtil';
 import { getUserJwtTokenOnServer } from '@/util/cognitoAuthUtil';
+import { useUserContext } from '@/context/userContext';
 
 import NavBar from '@/shared_components/navBar';
 
@@ -26,9 +22,10 @@ Amplify.configure({ ...AMPLIFY_CONFIG, ssr: true });
 
 interface Props {
   userJwt: string;
-  self: Self;
 }
-const Home = ({ self, userJwt }: Props) => {
+const Home = ({ userJwt }: Props) => {
+  const { selfCtx, setJwtCtx } = useUserContext();
+  const { self } = selfCtx;
   const { signOut } = useAuthenticator((context) => [context.signOut]);
   const [ethersWallet, setEthersWallet] = useState<ethers.Wallet>();
   const [accountBalance, setAccountBalance] = useState<string>();
@@ -41,6 +38,12 @@ const Home = ({ self, userJwt }: Props) => {
     isLoading: boolean;
     txns: HistoricalTxn[];
   }>({ isLoading: false, txns: [] });
+
+  useEffect(() => {
+    if (userJwt) {
+      setJwtCtx(userJwt);
+    }
+  }, [userJwt, setJwtCtx]);
 
   useEffect(() => {
     if (self && self.walletPrivateKeyWithLeadingHex) {
@@ -80,7 +83,7 @@ const Home = ({ self, userJwt }: Props) => {
           <div className="w-full md:w-1/4 px-5">
             <div className="container flex flex-col items-center">
               <>
-                <h2>👋 Welcome {self.first_name}!</h2>
+                <h2>👋 Welcome {self?.first_name}!</h2>
                 {ethersWallet && (
                   <>
                     <p>Your address:</p>
@@ -196,13 +199,6 @@ const Home = ({ self, userJwt }: Props) => {
 export const getServerSideProps: GetServerSideProps = async (context) => {
   try {
     const userJwt = await getUserJwtTokenOnServer(context);
-    let self;
-    if (userJwt) {
-      self = await fetchSelf(userJwt);
-      return {
-        props: { userJwt, self },
-      };
-    }
     return {
       props: { userJwt },
     };
