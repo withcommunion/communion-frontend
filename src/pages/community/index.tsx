@@ -4,14 +4,10 @@ import { ethers } from 'ethers';
 import { Amplify } from 'aws-amplify';
 import { useAuthenticator } from '@aws-amplify/ui-react';
 
-import {
-  fetchSelf,
-  Self,
-  fetchOrganization,
-  Organization,
-} from '@/util/walletApiUtil';
+import { fetchOrganization, Organization, Self } from '@/util/walletApiUtil';
 import { getEthersWallet } from '@/util/avaxEthersUtil';
 import { AMPLIFY_CONFIG } from '@/util/cognitoAuthUtil';
+import { useUserContext } from '@/context/userContext';
 
 import { getUserJwtTokenOnServer } from '@/util/cognitoAuthUtil';
 import NavBar from '@/shared_components/navBar';
@@ -22,10 +18,11 @@ Amplify.configure({ ...AMPLIFY_CONFIG, ssr: true });
 
 interface Props {
   userJwt: string;
-  self: Self;
 }
 
-const CommunityIndex = ({ userJwt, self }: Props) => {
+const CommunityIndex = ({ userJwt }: Props) => {
+  const { bigSelf } = useUserContext();
+  const { self } = bigSelf;
   const [userPrivateKey, setUserPrivateKey] = useState<string>('');
   const [ethersWallet, setEthersWallet] = useState<ethers.Wallet>();
   const [accountBalance, setAccountBalance] = useState<string>();
@@ -36,6 +33,16 @@ const CommunityIndex = ({ userJwt, self }: Props) => {
   const [organization, setOrganization] = useState<Organization>();
 
   const { signOut } = useAuthenticator((context) => [context.signOut]);
+
+  useEffect(() => {
+    const getSelf = async (jwt: string) => {
+      await bigSelf.fetch(jwt);
+    };
+
+    if (!bigSelf.self && !bigSelf.isLoading) {
+      getSelf(userJwt);
+    }
+  }, [userJwt, bigSelf]);
 
   useEffect(() => {
     if (!userPrivateKey && self && self.walletPrivateKeyWithLeadingHex) {
@@ -58,13 +65,13 @@ const CommunityIndex = ({ userJwt, self }: Props) => {
   }, [ethersWallet, accountBalance]);
 
   useEffect(() => {
-    const fetchOrg = async () => {
+    const fetchOrg = async (self: Self) => {
       const org = await fetchOrganization(self.organization, userJwt);
       setOrganization(org);
     };
 
     if (!organization && self && userJwt) {
-      fetchOrg();
+      fetchOrg(self);
     }
   }, [self, organization, userJwt]);
 
@@ -157,13 +164,6 @@ const CommunityIndex = ({ userJwt, self }: Props) => {
 export const getServerSideProps: GetServerSideProps = async (context) => {
   try {
     const userJwt = await getUserJwtTokenOnServer(context);
-    let self;
-    if (userJwt) {
-      self = await fetchSelf(userJwt);
-      return {
-        props: { userJwt, self },
-      };
-    }
     return {
       props: { userJwt },
     };
