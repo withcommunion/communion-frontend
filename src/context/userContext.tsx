@@ -2,7 +2,7 @@ import React, { useContext, useState, ReactNode } from 'react';
 import { fetchSelf, Self } from '@/util/walletApiUtil';
 
 interface UserContext {
-  bigSelf: {
+  selfCtx: {
     self?: Self;
     // eslint-disable-next-line
     fetch: (jwt: string) => Promise<void>;
@@ -11,12 +11,11 @@ interface UserContext {
 }
 
 const defaultValues = {
-  bigSelf: {
+  selfCtx: {
     self: undefined,
     isLoading: false,
     fetch: () => Promise.resolve(undefined),
   },
-  selfLoading: false,
 };
 export const UserContext = React.createContext<UserContext>(defaultValues);
 
@@ -24,30 +23,30 @@ export const useUserContext = () => useContext(UserContext);
 
 export const UserContextProvider = ({ children }: { children: ReactNode }) => {
   const fetchSelfContext = async (jwt: string) => {
-    if (bigSelf.self || bigSelf.isLoading) {
+    if (selfCtx.self || selfCtx.isLoading) {
       console.log('already doing things, returning');
       return;
     }
 
-    setBigSelf((oldBigSelf) => ({ ...oldBigSelf, isLoading: true }));
+    setSelfCtx((oldSelfCtx) => ({ ...oldSelfCtx, isLoading: true }));
 
     console.log('Fetching self');
     const selfResp = await fetchSelf(jwt);
 
-    setBigSelf((oldBigSelf) => ({
-      ...oldBigSelf,
+    setSelfCtx((oldSelfCtx) => ({
+      ...oldSelfCtx,
       self: selfResp,
       isLoading: false,
     }));
     return;
   };
 
-  const [bigSelf, setBigSelf] = useState<UserContext['bigSelf']>({
-    ...defaultValues.bigSelf,
+  const [selfCtx, setSelfCtx] = useState<UserContext['selfCtx']>({
+    ...defaultValues.selfCtx,
     fetch: fetchSelfContext,
   });
 
   return (
-    <UserContext.Provider value={{ bigSelf }}>{children}</UserContext.Provider>
+    <UserContext.Provider value={{ selfCtx }}>{children}</UserContext.Provider>
   );
 };

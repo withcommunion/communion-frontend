@@ -21,8 +21,8 @@ interface Props {
 }
 
 const CommunityIndex = ({ userJwt }: Props) => {
-  const { bigSelf } = useUserContext();
-  const { self } = bigSelf;
+  const { selfCtx } = useUserContext();
+  const { self } = selfCtx;
   const [userPrivateKey, setUserPrivateKey] = useState<string>('');
   const [ethersWallet, setEthersWallet] = useState<ethers.Wallet>();
   const [accountBalance, setAccountBalance] = useState<string>();
@@ -36,13 +36,13 @@ const CommunityIndex = ({ userJwt }: Props) => {
 
   useEffect(() => {
     const getSelf = async (jwt: string) => {
-      await bigSelf.fetch(jwt);
+      await selfCtx.fetch(jwt);
     };
 
-    if (!bigSelf.self && !bigSelf.isLoading) {
+    if (!selfCtx.self && !selfCtx.isLoading) {
       getSelf(userJwt);
     }
-  }, [userJwt, bigSelf]);
+  }, [userJwt, selfCtx]);
 
   useEffect(() => {
     if (!userPrivateKey && self && self.walletPrivateKeyWithLeadingHex) {
