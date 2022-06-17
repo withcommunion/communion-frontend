@@ -41,12 +41,6 @@ const Home = ({ userJwt }: Props) => {
     }
   }, [userJwt, setJwtCtx]);
 
-  // useEffect(() => {
-  //   if (self && self.walletPrivateKeyWithLeadingHex) {
-  //     setEthersWallet(getEthersWallet(self.walletPrivateKeyWithLeadingHex));
-  //   }
-  // }, [self]);
-
   useEffect(() => {
     const fetchBalance = async (wallet: ethers.Wallet) => {
       const balanceBigNumber = await wallet.getBalance();
@@ -79,7 +73,7 @@ const Home = ({ userJwt }: Props) => {
           <div className="w-full md:w-1/4 px-5">
             <div className="container flex flex-col items-center">
               <>
-                <h2>👋 Welcome {self?.first_name}!</h2>
+                {self && <h2>👋 Welcome {self.first_name}!</h2>}
                 {ethersWallet && (
                   <>
                     <p>Your address:</p>
