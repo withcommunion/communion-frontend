@@ -1,6 +1,9 @@
 import React, { useContext, useState, ReactNode, useEffect } from 'react';
 import type { Dispatch, SetStateAction } from 'react';
+import { ethers } from 'ethers';
+
 import { fetchSelf, Self } from '@/util/walletApiUtil';
+import { getEthersWallet } from '@/util/avaxEthersUtil';
 
 interface UserContext {
   jwtCtx: string;
@@ -10,6 +13,14 @@ interface UserContext {
     // eslint-disable-next-line
     fetch: (jwt: string) => Promise<void>;
     isLoading: boolean;
+  };
+  selfWalletCtx: {
+    ethersWallet?: ethers.Wallet;
+    balance?: {
+      valueStr: string;
+      valueBigNum: ethers.BigNumber;
+      isLoading: boolean;
+    };
   };
 }
 
@@ -23,22 +34,24 @@ const defaultValues = {
     isLoading: false,
     fetch: () => Promise.resolve(undefined),
   },
+  selfWalletCtx: {},
 };
-export const UserContext = React.createContext<UserContext>(defaultValues);
 
+export const UserContext = React.createContext<UserContext>(defaultValues);
 export const useUserContext = () => useContext(UserContext);
 
 export const UserContextProvider = ({ children }: { children: ReactNode }) => {
   const [selfCtx, setSelfCtx] = useState<UserContext['selfCtx']>({
     ...defaultValues.selfCtx,
   });
-
+  const [selfWalletCtx, setSelfWalletCtx] = useState<
+    UserContext['selfWalletCtx']
+  >({});
   const [jwtCtx, setJwtCtx] = useState('');
 
   useEffect(() => {
-    const fetchSelfContext = async (jwt: string) => {
+    const fetchSelfCtx = async (jwt: string) => {
       setSelfCtx((oldSelfCtx) => ({ ...oldSelfCtx, isLoading: true }));
-      console.log('Fetching self');
 
       const selfResp = await fetchSelf(jwt);
 
@@ -51,12 +64,31 @@ export const UserContextProvider = ({ children }: { children: ReactNode }) => {
     };
 
     if (jwtCtx && !selfCtx.self && !selfCtx.isLoading) {
-      fetchSelfContext(jwtCtx);
+      fetchSelfCtx(jwtCtx);
     }
   }, [jwtCtx, selfCtx]);
 
+  useEffect(() => {
+    if (
+      selfCtx &&
+      !selfWalletCtx.ethersWallet &&
+      !selfCtx.isLoading &&
+      selfCtx.self &&
+      selfCtx.self.walletPrivateKeyWithLeadingHex
+    ) {
+      setSelfWalletCtx({
+        ...selfWalletCtx,
+        ethersWallet: getEthersWallet(
+          selfCtx.self.walletPrivateKeyWithLeadingHex
+        ),
+      });
+    }
+  }, [selfCtx, selfWalletCtx]);
+
+  console.log(selfWalletCtx);
+
   return (
-    <UserContext.Provider value={{ selfCtx, jwtCtx, setJwtCtx }}>
+    <UserContext.Provider value={{ selfCtx, jwtCtx, setJwtCtx, selfWalletCtx }}>
       {children}
     </UserContext.Provider>
   );

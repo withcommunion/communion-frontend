@@ -5,11 +5,7 @@ import { useAuthenticator } from '@aws-amplify/ui-react';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
-import {
-  getEthersWallet,
-  formatWalletAddress,
-  formatTxnHash,
-} from '@/util/avaxEthersUtil';
+import { formatWalletAddress, formatTxnHash } from '@/util/avaxEthersUtil';
 import { fetchSelfTxs, HistoricalTxn } from '@/util/walletApiUtil';
 import { AMPLIFY_CONFIG } from '@/util/cognitoAuthUtil';
 import { getUserJwtTokenOnServer } from '@/util/cognitoAuthUtil';
@@ -24,10 +20,10 @@ interface Props {
   userJwt: string;
 }
 const Home = ({ userJwt }: Props) => {
-  const { selfCtx, setJwtCtx } = useUserContext();
+  const { selfCtx, setJwtCtx, selfWalletCtx } = useUserContext();
   const { self } = selfCtx;
+  const { ethersWallet } = selfWalletCtx;
   const { signOut } = useAuthenticator((context) => [context.signOut]);
-  const [ethersWallet, setEthersWallet] = useState<ethers.Wallet>();
   const [accountBalance, setAccountBalance] = useState<string>();
   const [isAccountBalanceZero, setIsAccountBalanceZero] =
     useState<boolean>(false);
@@ -45,11 +41,11 @@ const Home = ({ userJwt }: Props) => {
     }
   }, [userJwt, setJwtCtx]);
 
-  useEffect(() => {
-    if (self && self.walletPrivateKeyWithLeadingHex) {
-      setEthersWallet(getEthersWallet(self.walletPrivateKeyWithLeadingHex));
-    }
-  }, [self]);
+  // useEffect(() => {
+  //   if (self && self.walletPrivateKeyWithLeadingHex) {
+  //     setEthersWallet(getEthersWallet(self.walletPrivateKeyWithLeadingHex));
+  //   }
+  // }, [self]);
 
   useEffect(() => {
     const fetchBalance = async (wallet: ethers.Wallet) => {
