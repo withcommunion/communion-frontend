@@ -1,4 +1,10 @@
-import React, { useContext, useState, ReactNode, useEffect } from 'react';
+import React, {
+  useContext,
+  useState,
+  ReactNode,
+  useEffect,
+  useCallback,
+} from 'react';
 import type { Dispatch, SetStateAction } from 'react';
 import { ethers } from 'ethers';
 
@@ -20,7 +26,8 @@ interface UserContext {
       valueStr?: string;
       valueBigNum?: ethers.BigNumber;
       isLoading: boolean;
-      fetch?: () => Promise<void>;
+      // eslint-disable-next-line
+      fetchRefresh?: (wallet: ethers.Wallet) => Promise<void>;
     };
   };
 }
@@ -49,6 +56,30 @@ export const UserContextProvider = ({ children }: { children: ReactNode }) => {
     UserContext['selfWalletCtx']
   >({});
   const [jwtCtx, setJwtCtx] = useState('');
+
+  const fetchBalanceRefresh = useCallback(
+    async (wallet: ethers.Wallet) => {
+      setSelfWalletCtx({
+        ...selfWalletCtx,
+        balance: {
+          ...selfWalletCtx.balance,
+          isLoading: true,
+        },
+      });
+      const balanceBigNumber = await wallet.getBalance();
+
+      setSelfWalletCtx({
+        ...selfWalletCtx,
+        balance: {
+          ...selfWalletCtx.balance,
+          valueStr: ethers.utils.formatEther(balanceBigNumber),
+          valueBigNum: balanceBigNumber,
+          isLoading: false,
+        },
+      });
+    },
+    [selfWalletCtx]
+  );
 
   useEffect(() => {
     const fetchSelfCtx = async (jwt: string) => {
@@ -87,33 +118,21 @@ export const UserContextProvider = ({ children }: { children: ReactNode }) => {
   }, [selfCtx, selfWalletCtx]);
 
   useEffect(() => {
-    const fetchBalance = async (wallet: ethers.Wallet) => {
+    if (selfWalletCtx.ethersWallet && !selfWalletCtx.balance?.fetchRefresh) {
       setSelfWalletCtx({
         ...selfWalletCtx,
         balance: {
           ...selfWalletCtx.balance,
-          isLoading: true,
-        },
-      });
-      const balanceBigNumber = await wallet.getBalance();
-
-      setSelfWalletCtx({
-        ...selfWalletCtx,
-        balance: {
-          ...selfWalletCtx.balance,
-          valueStr: ethers.utils.formatEther(balanceBigNumber),
-          valueBigNum: balanceBigNumber,
           isLoading: false,
+          fetchRefresh: fetchBalanceRefresh,
         },
       });
-    };
-
-    if (selfWalletCtx.ethersWallet && !selfWalletCtx.balance) {
-      fetchBalance(selfWalletCtx.ethersWallet);
     }
-  }, [selfWalletCtx]);
+    if (selfWalletCtx.ethersWallet && !selfWalletCtx.balance) {
+      fetchBalanceRefresh(selfWalletCtx.ethersWallet);
+    }
+  }, [selfWalletCtx, fetchBalanceRefresh]);
 
-  console.log(selfWalletCtx);
   return (
     <UserContext.Provider value={{ selfCtx, jwtCtx, setJwtCtx, selfWalletCtx }}>
       {children}

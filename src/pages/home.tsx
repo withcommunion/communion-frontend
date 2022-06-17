@@ -83,11 +83,13 @@ const Home = ({ userJwt }: Props) => {
                       {balance.isLoading && <small>♻️</small>}{' '}
                       {balance.valueStr} AVAX
                     </p>
-                    {balance.valueBigNum?.isZero() && ethersWallet && (
+                    {ethersWallet && (
                       <button
                         className="bg-blue-500 disabled:bg-gray-400 hover:bg-blue-700 text-white py-1 px-2 rounded"
                         disabled={balance.isLoading}
                         onClick={async () => {
+                          balance?.fetchRefresh &&
+                            (await balance.fetchRefresh(ethersWallet));
                           // setIsAccountBalanceZeroLoading(true);
                           // const balance = await ethersWallet.getBalance();
                           // setIsAccountBalanceZero(balance.isZero());
