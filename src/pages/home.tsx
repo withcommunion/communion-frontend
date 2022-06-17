@@ -22,13 +22,8 @@ interface Props {
 const Home = ({ userJwt }: Props) => {
   const { selfCtx, setJwtCtx, selfWalletCtx } = useUserContext();
   const { self } = selfCtx;
-  const { ethersWallet } = selfWalletCtx;
+  const { ethersWallet, balance } = selfWalletCtx;
   const { signOut } = useAuthenticator((context) => [context.signOut]);
-  const [accountBalance, setAccountBalance] = useState<string>();
-  const [isAccountBalanceZero, setIsAccountBalanceZero] =
-    useState<boolean>(false);
-  const [isAccountBalanceZeroLoading, setIsAccountBalanceZeroLoading] =
-    useState<boolean>(false);
 
   const [addressHistory, setAddressHistory] = useState<{
     isLoading: boolean;
@@ -40,19 +35,6 @@ const Home = ({ userJwt }: Props) => {
       setJwtCtx(userJwt);
     }
   }, [userJwt, setJwtCtx]);
-
-  useEffect(() => {
-    const fetchBalance = async (wallet: ethers.Wallet) => {
-      const balanceBigNumber = await wallet.getBalance();
-      const balance = ethers.utils.formatEther(balanceBigNumber);
-      setIsAccountBalanceZero(balanceBigNumber.isZero());
-      setAccountBalance(balance);
-    };
-
-    if (ethersWallet && !accountBalance) {
-      fetchBalance(ethersWallet);
-    }
-  }, [ethersWallet, accountBalance]);
 
   useEffect(() => {
     const fetchHistory = async (jwt: string) => {
@@ -94,20 +76,23 @@ const Home = ({ userJwt }: Props) => {
                   </>
                 )}
 
-                {accountBalance && (
+                {balance && (
                   <>
                     <p>Your balance:</p>
-                    <p>{accountBalance} AVAX</p>
-                    {isAccountBalanceZero && ethersWallet && (
+                    <p>
+                      {balance.isLoading && <small>♻️</small>}{' '}
+                      {balance.valueStr} AVAX
+                    </p>
+                    {balance.valueBigNum?.isZero() && ethersWallet && (
                       <button
                         className="bg-blue-500 disabled:bg-gray-400 hover:bg-blue-700 text-white py-1 px-2 rounded"
-                        disabled={isAccountBalanceZeroLoading}
+                        disabled={balance.isLoading}
                         onClick={async () => {
-                          setIsAccountBalanceZeroLoading(true);
-                          const balance = await ethersWallet.getBalance();
-                          setIsAccountBalanceZero(balance.isZero());
-                          setAccountBalance(ethers.utils.formatEther(balance));
-                          setIsAccountBalanceZeroLoading(false);
+                          // setIsAccountBalanceZeroLoading(true);
+                          // const balance = await ethersWallet.getBalance();
+                          // setIsAccountBalanceZero(balance.isZero());
+                          // setAccountBalance(ethers.utils.formatEther(balance));
+                          // setIsAccountBalanceZeroLoading(false);
                         }}
                       >
                         Balance is zero? Refresh!

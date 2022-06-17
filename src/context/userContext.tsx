@@ -17,9 +17,10 @@ interface UserContext {
   selfWalletCtx: {
     ethersWallet?: ethers.Wallet;
     balance?: {
-      valueStr: string;
-      valueBigNum: ethers.BigNumber;
+      valueStr?: string;
+      valueBigNum?: ethers.BigNumber;
       isLoading: boolean;
+      fetch?: () => Promise<void>;
     };
   };
 }
@@ -85,8 +86,34 @@ export const UserContextProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [selfCtx, selfWalletCtx]);
 
-  console.log(selfWalletCtx);
+  useEffect(() => {
+    const fetchBalance = async (wallet: ethers.Wallet) => {
+      setSelfWalletCtx({
+        ...selfWalletCtx,
+        balance: {
+          ...selfWalletCtx.balance,
+          isLoading: true,
+        },
+      });
+      const balanceBigNumber = await wallet.getBalance();
 
+      setSelfWalletCtx({
+        ...selfWalletCtx,
+        balance: {
+          ...selfWalletCtx.balance,
+          valueStr: ethers.utils.formatEther(balanceBigNumber),
+          valueBigNum: balanceBigNumber,
+          isLoading: false,
+        },
+      });
+    };
+
+    if (selfWalletCtx.ethersWallet && !selfWalletCtx.balance) {
+      fetchBalance(selfWalletCtx.ethersWallet);
+    }
+  }, [selfWalletCtx]);
+
+  console.log(selfWalletCtx);
   return (
     <UserContext.Provider value={{ selfCtx, jwtCtx, setJwtCtx, selfWalletCtx }}>
       {children}
