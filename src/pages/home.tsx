@@ -5,19 +5,11 @@ import { useAuthenticator } from '@aws-amplify/ui-react';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
-import {
-  getEthersWallet,
-  formatWalletAddress,
-  formatTxnHash,
-} from '@/util/avaxEthersUtil';
-import {
-  fetchSelf,
-  Self,
-  fetchSelfTxs,
-  HistoricalTxn,
-} from '@/util/walletApiUtil';
+import { formatWalletAddress, formatTxnHash } from '@/util/avaxEthersUtil';
+import { fetchSelfTxs, HistoricalTxn } from '@/util/walletApiUtil';
 import { AMPLIFY_CONFIG } from '@/util/cognitoAuthUtil';
 import { getUserJwtTokenOnServer } from '@/util/cognitoAuthUtil';
+import { useUserContext } from '@/context/userContext';
 
 import NavBar from '@/shared_components/navBar';
 
@@ -26,16 +18,12 @@ Amplify.configure({ ...AMPLIFY_CONFIG, ssr: true });
 
 interface Props {
   userJwt: string;
-  self: Self;
 }
-const Home = ({ self, userJwt }: Props) => {
+const Home = ({ userJwt }: Props) => {
+  const { selfCtx, setJwtCtx, selfWalletCtx } = useUserContext();
+  const { self } = selfCtx;
+  const { ethersWallet, balance } = selfWalletCtx;
   const { signOut } = useAuthenticator((context) => [context.signOut]);
-  const [ethersWallet, setEthersWallet] = useState<ethers.Wallet>();
-  const [accountBalance, setAccountBalance] = useState<string>();
-  const [isAccountBalanceZero, setIsAccountBalanceZero] =
-    useState<boolean>(false);
-  const [isAccountBalanceZeroLoading, setIsAccountBalanceZeroLoading] =
-    useState<boolean>(false);
 
   const [addressHistory, setAddressHistory] = useState<{
     isLoading: boolean;
@@ -43,23 +31,10 @@ const Home = ({ self, userJwt }: Props) => {
   }>({ isLoading: false, txns: [] });
 
   useEffect(() => {
-    if (self && self.walletPrivateKeyWithLeadingHex) {
-      setEthersWallet(getEthersWallet(self.walletPrivateKeyWithLeadingHex));
+    if (userJwt) {
+      setJwtCtx(userJwt);
     }
-  }, [self]);
-
-  useEffect(() => {
-    const fetchBalance = async (wallet: ethers.Wallet) => {
-      const balanceBigNumber = await wallet.getBalance();
-      const balance = ethers.utils.formatEther(balanceBigNumber);
-      setIsAccountBalanceZero(balanceBigNumber.isZero());
-      setAccountBalance(balance);
-    };
-
-    if (ethersWallet && !accountBalance) {
-      fetchBalance(ethersWallet);
-    }
-  }, [ethersWallet, accountBalance]);
+  }, [userJwt, setJwtCtx]);
 
   useEffect(() => {
     const fetchHistory = async (jwt: string) => {
@@ -80,7 +55,7 @@ const Home = ({ self, userJwt }: Props) => {
           <div className="w-full md:w-1/4 px-5">
             <div className="container flex flex-col items-center">
               <>
-                <h2>👋 Welcome {self.first_name}!</h2>
+                {self && <h2>👋 Welcome {self.first_name}!</h2>}
                 {ethersWallet && (
                   <>
                     <p>Your address:</p>
@@ -101,20 +76,25 @@ const Home = ({ self, userJwt }: Props) => {
                   </>
                 )}
 
-                {accountBalance && (
+                {balance && (
                   <>
                     <p>Your balance:</p>
-                    <p>{accountBalance} AVAX</p>
-                    {isAccountBalanceZero && ethersWallet && (
+                    <p>
+                      {balance.isLoading && <small>♻️</small>}{' '}
+                      {balance.valueStr} AVAX
+                    </p>
+                    {ethersWallet && (
                       <button
                         className="bg-blue-500 disabled:bg-gray-400 hover:bg-blue-700 text-white py-1 px-2 rounded"
-                        disabled={isAccountBalanceZeroLoading}
+                        disabled={balance.isLoading}
                         onClick={async () => {
-                          setIsAccountBalanceZeroLoading(true);
-                          const balance = await ethersWallet.getBalance();
-                          setIsAccountBalanceZero(balance.isZero());
-                          setAccountBalance(ethers.utils.formatEther(balance));
-                          setIsAccountBalanceZeroLoading(false);
+                          balance?.fetchRefresh &&
+                            (await balance.fetchRefresh(ethersWallet));
+                          // setIsAccountBalanceZeroLoading(true);
+                          // const balance = await ethersWallet.getBalance();
+                          // setIsAccountBalanceZero(balance.isZero());
+                          // setAccountBalance(ethers.utils.formatEther(balance));
+                          // setIsAccountBalanceZeroLoading(false);
                         }}
                       >
                         Balance is zero? Refresh!
@@ -196,13 +176,6 @@ const Home = ({ self, userJwt }: Props) => {
 export const getServerSideProps: GetServerSideProps = async (context) => {
   try {
     const userJwt = await getUserJwtTokenOnServer(context);
-    let self;
-    if (userJwt) {
-      self = await fetchSelf(userJwt);
-      return {
-        props: { userJwt, self },
-      };
-    }
     return {
       props: { userJwt },
     };

@@ -1,17 +1,11 @@
 import { useState, useEffect } from 'react';
 import { GetServerSideProps } from 'next';
-import { ethers } from 'ethers';
 import { Amplify } from 'aws-amplify';
 import { useAuthenticator } from '@aws-amplify/ui-react';
 
-import {
-  fetchSelf,
-  Self,
-  fetchOrganization,
-  Organization,
-} from '@/util/walletApiUtil';
-import { getEthersWallet } from '@/util/avaxEthersUtil';
+import { fetchOrganization, Organization, Self } from '@/util/walletApiUtil';
 import { AMPLIFY_CONFIG } from '@/util/cognitoAuthUtil';
+import { useUserContext } from '@/context/userContext';
 
 import { getUserJwtTokenOnServer } from '@/util/cognitoAuthUtil';
 import NavBar from '@/shared_components/navBar';
@@ -22,49 +16,30 @@ Amplify.configure({ ...AMPLIFY_CONFIG, ssr: true });
 
 interface Props {
   userJwt: string;
-  self: Self;
 }
 
-const CommunityIndex = ({ userJwt, self }: Props) => {
-  const [userPrivateKey, setUserPrivateKey] = useState<string>('');
-  const [ethersWallet, setEthersWallet] = useState<ethers.Wallet>();
-  const [accountBalance, setAccountBalance] = useState<string>();
-  const [isAccountBalanceZero, setIsAccountBalanceZero] =
-    useState<boolean>(false);
-  const [isAccountBalanceZeroLoading, setIsAccountBalanceZeroLoading] =
-    useState<boolean>(false);
+const CommunityIndex = ({ userJwt }: Props) => {
+  const { selfCtx, setJwtCtx, selfWalletCtx } = useUserContext();
+  const { self } = selfCtx;
+  const { ethersWallet, balance } = selfWalletCtx;
   const [organization, setOrganization] = useState<Organization>();
 
   const { signOut } = useAuthenticator((context) => [context.signOut]);
 
   useEffect(() => {
-    if (!userPrivateKey && self && self.walletPrivateKeyWithLeadingHex) {
-      setUserPrivateKey(self.walletPrivateKeyWithLeadingHex);
-      setEthersWallet(getEthersWallet(self.walletPrivateKeyWithLeadingHex));
+    if (userJwt) {
+      setJwtCtx(userJwt);
     }
-  }, [self, userPrivateKey]);
+  }, [userJwt, setJwtCtx]);
 
   useEffect(() => {
-    const fetchBalance = async (wallet: ethers.Wallet) => {
-      const balanceBigNumber = await wallet.getBalance();
-      const balance = ethers.utils.formatEther(balanceBigNumber);
-      setIsAccountBalanceZero(balanceBigNumber.isZero());
-      setAccountBalance(balance);
-    };
-
-    if (ethersWallet && !accountBalance) {
-      fetchBalance(ethersWallet);
-    }
-  }, [ethersWallet, accountBalance]);
-
-  useEffect(() => {
-    const fetchOrg = async () => {
+    const fetchOrg = async (self: Self) => {
       const org = await fetchOrganization(self.organization, userJwt);
       setOrganization(org);
     };
 
     if (!organization && self && userJwt) {
-      fetchOrg();
+      fetchOrg(self);
     }
   }, [self, organization, userJwt]);
 
@@ -99,20 +74,17 @@ const CommunityIndex = ({ userJwt, self }: Props) => {
                 </>
               )}
 
-              {accountBalance && (
+              {balance && (
                 <>
                   <p>Your balance:</p>
-                  <p>{accountBalance} AVAX</p>
-                  {isAccountBalanceZero && ethersWallet && (
+                  <p>{balance.valueStr} AVAX</p>
+                  {balance.valueBigNum?.isZero() && ethersWallet && (
                     <button
                       className="bg-blue-500 disabled:bg-gray-400 hover:bg-blue-700 text-white py-1 px-2 rounded"
-                      disabled={isAccountBalanceZeroLoading}
+                      disabled={balance.isLoading}
                       onClick={async () => {
-                        setIsAccountBalanceZeroLoading(true);
-                        const balance = await ethersWallet.getBalance();
-                        setIsAccountBalanceZero(balance.isZero());
-                        setAccountBalance(ethers.utils.formatEther(balance));
-                        setIsAccountBalanceZeroLoading(false);
+                        balance?.fetchRefresh &&
+                          (await balance.fetchRefresh(ethersWallet));
                       }}
                     >
                       Balance is zero? Refresh!
@@ -157,13 +129,6 @@ const CommunityIndex = ({ userJwt, self }: Props) => {
 export const getServerSideProps: GetServerSideProps = async (context) => {
   try {
     const userJwt = await getUserJwtTokenOnServer(context);
-    let self;
-    if (userJwt) {
-      self = await fetchSelf(userJwt);
-      return {
-        props: { userJwt, self },
-      };
-    }
     return {
       props: { userJwt },
     };
