@@ -11,7 +11,7 @@ import { getUserJwtTokenOnServer } from '@/util/cognitoAuthUtil';
 import NavBar from '@/shared_components/navBar';
 import SendTokensModal from '@/shared_components/sendTokensModal';
 import { useAppSelector, useAppDispatch } from '@/reduxHooks';
-import { increment } from '@/features/counter/counterReducers';
+import { increment } from '@/features/counter/counterSlice';
 
 // https://docs.amplify.aws/lib/client-configuration/configuring-amplify-categories/q/platform/js/#general-configuration
 Amplify.configure({ ...AMPLIFY_CONFIG, ssr: true });
