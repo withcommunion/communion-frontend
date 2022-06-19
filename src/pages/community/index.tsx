@@ -10,13 +10,6 @@ import { useUserContext } from '@/context/userContext';
 import { getUserJwtTokenOnServer } from '@/util/cognitoAuthUtil';
 import NavBar from '@/shared_components/navBar';
 import SendTokensModal from '@/shared_components/sendTokensModal';
-import { useAppSelector, useAppDispatch } from '@/reduxHooks';
-import { increment } from '@/features/counter/counterSlice';
-import {
-  fetchPosts,
-  selectAllPosts,
-  selectPostByIdReselect,
-} from '@/features/posts/postsSlice';
 
 // https://docs.amplify.aws/lib/client-configuration/configuring-amplify-categories/q/platform/js/#general-configuration
 Amplify.configure({ ...AMPLIFY_CONFIG, ssr: true });
@@ -32,13 +25,6 @@ const CommunityIndex = ({ userJwt }: Props) => {
   const [organization, setOrganization] = useState<Organization>();
 
   const { signOut } = useAuthenticator((context) => [context.signOut]);
-  const count = useAppSelector((state) => state.counter.value);
-  const posts = useAppSelector((state) => selectAllPosts(state));
-  const secondPost = useAppSelector((state) =>
-    selectPostByIdReselect(state, '2')
-  );
-  const dispatch = useAppDispatch();
-
   useEffect(() => {
     if (userJwt) {
       setJwtCtx(userJwt);
@@ -59,20 +45,6 @@ const CommunityIndex = ({ userJwt }: Props) => {
   return (
     <>
       <NavBar signOut={signOut} active="send" />
-      <div>
-        <h1>count: {count}</h1>
-        <button onClick={() => dispatch(increment())}>Increase</button>
-      </div>
-      <div>
-        <button onClick={() => dispatch(fetchPosts())}>FetchPosts</button>
-        {posts.length &&
-          posts.map((post) => <div key={post.id}>{post.title}</div>)}
-        {secondPost && (
-          <div key={secondPost.id}>
-            Second Post Selector: {secondPost.title}
-          </div>
-        )}
-      </div>
       <div className="py-4 flex flex-col items-center ">
         <div className="w-full md:w-1/4 px-5">
           {self && (
