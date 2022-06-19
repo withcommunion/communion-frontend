@@ -20,7 +20,7 @@ interface Props {
   userJwt: string;
 }
 const Home = ({ userJwt }: Props) => {
-  const { selfCtx, setJwtCtx, selfWalletCtx } = useUserContext();
+  const { selfCtx, selfWalletCtx } = useUserContext();
   const { self } = selfCtx;
   const { ethersWallet, balance } = selfWalletCtx;
   const { signOut } = useAuthenticator((context) => [context.signOut]);
@@ -29,12 +29,6 @@ const Home = ({ userJwt }: Props) => {
     isLoading: boolean;
     txns: HistoricalTxn[];
   }>({ isLoading: false, txns: [] });
-
-  useEffect(() => {
-    if (userJwt) {
-      setJwtCtx(userJwt);
-    }
-  }, [userJwt, setJwtCtx]);
 
   useEffect(() => {
     const fetchHistory = async (jwt: string) => {
