@@ -9,7 +9,17 @@ import { formatWalletAddress, formatTxnHash } from '@/util/avaxEthersUtil';
 import { fetchSelfTxs, HistoricalTxn } from '@/util/walletApiUtil';
 import { AMPLIFY_CONFIG } from '@/util/cognitoAuthUtil';
 import { getUserJwtTokenOnServer } from '@/util/cognitoAuthUtil';
-import { useUserContext } from '@/context/userContext';
+
+import { useAppSelector, useAppDispatch } from '@/reduxHooks';
+import {
+  selectSelf,
+  selectSelfStatus,
+  selectWallet,
+  selectWalletBalance,
+  selectWalletBalanceStatus,
+  fetchSelf,
+  fetchWalletBalance,
+} from '@/features/selfSlice';
 
 import NavBar from '@/shared_components/navBar';
 
@@ -20,15 +30,38 @@ interface Props {
   userJwt: string;
 }
 const Home = ({ userJwt }: Props) => {
-  const { selfCtx, selfWalletCtx } = useUserContext();
-  const { self } = selfCtx;
-  const { ethersWallet, balance } = selfWalletCtx;
+  const dispatch = useAppDispatch();
+  const self = useAppSelector((state) => selectSelf(state));
+  const selfStatus = useAppSelector((state) => selectSelfStatus(state));
+
+  const wallet = useAppSelector((state) => selectWallet(state));
+  const walletBalance = useAppSelector((state) => selectWalletBalance(state));
+  const walletBalanceStatus = useAppSelector((state) =>
+    selectWalletBalanceStatus(state)
+  );
+
   const { signOut } = useAuthenticator((context) => [context.signOut]);
 
   const [addressHistory, setAddressHistory] = useState<{
     isLoading: boolean;
     txns: HistoricalTxn[];
   }>({ isLoading: false, txns: [] });
+
+  console.log(self);
+  useEffect(() => {
+    if (selfStatus === 'idle') {
+      dispatch(fetchSelf(userJwt));
+    }
+  }, [userJwt, dispatch, self, selfStatus]);
+  useEffect(() => {
+    if (
+      wallet.ethersWallet &&
+      selfStatus === 'succeeded' &&
+      walletBalanceStatus === 'idle'
+    ) {
+      dispatch(fetchWalletBalance(wallet.ethersWallet));
+    }
+  }, [dispatch, selfStatus, wallet, walletBalanceStatus]);
 
   useEffect(() => {
     const fetchHistory = async (jwt: string) => {
@@ -50,7 +83,7 @@ const Home = ({ userJwt }: Props) => {
             <div className="container flex flex-col items-center">
               <>
                 {self && <h2>👋 Welcome {self.first_name}!</h2>}
-                {ethersWallet && (
+                {wallet.ethersWallet && (
                   <>
                     <p>Your address:</p>
                     <div className="whitespace-normal break-words">
@@ -60,9 +93,9 @@ const Home = ({ userJwt }: Props) => {
                             className="underline text-blue-600 hover:text-blue-800 visited:text-purple-600"
                             target="_blank"
                             rel="noreferrer"
-                            href={`https://testnet.snowtrace.io/address/${ethersWallet.address}`}
+                            href={`https://testnet.snowtrace.io/address/${wallet.ethersWallet.address}`}
                           >
-                            {formatWalletAddress(ethersWallet.address)}
+                            {formatWalletAddress(wallet.ethersWallet.address)}
                           </a>
                         </small>
                       </p>
@@ -70,25 +103,20 @@ const Home = ({ userJwt }: Props) => {
                   </>
                 )}
 
-                {balance && (
+                {walletBalance && (
                   <>
                     <p>Your balance:</p>
                     <p>
-                      {balance.isLoading && <small>♻️</small>}{' '}
-                      {balance.valueStr} AVAX
+                      {walletBalance.status === 'loading' && <small>♻️</small>}{' '}
+                      {walletBalance.valueString} AVAX
                     </p>
-                    {ethersWallet && (
+                    {walletBalance.valueBigNumber?.isZero() && (
                       <button
                         className="bg-blue-500 disabled:bg-gray-400 hover:bg-blue-700 text-white py-1 px-2 rounded"
-                        disabled={balance.isLoading}
-                        onClick={async () => {
-                          balance?.fetchRefresh &&
-                            (await balance.fetchRefresh(ethersWallet));
-                          // setIsAccountBalanceZeroLoading(true);
-                          // const balance = await ethersWallet.getBalance();
-                          // setIsAccountBalanceZero(balance.isZero());
-                          // setAccountBalance(ethers.utils.formatEther(balance));
-                          // setIsAccountBalanceZeroLoading(false);
+                        disabled={walletBalance.status === 'loading'}
+                        onClick={() => {
+                          wallet.ethersWallet &&
+                            dispatch(fetchWalletBalance(wallet.ethersWallet));
                         }}
                       >
                         Balance is zero? Refresh!
@@ -120,7 +148,7 @@ const Home = ({ userJwt }: Props) => {
                     disabled={addressHistory.isLoading}
                     className="text-sm bg-blue-500 disabled:bg-gray-400 hover:bg-blue-700 text-white py-1 px-2 rounded"
                     onClick={async () => {
-                      if (ethersWallet) {
+                      if (wallet.ethersWallet) {
                         setAddressHistory({
                           isLoading: true,
                           txns: addressHistory.txns,
