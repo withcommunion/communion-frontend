@@ -1,23 +1,38 @@
-// import type { GetServerSideProps } from 'next';
-import { useAppSelector, useAppDispatch } from '@/reduxHooks';
+import type { GetServerSideProps } from 'next';
+import { useEffect } from 'react';
+
 import NavBar from '@/shared_components/navBar';
+import { getUserJwtTokenOnServer } from '@/util/cognitoAuthUtil';
+
+import { useAppSelector, useAppDispatch } from '@/reduxHooks';
 import { increment } from '@/features/counter/counterSlice';
 import {
   fetchPosts,
   selectAllPosts,
   selectPostByIdReselect,
 } from '@/features/posts/postsSlice';
+import { selectSelf, selectSelfStatus, fetchSelf } from '@/features/selfSlice';
 
 // https://docs.amplify.aws/lib/client-configuration/configuring-amplify-categories/q/platform/js/#general-configuration
 // Amplify.configure({ ...AMPLIFY_CONFIG, ssr: true });
 
-const Home = () => {
+const ReduxCheatSheet = ({ userJwt }: { userJwt: string }) => {
+  const dispatch = useAppDispatch();
   const count = useAppSelector((state) => state.counter.value);
   const posts = useAppSelector((state) => selectAllPosts(state));
   const secondPost = useAppSelector((state) =>
     selectPostByIdReselect(state, '2')
   );
-  const dispatch = useAppDispatch();
+
+  const self = useAppSelector((state) => selectSelf(state));
+  const selfStatus = useAppSelector((state) => selectSelfStatus(state));
+
+  useEffect(() => {
+    if (selfStatus === 'idle') {
+      console.log('here', selfStatus);
+      dispatch(fetchSelf(userJwt));
+    }
+  }, [userJwt, dispatch, self, selfStatus]);
 
   return (
     <>
@@ -43,26 +58,30 @@ const Home = () => {
             </div>
           )}
         </div>
+
+        <div className="mt-10">
+          {self && <div>First Name: {self.first_name}</div>}
+        </div>
       </div>
     </>
   );
 };
 
-// export const getServerSideProps: GetServerSideProps = async (context) => {
-//   try {
-//     const userJwt = await getUserJwtTokenOnServer(context);
-//     return {
-//       props: { userJwt },
-//     };
-//   } catch (error) {
-//     console.log(error);
-//     return {
-//       props: {},
-//       redirect: {
-//         destination: '/',
-//       },
-//     };
-//   }
-// };
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  try {
+    const userJwt = await getUserJwtTokenOnServer(context);
+    return {
+      props: { userJwt },
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      props: {},
+      redirect: {
+        destination: '/',
+      },
+    };
+  }
+};
 
-export default Home;
+export default ReduxCheatSheet;
