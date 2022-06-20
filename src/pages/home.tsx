@@ -15,8 +15,6 @@ import {
   selectSelf,
   selectSelfStatus,
   selectWallet,
-  selectWalletBalance,
-  selectWalletBalanceStatus,
   fetchSelf,
   fetchWalletBalance,
 } from '@/features/selfSlice';
@@ -35,10 +33,7 @@ const Home = ({ userJwt }: Props) => {
   const selfStatus = useAppSelector((state) => selectSelfStatus(state));
 
   const wallet = useAppSelector((state) => selectWallet(state));
-  const walletBalance = useAppSelector((state) => selectWalletBalance(state));
-  const walletBalanceStatus = useAppSelector((state) =>
-    selectWalletBalanceStatus(state)
-  );
+  const walletBalance = wallet.balance;
 
   const { signOut } = useAuthenticator((context) => [context.signOut]);
 
@@ -47,21 +42,11 @@ const Home = ({ userJwt }: Props) => {
     txns: HistoricalTxn[];
   }>({ isLoading: false, txns: [] });
 
-  console.log(self);
   useEffect(() => {
     if (selfStatus === 'idle') {
       dispatch(fetchSelf(userJwt));
     }
   }, [userJwt, dispatch, self, selfStatus]);
-  useEffect(() => {
-    if (
-      wallet.ethersWallet &&
-      selfStatus === 'succeeded' &&
-      walletBalanceStatus === 'idle'
-    ) {
-      dispatch(fetchWalletBalance(wallet.ethersWallet));
-    }
-  }, [dispatch, selfStatus, wallet, walletBalanceStatus]);
 
   useEffect(() => {
     const fetchHistory = async (jwt: string) => {
@@ -116,7 +101,11 @@ const Home = ({ userJwt }: Props) => {
                         disabled={walletBalance.status === 'loading'}
                         onClick={() => {
                           wallet.ethersWallet &&
-                            dispatch(fetchWalletBalance(wallet.ethersWallet));
+                            dispatch(
+                              fetchWalletBalance({
+                                wallet: wallet.ethersWallet,
+                              })
+                            );
                         }}
                       >
                         Balance is zero? Refresh!

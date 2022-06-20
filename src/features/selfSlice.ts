@@ -1,8 +1,8 @@
 import axios from 'axios';
 import { ethers } from 'ethers';
 
-import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import type { RootState } from '@/reduxStore';
+import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 
 import { getEthersWallet } from '@/util/avaxEthersUtil';
 
@@ -108,28 +108,47 @@ export const userSlice = createSlice({
 
 export const { firstNameUpdated } = userSlice.actions;
 
+export const fetchWalletBalance = createAsyncThunk(
+  'self/fetchWalletBalance',
+  async (args: {
+    wallet?: ethers.Wallet;
+    privateKeyWithLeadingHex?: string;
+  }) => {
+    const { wallet, privateKeyWithLeadingHex } = args;
+    if (wallet) {
+      const balanceBigNumber = await wallet.getBalance();
+      return balanceBigNumber;
+    } else if (privateKeyWithLeadingHex) {
+      const wallet = getEthersWallet(privateKeyWithLeadingHex);
+      const balanceBigNumber = await wallet.getBalance();
+      return balanceBigNumber;
+    } else {
+      throw new Error('No wallet or private key provided');
+    }
+  }
+);
+
 export const fetchSelf = createAsyncThunk(
   'self/fetchSelf',
-  async (jwtToken: string) => {
+  async (jwtToken: string, { dispatch }) => {
+    console.log('Fetching self');
     const rawSelf = await axios.get<Self>(`${DEV_API_URL}/user/self`, {
       headers: {
         Authorization: jwtToken,
       },
     });
     const self = rawSelf.data;
+
+    dispatch(
+      fetchWalletBalance({
+        privateKeyWithLeadingHex: self.walletPrivateKeyWithLeadingHex,
+      })
+    );
+
     return self;
   }
 );
 
-export const fetchWalletBalance = createAsyncThunk(
-  'self/fetchWalletBalance',
-  async (wallet: ethers.Wallet) => {
-    const balanceBigNumber = await wallet.getBalance();
-    return balanceBigNumber;
-  }
-);
-
-// Other code such as selectors can use the imported `RootState` type
 export const selectSelf = (state: RootState) => state.self.self;
 export const selectSelfStatus = (state: RootState) => state.self.status;
 
