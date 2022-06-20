@@ -131,7 +131,6 @@ export const fetchWalletBalance = createAsyncThunk(
 export const fetchSelf = createAsyncThunk(
   'self/fetchSelf',
   async (jwtToken: string, { dispatch }) => {
-    console.log('Fetching self');
     const rawSelf = await axios.get<Self>(`${DEV_API_URL}/user/self`, {
       headers: {
         Authorization: jwtToken,

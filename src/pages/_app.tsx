@@ -5,7 +5,6 @@ import { Amplify } from 'aws-amplify';
 import { Authenticator } from '@aws-amplify/ui-react';
 import { Provider } from 'react-redux';
 
-import { UserContextProvider } from '@/context/userContext';
 import { AMPLIFY_CONFIG } from '../util/cognitoAuthUtil';
 import store from '@/reduxStore';
 
@@ -16,11 +15,9 @@ function App({ Component, pageProps }: AppProps) {
   // TODO: This may cause continual re-renders.  Look here https://ui.docs.amplify.aws/react/components/authenticator#prevent-re-renders=
   return (
     <Provider store={store}>
-      <UserContextProvider>
-        <Authenticator.Provider>
-          <Component {...pageProps} />
-        </Authenticator.Provider>
-      </UserContextProvider>
+      <Authenticator.Provider>
+        <Component {...pageProps} />
+      </Authenticator.Provider>
     </Provider>
   );
 }

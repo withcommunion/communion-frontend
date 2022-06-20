@@ -5,7 +5,15 @@ import { useAuthenticator } from '@aws-amplify/ui-react';
 
 import { fetchOrganization, Organization, Self } from '@/util/walletApiUtil';
 import { AMPLIFY_CONFIG } from '@/util/cognitoAuthUtil';
-import { useUserContext } from '@/context/userContext';
+
+import { useAppSelector, useAppDispatch } from '@/reduxHooks';
+import {
+  selectSelf,
+  selectSelfStatus,
+  selectWallet,
+  fetchSelf,
+  fetchWalletBalance,
+} from '@/features/selfSlice';
 
 import { getUserJwtTokenOnServer } from '@/util/cognitoAuthUtil';
 import NavBar from '@/shared_components/navBar';
@@ -19,17 +27,22 @@ interface Props {
 }
 
 const CommunityIndex = ({ userJwt }: Props) => {
-  const { selfCtx, setJwtCtx, selfWalletCtx } = useUserContext();
-  const { self } = selfCtx;
-  const { ethersWallet, balance } = selfWalletCtx;
-  const [organization, setOrganization] = useState<Organization>();
+  const dispatch = useAppDispatch();
+  const self = useAppSelector((state) => selectSelf(state));
+  const selfStatus = useAppSelector((state) => selectSelfStatus(state));
 
+  const wallet = useAppSelector((state) => selectWallet(state));
+  const balance = wallet.balance;
+  const ethersWallet = wallet.ethersWallet;
+
+  const [organization, setOrganization] = useState<Organization>();
   const { signOut } = useAuthenticator((context) => [context.signOut]);
+
   useEffect(() => {
-    if (userJwt) {
-      setJwtCtx(userJwt);
+    if (selfStatus === 'idle') {
+      dispatch(fetchSelf(userJwt));
     }
-  }, [userJwt, setJwtCtx]);
+  }, [userJwt, dispatch, self, selfStatus]);
 
   useEffect(() => {
     const fetchOrg = async (self: Self) => {
@@ -76,14 +89,18 @@ const CommunityIndex = ({ userJwt }: Props) => {
               {balance && (
                 <>
                   <p>Your balance:</p>
-                  <p>{balance.valueStr} AVAX</p>
-                  {balance.valueBigNum?.isZero() && ethersWallet && (
+                  <p>{balance.valueString} AVAX</p>
+                  {balance.valueBigNumber?.isZero() && ethersWallet && (
                     <button
                       className="bg-blue-500 disabled:bg-gray-400 hover:bg-blue-700 text-white py-1 px-2 rounded"
-                      disabled={balance.isLoading}
-                      onClick={async () => {
-                        balance?.fetchRefresh &&
-                          (await balance.fetchRefresh(ethersWallet));
+                      disabled={balance.status === 'loading'}
+                      onClick={() => {
+                        wallet.ethersWallet &&
+                          dispatch(
+                            fetchWalletBalance({
+                              wallet: wallet.ethersWallet,
+                            })
+                          );
                       }}
                     >
                       Balance is zero? Refresh!
