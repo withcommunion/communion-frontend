@@ -1,5 +1,9 @@
 import axios from 'axios';
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import {
+  createSlice,
+  createAsyncThunk,
+  createSelector,
+} from '@reduxjs/toolkit';
 import type { RootState } from '@/reduxStore';
 import { DEV_API_URL, User } from '@/util/walletApiUtil';
 import { ethers } from 'ethers';
@@ -75,10 +79,18 @@ export const transactionsSlice = createSlice({
 // export const { } = transactionsSlice.actions;
 
 // Other code such as selectors can use the imported `RootState` type
+export const selectRootHistoricalTxns = (state: RootState) =>
+  state.transactions.historicalTxns;
 export const selectHistoricalTxns = (state: RootState) =>
   state.transactions.historicalTxns.txns;
 export const selectHistoricalTxnsStatus = (state: RootState) =>
   state.transactions.historicalTxns.status;
+export const reSelectHistoricalTxnsStatus = createSelector(
+  [selectRootHistoricalTxns],
+  (root) => {
+    return root.status;
+  }
+);
 
 export const fetchSelfHistoricalTxns = createAsyncThunk(
   'transactions/fetchSelfHistoricalTxns',

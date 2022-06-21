@@ -2,7 +2,7 @@ import axios from 'axios';
 import { ethers } from 'ethers';
 
 import type { RootState } from '@/reduxStore';
-import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
 import { getEthersWallet } from '@/util/avaxEthersUtil';
 
@@ -27,7 +27,7 @@ export interface Self extends User {
 }
 
 // Define a type for the slice state
-interface SelfState {
+export interface SelfState {
   id: string;
   self: Self | null;
   wallet: {
@@ -39,8 +39,6 @@ interface SelfState {
       error: string | null | undefined;
     };
   };
-  firstName: string;
-  lastName: string;
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
   error: string | null | undefined;
 }
@@ -58,8 +56,6 @@ const initialState: SelfState = {
       error: null,
     },
   },
-  firstName: '',
-  lastName: '',
   status: 'idle',
   error: null,
 };
@@ -68,11 +64,7 @@ export const userSlice = createSlice({
   name: 'self',
   // `createSlice` will infer the state type from the `initialState` argument
   initialState,
-  reducers: {
-    firstNameUpdated: (state: SelfState, action: PayloadAction<string>) => {
-      state.firstName = action.payload;
-    },
-  },
+  reducers: {},
   extraReducers(builder) {
     builder
       .addCase(fetchSelf.pending, (state) => {
@@ -106,7 +98,7 @@ export const userSlice = createSlice({
   },
 });
 
-export const { firstNameUpdated } = userSlice.actions;
+// export const {  } = userSlice.actions;
 
 export const fetchWalletBalance = createAsyncThunk(
   'self/fetchWalletBalance',

@@ -5,7 +5,7 @@ import { useAuthenticator } from '@aws-amplify/ui-react';
 import { useEffect } from 'react';
 import Link from 'next/link';
 
-import { formatWalletAddress, formatTxnHash } from '@/util/avaxEthersUtil';
+import { formatTxnHash } from '@/util/avaxEthersUtil';
 import { AMPLIFY_CONFIG } from '@/util/cognitoAuthUtil';
 import { getUserJwtTokenOnServer } from '@/util/cognitoAuthUtil';
 
@@ -21,9 +21,11 @@ import {
 import {
   fetchSelfHistoricalTxns,
   selectHistoricalTxns,
-  selectHistoricalTxnsStatus,
+  // selectHistoricalTxnsStatus,
+  reSelectHistoricalTxnsStatus,
 } from '@/features/transactions/transactionsSlice';
 
+import SelfHeader from '@/shared_components/selfHeader';
 import NavBar from '@/shared_components/navBar';
 
 // https://docs.amplify.aws/lib/client-configuration/configuring-amplify-categories/q/platform/js/#general-configuration
@@ -38,14 +40,18 @@ const Home = ({ userJwt }: Props) => {
   const selfStatus = useAppSelector((state) => selectSelfStatus(state));
 
   const wallet = useAppSelector((state) => selectWallet(state));
-  const walletBalance = wallet.balance;
-
-  const { signOut } = useAuthenticator((context) => [context.signOut]);
+  const balance = wallet.balance;
+  const ethersWallet = wallet.ethersWallet;
 
   const historicalTxns = useAppSelector((state) => selectHistoricalTxns(state));
+  // const historicalTxnsStatus = useAppSelector((state) =>
+  //   selectHistoricalTxnsStatus(state)
+  // );
   const historicalTxnsStatus = useAppSelector((state) =>
-    selectHistoricalTxnsStatus(state)
+    reSelectHistoricalTxnsStatus(state)
   );
+
+  const { signOut } = useAuthenticator((context) => [context.signOut]);
 
   useEffect(() => {
     if (selfStatus === 'idle') {
@@ -54,6 +60,7 @@ const Home = ({ userJwt }: Props) => {
   }, [userJwt, dispatch, self, selfStatus]);
 
   useEffect(() => {
+    console.log('balance status', historicalTxnsStatus);
     if (userJwt && historicalTxnsStatus === 'idle') {
       dispatch(fetchSelfHistoricalTxns(userJwt));
     }
@@ -66,54 +73,14 @@ const Home = ({ userJwt }: Props) => {
         <div className="py-4 flex flex-col items-center ">
           <div className="w-full md:w-1/4 px-5">
             <div className="container flex flex-col items-center">
-              <>
-                {self && <h2>👋 Welcome {self.first_name}!</h2>}
-                {wallet.ethersWallet && (
-                  <>
-                    <p>Your address:</p>
-                    <div className="whitespace-normal break-words">
-                      <p>
-                        <small>
-                          <a
-                            className="underline text-blue-600 hover:text-blue-800 visited:text-purple-600"
-                            target="_blank"
-                            rel="noreferrer"
-                            href={`https://testnet.snowtrace.io/address/${wallet.ethersWallet.address}`}
-                          >
-                            {formatWalletAddress(wallet.ethersWallet.address)}
-                          </a>
-                        </small>
-                      </p>
-                    </div>
-                  </>
-                )}
-
-                {walletBalance && (
-                  <>
-                    <p>Your balance:</p>
-                    <p>
-                      {walletBalance.status === 'loading' && <small>♻️</small>}{' '}
-                      {walletBalance.valueString} AVAX
-                    </p>
-                    {walletBalance.valueBigNumber?.isZero() && (
-                      <button
-                        className="bg-blue-500 disabled:bg-gray-400 hover:bg-blue-700 text-white py-1 px-2 rounded"
-                        disabled={walletBalance.status === 'loading'}
-                        onClick={() => {
-                          wallet.ethersWallet &&
-                            dispatch(
-                              fetchWalletBalance({
-                                wallet: wallet.ethersWallet,
-                              })
-                            );
-                        }}
-                      >
-                        Balance is zero? Refresh!
-                      </button>
-                    )}
-                  </>
-                )}
-              </>
+              <SelfHeader
+                self={self}
+                balance={balance}
+                ethersWallet={ethersWallet}
+                refreshWalletBalance={(ethersWallet) =>
+                  dispatch(fetchWalletBalance({ wallet: ethersWallet }))
+                }
+              />
 
               <div className="mt-8">
                 <h2 className="text-xl">Shortcut Actions:</h2>

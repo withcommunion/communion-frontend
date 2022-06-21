@@ -1,6 +1,8 @@
 import { Self, SelfState } from '@/features/selfSlice';
 import { ethers } from 'ethers';
 
+import { formatWalletAddress } from '@/util/avaxEthersUtil';
+
 interface Props {
   self: Self | null;
   balance: SelfState['wallet']['balance'];
@@ -31,10 +33,7 @@ const SelfHeader = ({
                       rel="noreferrer"
                       href={`https://testnet.snowtrace.io/address/${ethersWallet.address}`}
                     >
-                      {`${ethersWallet.address.substring(
-                        0,
-                        10
-                      )}...${ethersWallet.address.substring(32)}`}
+                      {formatWalletAddress(ethersWallet.address)}
                     </a>
                   </small>
                 </p>
