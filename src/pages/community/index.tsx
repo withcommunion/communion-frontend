@@ -16,8 +16,10 @@ import {
 } from '@/features/selfSlice';
 
 import { getUserJwtTokenOnServer } from '@/util/cognitoAuthUtil';
+
 import NavBar from '@/shared_components/navBar';
 import SendTokensModal from '@/shared_components/sendTokensModal';
+import SelfHeader from '@/shared_components/selfHeader';
 
 // https://docs.amplify.aws/lib/client-configuration/configuring-amplify-categories/q/platform/js/#general-configuration
 Amplify.configure({ ...AMPLIFY_CONFIG, ssr: true });
@@ -60,56 +62,14 @@ const CommunityIndex = ({ userJwt }: Props) => {
       <NavBar signOut={signOut} active="send" />
       <div className="py-4 flex flex-col items-center ">
         <div className="w-full md:w-1/4 px-5">
-          {self && (
-            <div className="container flex flex-col items-center">
-              <h2>👋 Welcome {self.first_name}!</h2>
-              {ethersWallet && (
-                <>
-                  <p>Your address:</p>
-                  <div className="whitespace-normal break-words">
-                    <p>
-                      <small>
-                        <a
-                          className="underline text-blue-600 hover:text-blue-800 visited:text-purple-600"
-                          target="_blank"
-                          rel="noreferrer"
-                          href={`https://testnet.snowtrace.io/address/${ethersWallet.address}`}
-                        >
-                          {`${ethersWallet.address.substring(
-                            0,
-                            10
-                          )}...${ethersWallet.address.substring(32)}`}
-                        </a>
-                      </small>
-                    </p>
-                  </div>
-                </>
-              )}
-
-              {balance && (
-                <>
-                  <p>Your balance:</p>
-                  <p>{balance.valueString} AVAX</p>
-                  {balance.valueBigNumber?.isZero() && ethersWallet && (
-                    <button
-                      className="bg-blue-500 disabled:bg-gray-400 hover:bg-blue-700 text-white py-1 px-2 rounded"
-                      disabled={balance.status === 'loading'}
-                      onClick={() => {
-                        wallet.ethersWallet &&
-                          dispatch(
-                            fetchWalletBalance({
-                              wallet: wallet.ethersWallet,
-                            })
-                          );
-                      }}
-                    >
-                      Balance is zero? Refresh!
-                    </button>
-                  )}
-                </>
-              )}
-            </div>
-          )}
+          <SelfHeader
+            self={self}
+            balance={balance}
+            ethersWallet={ethersWallet}
+            refreshWalletBalance={(ethersWallet) =>
+              dispatch(fetchWalletBalance({ wallet: ethersWallet }))
+            }
+          />
 
           {organization && (
             <ul className="mt-5 h-75vh flex flex-col items-start gap-y-3 overflow-auto">
