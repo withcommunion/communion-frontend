@@ -1,9 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { GetServerSideProps } from 'next';
 import { Amplify } from 'aws-amplify';
 import { useAuthenticator } from '@aws-amplify/ui-react';
 
-import { fetchOrganization, Organization, Self } from '@/util/walletApiUtil';
 import { AMPLIFY_CONFIG } from '@/util/cognitoAuthUtil';
 
 import { useAppSelector, useAppDispatch } from '@/reduxHooks';
@@ -14,6 +13,12 @@ import {
   fetchSelf,
   fetchWalletBalance,
 } from '@/features/selfSlice';
+
+import {
+  selectOrgUsers,
+  selectOrgStatus,
+  fetchOrg,
+} from '@/features/organization/organizationSlice';
 
 import { getUserJwtTokenOnServer } from '@/util/cognitoAuthUtil';
 
@@ -33,11 +38,13 @@ const CommunityIndex = ({ userJwt }: Props) => {
   const self = useAppSelector((state) => selectSelf(state));
   const selfStatus = useAppSelector((state) => selectSelfStatus(state));
 
+  const orgUsers = useAppSelector((state) => selectOrgUsers(state));
+  const orgStatus = useAppSelector((state) => selectOrgStatus(state));
+
   const wallet = useAppSelector((state) => selectWallet(state));
   const balance = wallet.balance;
   const ethersWallet = wallet.ethersWallet;
 
-  const [organization, setOrganization] = useState<Organization>();
   const { signOut } = useAuthenticator((context) => [context.signOut]);
 
   useEffect(() => {
@@ -47,15 +54,10 @@ const CommunityIndex = ({ userJwt }: Props) => {
   }, [userJwt, dispatch, self, selfStatus]);
 
   useEffect(() => {
-    const fetchOrg = async (self: Self) => {
-      const org = await fetchOrganization(self.organization, userJwt);
-      setOrganization(org);
-    };
-
-    if (!organization && self && userJwt) {
-      fetchOrg(self);
+    if (self && orgStatus === 'idle') {
+      dispatch(fetchOrg({ orgName: self.organization, jwtToken: userJwt }));
     }
-  }, [self, organization, userJwt]);
+  }, [self, userJwt, orgStatus, dispatch]);
 
   return (
     <>
@@ -71,9 +73,9 @@ const CommunityIndex = ({ userJwt }: Props) => {
             }
           />
 
-          {organization && (
+          {orgUsers && (
             <ul className="mt-5 h-75vh flex flex-col items-start gap-y-3 overflow-auto">
-              {organization.users.map((user) => (
+              {orgUsers.map((user) => (
                 <li
                   className="flex justify-between items-center w-full gap-x-2"
                   key={`${user.walletAddressC}`}

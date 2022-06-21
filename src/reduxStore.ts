@@ -3,6 +3,7 @@ import counterReducer from '@/features/counter/counterSlice';
 import postsReducer from '@/features/posts/postsSlice';
 import selfReducer from '@/features/selfSlice';
 import transactionsReducer from '@/features/transactions/transactionsSlice';
+import organizationReducer from '@/features/organization/organizationSlice';
 
 const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ const store = configureStore({
     posts: postsReducer,
     self: selfReducer,
     transactions: transactionsReducer,
+    organization: organizationReducer,
   },
 });
 
