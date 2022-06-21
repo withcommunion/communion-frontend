@@ -22,6 +22,8 @@ export default function SendTokensModal({
   userJwt,
   fromUsersWallet,
   toUser,
+  onOpen,
+  onClose,
   children,
 }: Props) {
   const [isOpen, setIsOpen] = useState(false);
@@ -51,6 +53,14 @@ export default function SendTokensModal({
 
   const toggleVisibility = () => {
     setIsOpen(!isOpen);
+
+    if (isOpen && onOpen) {
+      onOpen();
+    }
+
+    if (!isOpen && onClose) {
+      onClose();
+    }
   };
 
   const sendUserAvax = async (
@@ -60,15 +70,6 @@ export default function SendTokensModal({
     toAddress: string
   ) => {
     setLatestTransaction({ isInProgress: true });
-    /**
-     * Get how much the txn will cost
-     * Check if user has Avax / Enough to make txn
-     * If they don't reach out to API to seed user
-     *  Get response - Make txn
-     * If they do
-     *  Make txn
-     *
-     */
 
     const usersBalance = await wallet.getBalance();
     const baseTxn = await createBaseTxn(wallet.address, amount, toAddress);
