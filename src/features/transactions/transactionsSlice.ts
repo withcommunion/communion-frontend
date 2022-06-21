@@ -5,8 +5,9 @@ import {
   createSelector,
 } from '@reduxjs/toolkit';
 import type { RootState } from '@/reduxStore';
-import { DEV_API_URL, User } from '@/util/walletApiUtil';
 import { ethers } from 'ethers';
+
+import { DEV_API_URL, User } from '@/util/walletApiUtil';
 
 // Define a type for the slice state
 export interface HistoricalTxn {
@@ -33,7 +34,10 @@ export interface HistoricalTxn {
 }
 interface TransactionsState {
   currentEthersTxn: {
-    txn: ethers.Transaction[] | null;
+    txn:
+      | ethers.providers.TransactionRequest
+      | ethers.providers.TransactionResponse
+      | null;
     status: 'idle' | 'loading' | 'succeeded' | 'failed';
     error: string | null | undefined;
   };
