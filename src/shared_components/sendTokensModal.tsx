@@ -1,4 +1,5 @@
 // TODO: This will make this component real smoove https://reactjs.org/docs/animation.html
+// TODO: Use Redux - but wait until it is necessary, right now it isn't
 import { useState, useEffect, ReactNode } from 'react';
 import { ethers } from 'ethers';
 import { User, postSeedSelf } from '@/util/walletApiUtil';
@@ -9,6 +10,8 @@ import {
   createBaseTxn,
 } from '@/util/avaxEthersUtil';
 import Transaction from '@/shared_components/transaction';
+import { useAppDispatch } from '@/reduxHooks';
+import { fetchWalletBalance } from '@/features/selfSlice';
 
 interface Props {
   userJwt: string;
@@ -22,8 +25,11 @@ export default function SendTokensModal({
   userJwt,
   fromUsersWallet,
   toUser,
+  onOpen,
+  onClose,
   children,
 }: Props) {
+  const dispatch = useAppDispatch();
   const [isOpen, setIsOpen] = useState(false);
   const [amountToSend, setAmountToSend] = useState(0);
   const [fromUserBalance, setFromUserBalance] = useState('');
@@ -51,6 +57,14 @@ export default function SendTokensModal({
 
   const toggleVisibility = () => {
     setIsOpen(!isOpen);
+
+    if (isOpen && onOpen) {
+      onOpen();
+    }
+
+    if (!isOpen && onClose) {
+      onClose();
+    }
   };
 
   const sendUserAvax = async (
@@ -60,15 +74,6 @@ export default function SendTokensModal({
     toAddress: string
   ) => {
     setLatestTransaction({ isInProgress: true });
-    /**
-     * Get how much the txn will cost
-     * Check if user has Avax / Enough to make txn
-     * If they don't reach out to API to seed user
-     *  Get response - Make txn
-     * If they do
-     *  Make txn
-     *
-     */
 
     const usersBalance = await wallet.getBalance();
     const baseTxn = await createBaseTxn(wallet.address, amount, toAddress);
@@ -106,6 +111,7 @@ export default function SendTokensModal({
 
     const balanceBigNumber = await wallet.getBalance();
     setFromUserBalance(ethers.utils.formatEther(balanceBigNumber));
+    dispatch(fetchWalletBalance({ wallet }));
   };
 
   return (

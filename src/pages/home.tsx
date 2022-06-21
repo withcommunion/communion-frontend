@@ -2,15 +2,30 @@ import type { GetServerSideProps } from 'next';
 import { ethers } from 'ethers';
 import { Amplify } from 'aws-amplify';
 import { useAuthenticator } from '@aws-amplify/ui-react';
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import Link from 'next/link';
 
-import { formatWalletAddress, formatTxnHash } from '@/util/avaxEthersUtil';
-import { fetchSelfTxs, HistoricalTxn } from '@/util/walletApiUtil';
+import { formatTxnHash } from '@/util/avaxEthersUtil';
 import { AMPLIFY_CONFIG } from '@/util/cognitoAuthUtil';
 import { getUserJwtTokenOnServer } from '@/util/cognitoAuthUtil';
-import { useUserContext } from '@/context/userContext';
 
+import { useAppSelector, useAppDispatch } from '@/reduxHooks';
+import {
+  selectSelf,
+  selectSelfStatus,
+  selectWallet,
+  fetchSelf,
+  fetchWalletBalance,
+} from '@/features/selfSlice';
+
+import {
+  fetchSelfHistoricalTxns,
+  selectHistoricalTxns,
+  // selectHistoricalTxnsStatus,
+  reSelectHistoricalTxnsStatus,
+} from '@/features/transactions/transactionsSlice';
+
+import SelfHeader from '@/shared_components/selfHeader';
 import NavBar from '@/shared_components/navBar';
 
 // https://docs.amplify.aws/lib/client-configuration/configuring-amplify-categories/q/platform/js/#general-configuration
@@ -20,32 +35,36 @@ interface Props {
   userJwt: string;
 }
 const Home = ({ userJwt }: Props) => {
-  const { selfCtx, setJwtCtx, selfWalletCtx } = useUserContext();
-  const { self } = selfCtx;
-  const { ethersWallet, balance } = selfWalletCtx;
+  const dispatch = useAppDispatch();
+  const self = useAppSelector((state) => selectSelf(state));
+  const selfStatus = useAppSelector((state) => selectSelfStatus(state));
+
+  const wallet = useAppSelector((state) => selectWallet(state));
+  const balance = wallet.balance;
+  const ethersWallet = wallet.ethersWallet;
+
+  const historicalTxns = useAppSelector((state) => selectHistoricalTxns(state));
+  // const historicalTxnsStatus = useAppSelector((state) =>
+  //   selectHistoricalTxnsStatus(state)
+  // );
+  const historicalTxnsStatus = useAppSelector((state) =>
+    reSelectHistoricalTxnsStatus(state)
+  );
+
   const { signOut } = useAuthenticator((context) => [context.signOut]);
 
-  const [addressHistory, setAddressHistory] = useState<{
-    isLoading: boolean;
-    txns: HistoricalTxn[];
-  }>({ isLoading: false, txns: [] });
+  useEffect(() => {
+    if (selfStatus === 'idle') {
+      dispatch(fetchSelf(userJwt));
+    }
+  }, [userJwt, dispatch, self, selfStatus]);
 
   useEffect(() => {
-    if (userJwt) {
-      setJwtCtx(userJwt);
+    console.log('balance status', historicalTxnsStatus);
+    if (userJwt && historicalTxnsStatus === 'idle') {
+      dispatch(fetchSelfHistoricalTxns(userJwt));
     }
-  }, [userJwt, setJwtCtx]);
-
-  useEffect(() => {
-    const fetchHistory = async (jwt: string) => {
-      const history = await fetchSelfTxs(jwt);
-      setAddressHistory({ isLoading: false, txns: history });
-    };
-
-    if (userJwt && !addressHistory.txns.length) {
-      fetchHistory(userJwt);
-    }
-  }, [userJwt, addressHistory]);
+  }, [userJwt, historicalTxnsStatus, dispatch]);
 
   return (
     <>
@@ -54,55 +73,14 @@ const Home = ({ userJwt }: Props) => {
         <div className="py-4 flex flex-col items-center ">
           <div className="w-full md:w-1/4 px-5">
             <div className="container flex flex-col items-center">
-              <>
-                {self && <h2>👋 Welcome {self.first_name}!</h2>}
-                {ethersWallet && (
-                  <>
-                    <p>Your address:</p>
-                    <div className="whitespace-normal break-words">
-                      <p>
-                        <small>
-                          <a
-                            className="underline text-blue-600 hover:text-blue-800 visited:text-purple-600"
-                            target="_blank"
-                            rel="noreferrer"
-                            href={`https://testnet.snowtrace.io/address/${ethersWallet.address}`}
-                          >
-                            {formatWalletAddress(ethersWallet.address)}
-                          </a>
-                        </small>
-                      </p>
-                    </div>
-                  </>
-                )}
-
-                {balance && (
-                  <>
-                    <p>Your balance:</p>
-                    <p>
-                      {balance.isLoading && <small>♻️</small>}{' '}
-                      {balance.valueStr} AVAX
-                    </p>
-                    {ethersWallet && (
-                      <button
-                        className="bg-blue-500 disabled:bg-gray-400 hover:bg-blue-700 text-white py-1 px-2 rounded"
-                        disabled={balance.isLoading}
-                        onClick={async () => {
-                          balance?.fetchRefresh &&
-                            (await balance.fetchRefresh(ethersWallet));
-                          // setIsAccountBalanceZeroLoading(true);
-                          // const balance = await ethersWallet.getBalance();
-                          // setIsAccountBalanceZero(balance.isZero());
-                          // setAccountBalance(ethers.utils.formatEther(balance));
-                          // setIsAccountBalanceZeroLoading(false);
-                        }}
-                      >
-                        Balance is zero? Refresh!
-                      </button>
-                    )}
-                  </>
-                )}
-              </>
+              <SelfHeader
+                self={self}
+                balance={balance}
+                ethersWallet={ethersWallet}
+                refreshWalletBalance={(ethersWallet) =>
+                  dispatch(fetchWalletBalance({ wallet: ethersWallet }))
+                }
+              />
 
               <div className="mt-8">
                 <h2 className="text-xl">Shortcut Actions:</h2>
@@ -123,17 +101,10 @@ const Home = ({ userJwt }: Props) => {
               <div className="mt-8">
                 <div className="flex gap-x-1 ">
                   <button
-                    disabled={addressHistory.isLoading}
+                    disabled={historicalTxnsStatus === 'loading'}
                     className="text-sm bg-blue-500 disabled:bg-gray-400 hover:bg-blue-700 text-white py-1 px-2 rounded"
-                    onClick={async () => {
-                      if (ethersWallet) {
-                        setAddressHistory({
-                          isLoading: true,
-                          txns: addressHistory.txns,
-                        });
-                        const history = await fetchSelfTxs(userJwt);
-                        setAddressHistory({ isLoading: false, txns: history });
-                      }
+                    onClick={() => {
+                      dispatch(fetchSelfHistoricalTxns(userJwt));
                     }}
                   >
                     Refresh
@@ -141,7 +112,7 @@ const Home = ({ userJwt }: Props) => {
                   <h2 className="text-xl">Recent Transactions:</h2>
                 </div>
                 <ul className="mt-2 max-h-35vh flex flex-col items-start gap-y-3 overflow-auto">
-                  {addressHistory.txns.map((txn) => (
+                  {historicalTxns.map((txn) => (
                     <li key={txn.hash}>
                       <p>
                         Amount: {ethers.utils.formatUnits(txn.value, 'ether')}
