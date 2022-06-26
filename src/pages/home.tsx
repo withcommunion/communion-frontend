@@ -3,7 +3,6 @@ import { ethers } from 'ethers';
 import { Amplify } from 'aws-amplify';
 import { useAuthenticator } from '@aws-amplify/ui-react';
 import { useEffect } from 'react';
-import Link from 'next/link';
 
 import { formatTxnHash } from '@/util/avaxEthersUtil';
 import { AMPLIFY_CONFIG } from '@/util/cognitoAuthUtil';
@@ -27,6 +26,7 @@ import {
 
 import SelfHeader from '@/shared_components/selfHeader';
 import NavBar from '@/shared_components/navBar';
+import ShortcutAction from '@/pages_components/home/shortcutAction';
 
 // https://docs.amplify.aws/lib/client-configuration/configuring-amplify-categories/q/platform/js/#general-configuration
 Amplify.configure({ ...AMPLIFY_CONFIG, ssr: true });
@@ -84,16 +84,12 @@ const Home = ({ userJwt }: Props) => {
 
               <div className="mt-8">
                 <h2 className="text-xl">Shortcut Actions:</h2>
-                <ul className="mt-2 flex flex-col items-start gap-y-3 overflow-auto">
+                <ul className="mt-2 flex flex-col items-start gap-y-3 overflow-visible">
                   <li>
-                    <button className="bg-blue-500 disabled:bg-gray-400 hover:bg-blue-700 text-white py-1 px-2 rounded">
-                      <Link href="/community">5 token tip: Kindness</Link>
-                    </button>
+                    <ShortcutAction actionAmount={5} actionName={'Kindness'} />
                   </li>
                   <li>
-                    <button className="bg-blue-500 disabled:bg-gray-400 hover:bg-blue-700 text-white py-1 px-2 rounded">
-                      <Link href="/community">10 token tip: Support</Link>
-                    </button>
+                    <ShortcutAction actionAmount={10} actionName={'Support'} />
                   </li>
                 </ul>
               </div>
