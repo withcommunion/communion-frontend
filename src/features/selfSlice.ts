@@ -64,7 +64,11 @@ export const userSlice = createSlice({
   name: 'self',
   // `createSlice` will infer the state type from the `initialState` argument
   initialState,
-  reducers: {},
+  reducers: {
+    reset: () => {
+      return initialState;
+    },
+  },
   extraReducers(builder) {
     builder
       .addCase(fetchSelf.pending, (state) => {
@@ -98,7 +102,7 @@ export const userSlice = createSlice({
   },
 });
 
-// export const {  } = userSlice.actions;
+export const { reset } = userSlice.actions;
 
 export const fetchWalletBalance = createAsyncThunk(
   'self/fetchWalletBalance',

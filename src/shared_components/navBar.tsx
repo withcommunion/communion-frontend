@@ -18,7 +18,7 @@ export default function NavBar({ signOut, active }: Props) {
             <button
               className={cx(buttonClass, { 'bg-blue-200': active === 'home' })}
             >
-              <Link href="/home">Home</Link>
+              <Link href="/org/org-jacks-pizza-1">Home</Link>
             </button>
           </li>
 
@@ -26,7 +26,7 @@ export default function NavBar({ signOut, active }: Props) {
             <button
               className={cx(buttonClass, { 'bg-blue-200': active === 'send' })}
             >
-              <Link href="/community">Community</Link>
+              <Link href="/org/org-jacks-pizza-1/send">Send</Link>
             </button>
           </li>
 

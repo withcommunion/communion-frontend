@@ -1,24 +1,26 @@
 import {
   createSlice,
-  //   PayloadAction,
   createAsyncThunk,
   createSelector,
 } from '@reduxjs/toolkit';
 import axios from 'axios';
 import type { RootState } from '@/reduxStore';
 
-import { Organization, DEV_API_URL } from '@/util/walletApiUtil';
+import { DEV_API_URL, OrgWithPublicData } from '@/util/walletApiUtil';
 
 interface OrganizationState {
-  org: Organization;
+  org: OrgWithPublicData;
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
   error: string | null | undefined;
 }
 
 const initialState: OrganizationState = {
   org: {
-    name: '',
-    users: [],
+    id: '',
+    actions: [],
+    roles: [],
+    member_ids: [],
+    members: [],
   },
   status: 'idle',
   error: null,
@@ -27,45 +29,49 @@ const initialState: OrganizationState = {
 const organizationSlice = createSlice({
   name: 'posts',
   initialState,
-  reducers: {},
+  reducers: {
+    reset: () => {
+      return initialState;
+    },
+  },
   extraReducers(builder) {
     builder
-      .addCase(fetchOrg.pending, (state) => {
+      .addCase(fetchOrgById.pending, (state) => {
         state.status = 'loading';
       })
-      .addCase(fetchOrg.fulfilled, (state, action) => {
+      .addCase(fetchOrgById.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.org = action.payload;
       })
-      .addCase(fetchOrg.rejected, (state, action) => {
+      .addCase(fetchOrgById.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.error.message;
       });
   },
 });
 
-// export const { } = postsSlice.actions;
+export const { reset } = organizationSlice.actions;
 
-export const fetchOrg = createAsyncThunk(
-  'organization/fetchOrg',
-  async ({ orgName, jwtToken }: { orgName: string; jwtToken: string }) => {
-    const rawOrg = await axios.get<Organization>(
-      `${DEV_API_URL}/organization/${orgName}`,
+export const fetchOrgById = createAsyncThunk(
+  'organization/fetchOrgById',
+  async ({ orgId, jwtToken }: { orgId: string; jwtToken: string }) => {
+    const rawOrg = await axios.get<OrgWithPublicData>(
+      `${DEV_API_URL}/org/${orgId}`,
       {
         headers: {
           Authorization: jwtToken,
         },
       }
     );
-    const organization = rawOrg.data;
-    return organization;
+    const org = rawOrg.data;
+    return org;
   }
 );
 
 export default organizationSlice.reducer;
 
-export const selectOrg = (state: RootState) => state.organization.org;
 export const selectOrgStatus = (state: RootState) => state.organization.status;
+export const selectOrg = (state: RootState) => state.organization.org;
 export const selectOrgUsers = createSelector([selectOrg], (org) => {
-  return org.users;
+  return org.members;
 });

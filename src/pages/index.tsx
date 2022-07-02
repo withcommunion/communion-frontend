@@ -16,7 +16,7 @@ const Index: NextPage = () => {
   const router = useRouter();
   const { route, user } = useAuthenticator(({ authStatus, route, user }) => {
     if (authStatus === 'authenticated') {
-      router.push('/home');
+      router.push('/org/org-jacks-pizza-1');
     }
     return [route, user];
   });
