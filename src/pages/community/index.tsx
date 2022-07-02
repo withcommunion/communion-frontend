@@ -15,9 +15,9 @@ import {
 } from '@/features/selfSlice';
 
 import {
-  selectOrgUsers,
   selectOrgStatus,
-  fetchOrg,
+  fetchOrgById,
+  selectOrgUsers,
 } from '@/features/organization/organizationSlice';
 
 import { getUserJwtTokenOnServer } from '@/util/cognitoAuthUtil';
@@ -53,9 +53,15 @@ const CommunityIndex = ({ userJwt }: Props) => {
     }
   }, [userJwt, dispatch, self, selfStatus]);
 
+  // useEffect(() => {
+  //   if (self && orgStatus === 'idle') {
+  //     dispatch(fetchOrg({ orgName: self.organization, jwtToken: userJwt }));
+  //   }
+  // }, [self, userJwt, orgStatus, dispatch]);
+
   useEffect(() => {
     if (self && orgStatus === 'idle') {
-      dispatch(fetchOrg({ orgName: self.organization, jwtToken: userJwt }));
+      dispatch(fetchOrgById({ orgId: self.organization, jwtToken: userJwt }));
     }
   }, [self, userJwt, orgStatus, dispatch]);
 

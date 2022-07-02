@@ -91,32 +91,6 @@ export async function postSeedSelf(jwtToken: string) {
 
   return seedTxn;
 }
-
-export interface Organization {
-  name: string;
-  users: User[];
-}
-export async function fetchOrganization(
-  orgName: string,
-  jwtToken: string
-): Promise<Organization> {
-  try {
-    const rawOrg = await axios.get<Organization>(
-      `${DEV_API_URL}/organization/${orgName}`,
-      {
-        headers: {
-          Authorization: jwtToken,
-        },
-      }
-    );
-    const organization = rawOrg.data;
-    return organization;
-  } catch (error) {
-    console.log(error);
-    throw error;
-  }
-}
-
 export interface OrgAction {
   name: string;
   amount: string;
