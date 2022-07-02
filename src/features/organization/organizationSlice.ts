@@ -18,6 +18,7 @@ const initialState: OrganizationState = {
   org: {
     id: '',
     actions: [],
+    redeemables: [],
     roles: [],
     member_ids: [],
     members: [],
@@ -74,4 +75,7 @@ export const selectOrgStatus = (state: RootState) => state.organization.status;
 export const selectOrg = (state: RootState) => state.organization.org;
 export const selectOrgUsers = createSelector([selectOrg], (org) => {
   return org.members;
+});
+export const selectOrgRedeemables = createSelector([selectOrg], (org) => {
+  return org.redeemables;
 });

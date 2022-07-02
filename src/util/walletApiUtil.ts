@@ -102,10 +102,16 @@ export enum Roles {
   owner = 'owner',
   seeder = 'seeder',
 }
+export interface OrgRedeemables {
+  name: string;
+  amount: string;
+  allowed_roles: Roles[];
+}
 export interface OrgWithPublicData {
   id: string;
   actions: OrgAction[];
   roles: Roles[];
+  redeemables: OrgRedeemables[];
   member_ids: string[];
   members: User[];
 }
