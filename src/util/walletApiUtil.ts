@@ -76,6 +76,22 @@ export async function fetchSelfTxs(jwtToken: string): Promise<HistoricalTxn[]> {
   }
 }
 
+export async function postSeedSelf(jwtToken: string) {
+  const rawSeedResp = await axios.post<ethers.Transaction>(
+    `${DEV_API_URL}/user/self/seed`,
+    {},
+    {
+      headers: {
+        Authorization: jwtToken,
+      },
+    }
+  );
+
+  const seedTxn = rawSeedResp.data;
+
+  return seedTxn;
+}
+
 export interface Organization {
   name: string;
   users: User[];
@@ -101,18 +117,42 @@ export async function fetchOrganization(
   }
 }
 
-export async function postSeedSelf(jwtToken: string) {
-  const rawSeedResp = await axios.post<ethers.Transaction>(
-    `${DEV_API_URL}/user/self/seed`,
-    {},
-    {
-      headers: {
-        Authorization: jwtToken,
-      },
-    }
-  );
+export interface OrgAction {
+  name: string;
+  amount: string;
+  allowed_roles: string[];
+}
+export enum Roles {
+  worker = 'worker',
+  manager = 'manager',
+  owner = 'owner',
+  seeder = 'seeder',
+}
+export interface OrgWithPublicData {
+  id: string;
+  actions: OrgAction[];
+  roles: Roles[];
+  member_ids: string[];
+  members: User[];
+}
 
-  const seedTxn = rawSeedResp.data;
-
-  return seedTxn;
+export async function fetchOrgById(
+  orgId: string,
+  jwtToken: string
+): Promise<OrgWithPublicData> {
+  try {
+    const rawOrg = await axios.get<OrgWithPublicData>(
+      `${DEV_API_URL}/org/${orgId}`,
+      {
+        headers: {
+          Authorization: jwtToken,
+        },
+      }
+    );
+    const organization = rawOrg.data;
+    return organization;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
 }
