@@ -4,7 +4,7 @@ import cx from 'classnames';
 
 interface Props {
   signOut: () => void;
-  active: 'home' | 'send' | 'profile';
+  active: 'home' | 'send' | 'redeem';
 }
 export default function NavBar({ signOut, active }: Props) {
   const router = useRouter();
@@ -31,8 +31,12 @@ export default function NavBar({ signOut, active }: Props) {
           </li>
 
           <li className="basis-1/4">
-            <button className={buttonClass} disabled>
-              Profile
+            <button
+              className={cx(buttonClass, {
+                'bg-blue-200': active === 'redeem',
+              })}
+            >
+              <Link href="/org/org-jacks-pizza-1/redeem">Redeem</Link>
             </button>
           </li>
 
