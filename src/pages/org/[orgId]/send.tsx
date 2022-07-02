@@ -56,12 +56,6 @@ const OrgIdIndex = ({ userJwt }: Props) => {
     }
   }, [userJwt, dispatch, self, selfStatus]);
 
-  // useEffect(() => {
-  //   if (self && orgStatus === 'idle') {
-  //     dispatch(fetchOrg({ orgName: self.organization, jwtToken: userJwt }));
-  //   }
-  // }, [self, userJwt, orgStatus, dispatch]);
-
   useEffect(() => {
     if (self && orgId && orgStatus === 'idle') {
       dispatch(fetchOrgById({ orgId: orgId.toString(), jwtToken: userJwt }));

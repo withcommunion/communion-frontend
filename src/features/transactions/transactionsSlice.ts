@@ -98,9 +98,9 @@ export const reSelectHistoricalTxnsStatus = createSelector(
 
 export const fetchSelfHistoricalTxns = createAsyncThunk(
   'transactions/fetchSelfHistoricalTxns',
-  async (jwtToken: string) => {
+  async ({ orgId, jwtToken }: { orgId: string; jwtToken: string }) => {
     const rawWallet = await axios.get<{ txs: HistoricalTxn[] }>(
-      `${DEV_API_URL}/user/self/tx`,
+      `${DEV_API_URL}/org/${orgId}/txs/self`,
       {
         headers: {
           Authorization: jwtToken,

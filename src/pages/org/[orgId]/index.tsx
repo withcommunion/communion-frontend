@@ -1,4 +1,5 @@
 import type { GetServerSideProps } from 'next';
+import { useRouter } from 'next/router';
 import { ethers } from 'ethers';
 import { Amplify } from 'aws-amplify';
 import { useAuthenticator } from '@aws-amplify/ui-react';
@@ -36,6 +37,8 @@ interface Props {
 }
 const Home = ({ userJwt }: Props) => {
   const dispatch = useAppDispatch();
+  const router = useRouter();
+  const { orgId } = router.query;
   const self = useAppSelector((state) => selectSelf(state));
   const selfStatus = useAppSelector((state) => selectSelfStatus(state));
 
@@ -61,10 +64,12 @@ const Home = ({ userJwt }: Props) => {
 
   useEffect(() => {
     console.log('balance status', historicalTxnsStatus);
-    if (userJwt && historicalTxnsStatus === 'idle') {
-      dispatch(fetchSelfHistoricalTxns(userJwt));
+    if (userJwt && orgId && historicalTxnsStatus === 'idle') {
+      dispatch(
+        fetchSelfHistoricalTxns({ orgId: orgId.toString(), jwtToken: userJwt })
+      );
     }
-  }, [userJwt, historicalTxnsStatus, dispatch]);
+  }, [userJwt, orgId, historicalTxnsStatus, dispatch]);
 
   return (
     <>
@@ -100,7 +105,14 @@ const Home = ({ userJwt }: Props) => {
                     disabled={historicalTxnsStatus === 'loading'}
                     className="text-sm bg-blue-500 disabled:bg-gray-400 hover:bg-blue-700 text-white py-1 px-2 rounded"
                     onClick={() => {
-                      dispatch(fetchSelfHistoricalTxns(userJwt));
+                      if (orgId) {
+                        dispatch(
+                          fetchSelfHistoricalTxns({
+                            orgId: orgId.toString(),
+                            jwtToken: userJwt,
+                          })
+                        );
+                      }
                     }}
                   >
                     Refresh
