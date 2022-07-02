@@ -29,7 +29,11 @@ const initialState: OrganizationState = {
 const organizationSlice = createSlice({
   name: 'posts',
   initialState,
-  reducers: {},
+  reducers: {
+    reset: () => {
+      return initialState;
+    },
+  },
   extraReducers(builder) {
     builder
       .addCase(fetchOrgById.pending, (state) => {
@@ -46,7 +50,7 @@ const organizationSlice = createSlice({
   },
 });
 
-// export const { } = postsSlice.actions;
+export const { reset } = organizationSlice.actions;
 
 export const fetchOrgById = createAsyncThunk(
   'organization/fetchOrgById',

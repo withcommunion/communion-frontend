@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { GetServerSideProps } from 'next';
+import { useRouter } from 'next/router';
 import { Amplify } from 'aws-amplify';
 import { useAuthenticator } from '@aws-amplify/ui-react';
 
@@ -33,8 +34,10 @@ interface Props {
   userJwt: string;
 }
 
-const CommunityIndex = ({ userJwt }: Props) => {
+const OrgIdIndex = ({ userJwt }: Props) => {
   const dispatch = useAppDispatch();
+  const router = useRouter();
+  const { orgId } = router.query;
   const self = useAppSelector((state) => selectSelf(state));
   const selfStatus = useAppSelector((state) => selectSelfStatus(state));
 
@@ -60,10 +63,10 @@ const CommunityIndex = ({ userJwt }: Props) => {
   // }, [self, userJwt, orgStatus, dispatch]);
 
   useEffect(() => {
-    if (self && orgStatus === 'idle') {
-      dispatch(fetchOrgById({ orgId: self.organization, jwtToken: userJwt }));
+    if (self && orgId && orgStatus === 'idle') {
+      dispatch(fetchOrgById({ orgId: orgId.toString(), jwtToken: userJwt }));
     }
-  }, [self, userJwt, orgStatus, dispatch]);
+  }, [self, userJwt, orgId, orgStatus, dispatch]);
 
   return (
     <>
@@ -127,4 +130,4 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 };
 
-export default CommunityIndex;
+export default OrgIdIndex;
