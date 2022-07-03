@@ -45,7 +45,7 @@ const SelfHeader = ({
             <>
               <p>Your balance:</p>
               <p>{balance.valueString} AVAX</p>
-              {balance.valueBigNumber?.isZero() && ethersWallet && (
+              {ethersWallet && (
                 <button
                   className="bg-blue-500 disabled:bg-gray-400 hover:bg-blue-700 text-white py-1 px-2 rounded"
                   disabled={balance.status === 'loading'}

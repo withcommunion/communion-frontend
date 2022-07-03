@@ -4,14 +4,18 @@ import postsReducer from '@/features/posts/postsSlice';
 import selfReducer from '@/features/selfSlice';
 import transactionsReducer from '@/features/transactions/transactionsSlice';
 import organizationReducer from '@/features/organization/organizationSlice';
+import cartReducer from '@/features/cart/cartSlice';
 
 const store = configureStore({
   reducer: {
+    // These are just an example
     counter: counterReducer,
     posts: postsReducer,
+
     self: selfReducer,
     transactions: transactionsReducer,
     organization: organizationReducer,
+    cart: cartReducer,
   },
 });
 

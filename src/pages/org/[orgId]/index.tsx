@@ -14,6 +14,7 @@ import {
   selectSelf,
   selectSelfStatus,
   selectWallet,
+  selectEthersWallet,
   fetchSelf,
   fetchWalletBalance,
 } from '@/features/selfSlice';
@@ -44,7 +45,7 @@ const Home = ({ userJwt }: Props) => {
 
   const wallet = useAppSelector((state) => selectWallet(state));
   const balance = wallet.balance;
-  const ethersWallet = wallet.ethersWallet;
+  const ethersWallet = useAppSelector((state) => selectEthersWallet(state));
 
   const historicalTxns = useAppSelector((state) => selectHistoricalTxns(state));
   // const historicalTxnsStatus = useAppSelector((state) =>
