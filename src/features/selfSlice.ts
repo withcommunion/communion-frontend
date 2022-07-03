@@ -2,7 +2,11 @@ import axios from 'axios';
 import { ethers } from 'ethers';
 
 import type { RootState } from '@/reduxStore';
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import {
+  createSlice,
+  createAsyncThunk,
+  createSelector,
+} from '@reduxjs/toolkit';
 
 import { getEthersWallet } from '@/util/avaxEthersUtil';
 
@@ -31,10 +35,9 @@ export interface SelfState {
   id: string;
   self: Self | null;
   wallet: {
-    ethersWallet: ethers.Wallet | null;
+    ethersWalletKey: string | null;
     balance: {
       valueString: string | null;
-      valueBigNumber: ethers.BigNumber | null;
       status: 'idle' | 'loading' | 'succeeded' | 'failed';
       error: string | null | undefined;
     };
@@ -48,10 +51,9 @@ const initialState: SelfState = {
   id: '',
   self: null,
   wallet: {
-    ethersWallet: null,
+    ethersWalletKey: null,
     balance: {
       valueString: null,
-      valueBigNumber: null,
       status: 'idle',
       error: null,
     },
@@ -77,9 +79,8 @@ export const userSlice = createSlice({
       .addCase(fetchSelf.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.self = action.payload;
-        state.wallet.ethersWallet = getEthersWallet(
-          action.payload.walletPrivateKeyWithLeadingHex
-        );
+        state.wallet.ethersWalletKey =
+          action.payload.walletPrivateKeyWithLeadingHex;
       })
       .addCase(fetchSelf.rejected, (state, action) => {
         state.status = 'failed';
@@ -90,10 +91,7 @@ export const userSlice = createSlice({
       })
       .addCase(fetchWalletBalance.fulfilled, (state, action) => {
         state.wallet.balance.status = 'succeeded';
-        state.wallet.balance.valueBigNumber = action.payload;
-        state.wallet.balance.valueString = ethers.utils.formatEther(
-          action.payload
-        );
+        state.wallet.balance.valueString = action.payload;
       })
       .addCase(fetchWalletBalance.rejected, (state, action) => {
         state.wallet.balance.status = 'failed';
@@ -113,11 +111,11 @@ export const fetchWalletBalance = createAsyncThunk(
     const { wallet, privateKeyWithLeadingHex } = args;
     if (wallet) {
       const balanceBigNumber = await wallet.getBalance();
-      return balanceBigNumber;
+      return ethers.utils.formatEther(balanceBigNumber);
     } else if (privateKeyWithLeadingHex) {
       const wallet = getEthersWallet(privateKeyWithLeadingHex);
       const balanceBigNumber = await wallet.getBalance();
-      return balanceBigNumber;
+      return ethers.utils.formatEther(balanceBigNumber);
     } else {
       throw new Error('No wallet or private key provided');
     }
@@ -148,9 +146,16 @@ export const selectSelf = (state: RootState) => state.self.self;
 export const selectSelfStatus = (state: RootState) => state.self.status;
 
 export const selectWallet = (state: RootState) => state.self.wallet;
+export const selectEthersWallet = createSelector([selectWallet], (wallet) =>
+  wallet.ethersWalletKey ? getEthersWallet(wallet.ethersWalletKey) : null
+);
 
 export const selectWalletBalance = (state: RootState) =>
   state.self.wallet.balance;
+export const selectWalletBalanceBigNumber = createSelector(
+  [selectWalletBalance],
+  (balance) => ethers.BigNumber.from(balance.valueString)
+);
 export const selectWalletBalanceStatus = (state: RootState) =>
   state.self.wallet.balance.status;
 

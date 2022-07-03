@@ -11,6 +11,7 @@ import {
   selectSelf,
   selectSelfStatus,
   selectWallet,
+  selectEthersWallet,
   fetchSelf,
   fetchWalletBalance,
 } from '@/features/selfSlice';
@@ -45,8 +46,8 @@ const OrgIdIndex = ({ userJwt }: Props) => {
   const orgStatus = useAppSelector((state) => selectOrgStatus(state));
 
   const wallet = useAppSelector((state) => selectWallet(state));
+  const ethersWallet = useAppSelector((state) => selectEthersWallet(state));
   const balance = wallet.balance;
-  const ethersWallet = wallet.ethersWallet;
 
   const { signOut } = useAuthenticator((context) => [context.signOut]);
 
