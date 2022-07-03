@@ -13,6 +13,7 @@ import {
   selectWallet,
   fetchSelf,
   fetchWalletBalance,
+  selectEthersWallet,
 } from '@/features/selfSlice';
 
 import {
@@ -20,6 +21,13 @@ import {
   fetchOrgById,
   selectOrgRedeemables,
 } from '@/features/organization/organizationSlice';
+
+import {
+  redeemableAdded,
+  redeemableRemoved,
+  selectCartReverse,
+  selectTotalCost,
+} from '@/features/cart/cartSlice';
 
 import { getUserJwtTokenOnServer } from '@/util/cognitoAuthUtil';
 
@@ -44,9 +52,12 @@ const RedeemPage = ({ userJwt }: Props) => {
   const orgStatus = useAppSelector((state) => selectOrgStatus(state));
   const orgRedeemables = useAppSelector((state) => selectOrgRedeemables(state));
 
+  const cart = useAppSelector((state) => selectCartReverse(state));
+  const totalCartCost = useAppSelector((state) => selectTotalCost(state));
+
   const wallet = useAppSelector((state) => selectWallet(state));
   const balance = wallet.balance;
-  const ethersWallet = wallet.ethersWallet;
+  const ethersWallet = useAppSelector((state) => selectEthersWallet(state));
 
   const { signOut } = useAuthenticator((context) => [context.signOut]);
 
@@ -77,21 +88,49 @@ const RedeemPage = ({ userJwt }: Props) => {
           />
 
           {orgRedeemables && self && (
-            <ul className="mt-5 h-75vh flex flex-col items-start gap-y-3 overflow-auto">
-              {orgRedeemables.map((redeemable) => (
-                <li
-                  className="flex justify-between items-center w-full gap-x-2"
-                  key={`${redeemable.name}`}
-                >
-                  <p>{redeemable.name}</p>
-                  {ethersWallet && (
-                    <button className="bg-blue-500 disabled:bg-gray-400 hover:bg-blue-700 text-white py-1 px-2 rounded">
-                      {redeemable.amount} Claim
+            <div>
+              <h1 className="mt-10 text-2xl">Redeemables</h1>
+              <ul className="mt-5 flex flex-col items-start gap-y-3 overflow-auto">
+                {orgRedeemables.map((redeemable) => (
+                  <li
+                    className="flex justify-between items-center w-full gap-x-2"
+                    key={`${redeemable.name}`}
+                  >
+                    <p>{redeemable.name}</p>
+                    {ethersWallet && (
+                      <button
+                        className="bg-blue-500 disabled:bg-gray-400 hover:bg-blue-700 text-white py-1 px-2 rounded"
+                        onClick={() => dispatch(redeemableAdded(redeemable))}
+                      >
+                        {redeemable.amount} Claim
+                      </button>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {Boolean(cart.length) && (
+            <div className="mt-10 ">
+              <h1 className="text-xl">Your cart:</h1>
+              <ul className="mt-5 flex flex-col items-start gap-y-3 max-h-30vh overflow-scroll">
+                {cart.map((redeemable) => (
+                  <li className="flex w-full gap-x-2" key={redeemable.id}>
+                    <button
+                      className="bg-blue-500 disabled:bg-gray-400 hover:bg-blue-700 text-white py-1 px-2 rounded"
+                      onClick={() => {
+                        dispatch(redeemableRemoved(redeemable));
+                      }}
+                    >
+                      X
                     </button>
-                  )}
-                </li>
-              ))}
-            </ul>
+                    <p className="ml-5 grow">{redeemable.name}</p>
+                    <p>{redeemable.amount}</p>
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-5">Total Cost: {totalCartCost}</p>
+            </div>
           )}
         </div>
       </div>
