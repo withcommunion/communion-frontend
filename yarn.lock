@@ -178,12 +178,12 @@
   dependencies:
     "@aws-amplify/ui-components" "1.7.2"
 
-"@aws-amplify/ui-react@^2.17.1":
-  version "2.17.1"
-  resolved "https://registry.yarnpkg.com/@aws-amplify/ui-react/-/ui-react-2.17.1.tgz#972d131bcb0807568b7531de331163a7ae1e1c28"
-  integrity sha512-bcgsoy44g6xVXRpTDOolJ/dUtm67iljp97fy2EocNOwbMROzq2CGFZ3ScWvFIe7PxOxNcYZi2FYML2xqJ6QBAA==
+"@aws-amplify/ui-react@^3.0.3":
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/@aws-amplify/ui-react/-/ui-react-3.0.3.tgz#0e038f813ca0063fbc3539610b1491ed28ad6978"
+  integrity sha512-L47T3Qt226eXJByp9NCcwCDE3jdbhMVjHmrXFvmflT07hb2mwXn2bJhKmEmgVUduAkTbvNrsJ51fCX7l2R50Pg==
   dependencies:
-    "@aws-amplify/ui" "3.8.3"
+    "@aws-amplify/ui" "3.12.1"
     "@aws-amplify/ui-react-v1" "npm:@aws-amplify/ui-react@1.2.9"
     "@radix-ui/react-accordion" "0.1.6"
     "@radix-ui/react-dropdown-menu" "0.1.6"
@@ -193,22 +193,22 @@
     classnames "2.3.1"
     deepmerge "4.2.2"
     lodash "4.17.21"
-    mapbox-gl "npm:empty-npm-package@1.0.0"
+    mapbox-gl "1.13.1"
     maplibre-gl "1.15.3"
     maplibre-gl-js-amplify "1.5.0"
     qrcode "1.5.0"
     react-generate-context "1.0.1"
-    react-map-gl "7.0.10"
+    react-map-gl "7.0.15"
 
 "@aws-amplify/ui@2.0.5":
   version "2.0.5"
   resolved "https://registry.yarnpkg.com/@aws-amplify/ui/-/ui-2.0.5.tgz#0800938a0bf36ff51922637628b0889017da19f1"
   integrity sha512-atoc/zIJRhgpoSDDKgRxbTSD7D9S4wbOzHUHMqRlcEPRKqRrQPGvd6zCUVSBS0jqdrrw6+UTJbWj7ttWCfE4pQ==
 
-"@aws-amplify/ui@3.8.3":
-  version "3.8.3"
-  resolved "https://registry.yarnpkg.com/@aws-amplify/ui/-/ui-3.8.3.tgz#99a0c5b8009b1f34e01454957b77ad9d5c40b86a"
-  integrity sha512-UXODZscO5mZ7nubUbyUF2SFDO7U9vUjBe3T0qRHXwxp1g6E8YputGETkgeeQX8TjN4ml3xtPxX6Ro9cEXyJDvQ==
+"@aws-amplify/ui@3.12.1":
+  version "3.12.1"
+  resolved "https://registry.yarnpkg.com/@aws-amplify/ui/-/ui-3.12.1.tgz#65870c6584c4cb0b80338aa56432095e64816c00"
+  integrity sha512-+GFsPx9YBdusuBTB0y7CinOAoPqICnACgogMFZUdkUR/jo+iYXLJopJP81tptdXu+6Q5HJuIf1rupMA/1bk7AA==
   dependencies:
     lodash "4.17.21"
     style-dictionary "3.7.0"
@@ -6931,10 +6931,34 @@ map-obj@^4.0.0:
   resolved "https://registry.yarnpkg.com/map-obj/-/map-obj-4.3.0.tgz#9304f906e93faae70880da102a9f1df0ea8bb05a"
   integrity sha512-hdN1wVrZbb29eBGiGjJbeP8JbKjq1urkHJ/LIP/NY48MZ1QVXUsQBV1G1zvYFHn1XE06cwjBsOI2K3Ulnj1YXQ==
 
-"mapbox-gl@npm:empty-npm-package@1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/empty-npm-package/-/empty-npm-package-1.0.0.tgz#fda29eb6de5efa391f73d578697853af55f6793a"
-  integrity sha512-q4Mq/+XO7UNDdMiPpR/LIBIW1Zl4V0Z6UT9aKGqIAnBCtCb3lvZJM1KbDbdzdC8fKflwflModfjR29Nt0EpcwA==
+mapbox-gl@1.13.1:
+  version "1.13.1"
+  resolved "https://registry.yarnpkg.com/mapbox-gl/-/mapbox-gl-1.13.1.tgz#322efe75ab4c764fc4c776da1506aad58d5a5b9d"
+  integrity sha512-GSyubcoSF5MyaP8z+DasLu5v7KmDK2pp4S5+VQ5WdVQUOaAqQY4jwl4JpcdNho3uWm2bIKs7x1l7q3ynGmW60g==
+  dependencies:
+    "@mapbox/geojson-rewind" "^0.5.0"
+    "@mapbox/geojson-types" "^1.0.2"
+    "@mapbox/jsonlint-lines-primitives" "^2.0.2"
+    "@mapbox/mapbox-gl-supported" "^1.5.0"
+    "@mapbox/point-geometry" "^0.1.0"
+    "@mapbox/tiny-sdf" "^1.1.1"
+    "@mapbox/unitbezier" "^0.0.0"
+    "@mapbox/vector-tile" "^1.3.1"
+    "@mapbox/whoots-js" "^3.1.0"
+    csscolorparser "~1.0.3"
+    earcut "^2.2.2"
+    geojson-vt "^3.2.1"
+    gl-matrix "^3.2.1"
+    grid-index "^1.1.0"
+    minimist "^1.2.5"
+    murmurhash-js "^1.0.0"
+    pbf "^3.2.1"
+    potpack "^1.0.1"
+    quickselect "^2.0.0"
+    rw "^1.3.3"
+    supercluster "^7.1.0"
+    tinyqueue "^2.0.3"
+    vt-pbf "^3.1.1"
 
 maplibre-gl-js-amplify@1.5.0:
   version "1.5.0"
@@ -7685,10 +7709,10 @@ react-is@^18.0.0:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-18.1.0.tgz#61aaed3096d30eacf2a2127118b5b41387d32a67"
   integrity sha512-Fl7FuabXsJnV5Q1qIOQwx/sagGF18kogb4gpfcG4gjLBWO0WDiiz1ko/ExayuxE7InyQkBLkxRFG5oxY6Uu3Kg==
 
-react-map-gl@7.0.10:
-  version "7.0.10"
-  resolved "https://registry.yarnpkg.com/react-map-gl/-/react-map-gl-7.0.10.tgz#4b92b748b9fbc376d88174c2e0c6099c73df96a7"
-  integrity sha512-4rhkwVa2HG+Uro7sTaVCTRMIF8nhlLjQnDSTUvKkWBLyHdCsKyoKkNqTfVp05OjqDXhcdXuixUDcg8aDvbr4xw==
+react-map-gl@7.0.15:
+  version "7.0.15"
+  resolved "https://registry.yarnpkg.com/react-map-gl/-/react-map-gl-7.0.15.tgz#ded08ccff49012099a9945b6c2ef7f266dfbde49"
+  integrity sha512-l7x8lBhIEcHTreSgrc7hsKv5HsMY1wQg2PVXuKAPmQtgRZc9C3NGwurVJFe24gOlAwzta5UavAHWDiZdU1ZNCw==
   dependencies:
     "@types/mapbox-gl" "^2.6.0"
 
