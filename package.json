@@ -16,7 +16,7 @@
     "@headlessui/react": "^1.6.4",
     "@heroicons/react": "^1.0.6",
     "@reduxjs/toolkit": "^1.8.2",
-    "autoprefixer": "^10.4.5",
+    "autoprefixer": "^10.4.7",
     "avalanche": "^3.14.1",
     "aws-amplify": "^4.3.22",
     "axios": "^0.27.2",
