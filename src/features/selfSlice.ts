@@ -18,6 +18,7 @@ export interface User {
   email?: string;
   first_name: string;
   last_name: string;
+  // TODO update to interact with the organization array
   organization: string;
   role: 'worker' | 'manager' | 'owner' | 'seeder' | string;
   walletPrivateKeyWithLeadingHex?: string;
