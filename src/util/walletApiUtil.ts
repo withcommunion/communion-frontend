@@ -114,6 +114,9 @@ export interface OrgWithPublicData {
   redeemables: OrgRedeemable[];
   member_ids: string[];
   members: User[];
+  avaxContract?: {
+    address: string;
+  };
 }
 
 export async function fetchOrgById(
