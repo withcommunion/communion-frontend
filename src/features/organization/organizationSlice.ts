@@ -3,13 +3,24 @@ import {
   createAsyncThunk,
   createSelector,
 } from '@reduxjs/toolkit';
+import { Contract, utils, BigNumber } from 'ethers';
 import axios from 'axios';
 import type { RootState } from '@/reduxStore';
+import contractAbi from '../../contractAbi/jacksPizza/JacksPizzaOrg.json';
 
 import { DEV_API_URL, OrgWithPublicData } from '@/util/walletApiUtil';
+import { HTTPSProvider } from '@/util/avaxEthersUtil';
 
-interface OrganizationState {
+export interface OrganizationState {
   org: OrgWithPublicData;
+  userToken: {
+    balance: {
+      valueString: string | null;
+      tokenSymbol: string;
+      status: 'idle' | 'loading' | 'succeeded' | 'failed';
+      error: string | null | undefined;
+    };
+  };
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
   error: string | null | undefined;
 }
@@ -22,6 +33,19 @@ const initialState: OrganizationState = {
     roles: [],
     member_ids: [],
     members: [],
+    avax_contract: {
+      address: '',
+      token_name: '',
+      token_symbol: '',
+    },
+  },
+  userToken: {
+    balance: {
+      valueString: null,
+      tokenSymbol: '',
+      status: 'idle',
+      error: null,
+    },
   },
   status: 'idle',
   error: null,
@@ -43,10 +67,23 @@ const organizationSlice = createSlice({
       .addCase(fetchOrgById.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.org = action.payload;
+        state.userToken.balance.tokenSymbol =
+          action.payload.avax_contract.token_symbol;
       })
       .addCase(fetchOrgById.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.error.message;
+      })
+      .addCase(fetchTokenBalance.pending, (state) => {
+        state.userToken.balance.status = 'loading';
+      })
+      .addCase(fetchTokenBalance.fulfilled, (state, action) => {
+        state.userToken.balance.status = 'succeeded';
+        state.userToken.balance.valueString = action.payload;
+      })
+      .addCase(fetchTokenBalance.rejected, (state, action) => {
+        state.userToken.balance.status = 'failed';
+        state.userToken.balance.error = action.error.message;
       });
   },
 });
@@ -55,7 +92,10 @@ export const { reset } = organizationSlice.actions;
 
 export const fetchOrgById = createAsyncThunk(
   'organization/fetchOrgById',
-  async ({ orgId, jwtToken }: { orgId: string; jwtToken: string }) => {
+  async (
+    { orgId, jwtToken }: { orgId: string; jwtToken: string },
+    { dispatch }
+  ) => {
     const rawOrg = await axios.get<OrgWithPublicData>(
       `${DEV_API_URL}/org/${orgId}`,
       {
@@ -65,7 +105,39 @@ export const fetchOrgById = createAsyncThunk(
       }
     );
     const org = rawOrg.data;
+
+    const contract = new Contract(
+      org.avax_contract.address,
+      contractAbi.abi,
+      HTTPSProvider
+    );
+    dispatch(fetchTokenBalance({ contract }));
+
     return org;
+  }
+);
+
+export const fetchTokenBalance = createAsyncThunk(
+  'organization/fetchOrgTokenBalance',
+  async (args: { contract: Contract; userAddressC?: string }, thunkApi) => {
+    const { contract, userAddressC } = args;
+    if (userAddressC) {
+      // eslint-disable-next-line
+      const balanceBigNumber = (await contract.getBalanceOf(
+        userAddressC
+      )) as BigNumber;
+      return utils.formatUnits(balanceBigNumber, 'wei');
+    } else {
+      // @ts-expect-error This is what it is
+      const { getState }: { getState: () => RootState } = thunkApi;
+
+      const selfAddressC = getState().self?.self?.walletAddressC;
+      // eslint-disable-next-line
+      const balanceBigNumber = (await contract.getBalanceOf(
+        selfAddressC
+      )) as BigNumber;
+      return utils.formatUnits(balanceBigNumber, 'wei');
+    }
   }
 );
 
@@ -79,3 +151,26 @@ export const selectOrgUsers = createSelector([selectOrg], (org) => {
 export const selectOrgRedeemables = createSelector([selectOrg], (org) => {
   return org.redeemables;
 });
+
+export const selectOrgContract = createSelector([selectOrg], (org) => {
+  if (!org.avax_contract || !org.avax_contract.address) {
+    return null;
+  }
+
+  return new Contract(
+    org.avax_contract.address,
+    contractAbi.abi,
+    HTTPSProvider
+  );
+});
+
+export const selectOrgUserToken = (state: RootState) =>
+  state.organization.userToken;
+
+export const selectOrgUserTokenStatus = (state: RootState) =>
+  state.organization.userToken.balance.status;
+
+export const selectOrgUserTokenBalance = createSelector(
+  [selectOrgUserToken],
+  (token) => token.balance
+);
