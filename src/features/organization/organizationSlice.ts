@@ -74,14 +74,14 @@ const organizationSlice = createSlice({
         state.status = 'failed';
         state.error = action.error.message;
       })
-      .addCase(fetchTokenBalance.pending, (state) => {
+      .addCase(fetchOrgTokenBalance.pending, (state) => {
         state.userToken.balance.status = 'loading';
       })
-      .addCase(fetchTokenBalance.fulfilled, (state, action) => {
+      .addCase(fetchOrgTokenBalance.fulfilled, (state, action) => {
         state.userToken.balance.status = 'succeeded';
         state.userToken.balance.valueString = action.payload;
       })
-      .addCase(fetchTokenBalance.rejected, (state, action) => {
+      .addCase(fetchOrgTokenBalance.rejected, (state, action) => {
         state.userToken.balance.status = 'failed';
         state.userToken.balance.error = action.error.message;
       });
@@ -111,33 +111,27 @@ export const fetchOrgById = createAsyncThunk(
       contractAbi.abi,
       HTTPSProvider
     );
-    dispatch(fetchTokenBalance({ contract }));
+    dispatch(fetchOrgTokenBalance({ contract }));
 
     return org;
   }
 );
 
-export const fetchTokenBalance = createAsyncThunk(
+export const fetchOrgTokenBalance = createAsyncThunk(
   'organization/fetchOrgTokenBalance',
-  async (args: { contract: Contract; userAddressC?: string }, thunkApi) => {
-    const { contract, userAddressC } = args;
-    if (userAddressC) {
-      // eslint-disable-next-line
-      const balanceBigNumber = (await contract.getBalanceOf(
-        userAddressC
-      )) as BigNumber;
-      return utils.formatUnits(balanceBigNumber, 'wei');
-    } else {
-      // @ts-expect-error This is what it is
-      const { getState }: { getState: () => RootState } = thunkApi;
+  async (args: { contract: Contract }, thunkApi) => {
+    const { contract } = args;
+    // @ts-expect-error This is what it is
+    const { getState }: { getState: () => RootState } = thunkApi;
 
-      const selfAddressC = getState().self?.self?.walletAddressC;
-      // eslint-disable-next-line
-      const balanceBigNumber = (await contract.getBalanceOf(
-        selfAddressC
-      )) as BigNumber;
-      return utils.formatUnits(balanceBigNumber, 'wei');
-    }
+    const selfAddressC = getState().self?.self?.walletAddressC;
+
+    // eslint-disable-next-line
+    const balanceBigNumber = (await contract.getBalanceOf(
+      selfAddressC
+    )) as BigNumber;
+
+    return utils.formatUnits(balanceBigNumber, 'wei');
   }
 );
 
