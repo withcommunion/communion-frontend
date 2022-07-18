@@ -116,6 +116,8 @@ export interface OrgWithPublicData {
   members: User[];
   avaxContract?: {
     address: string;
+    tokenName: string;
+    tokenSymbol: string;
   };
 }
 
