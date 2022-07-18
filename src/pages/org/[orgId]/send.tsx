@@ -17,9 +17,10 @@ import {
 } from '@/features/selfSlice';
 
 import {
-  selectOrgStatus,
   fetchOrgById,
+  selectOrgStatus,
   selectOrgUsers,
+  selectOrgUserTokenBalance,
 } from '@/features/organization/organizationSlice';
 
 import { getUserJwtTokenOnServer } from '@/util/cognitoAuthUtil';
@@ -44,6 +45,9 @@ const OrgIdIndex = ({ userJwt }: Props) => {
 
   const orgUsers = useAppSelector((state) => selectOrgUsers(state));
   const orgStatus = useAppSelector((state) => selectOrgStatus(state));
+  const userTokenBalance = useAppSelector((state) =>
+    selectOrgUserTokenBalance(state)
+  );
 
   const wallet = useAppSelector((state) => selectWallet(state));
   const ethersWallet = useAppSelector((state) => selectEthersWallet(state));
@@ -71,6 +75,7 @@ const OrgIdIndex = ({ userJwt }: Props) => {
           <SelfHeader
             self={self}
             balance={balance}
+            orgTokenBalance={userTokenBalance}
             ethersWallet={ethersWallet}
             refreshWalletBalance={(ethersWallet) =>
               dispatch(fetchWalletBalance({ wallet: ethersWallet }))

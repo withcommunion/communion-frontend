@@ -20,6 +20,7 @@ import {
   selectOrgStatus,
   fetchOrgById,
   selectOrgRedeemables,
+  selectOrgUserTokenBalance,
 } from '@/features/organization/organizationSlice';
 
 import {
@@ -51,6 +52,9 @@ const RedeemPage = ({ userJwt }: Props) => {
 
   const orgStatus = useAppSelector((state) => selectOrgStatus(state));
   const orgRedeemables = useAppSelector((state) => selectOrgRedeemables(state));
+  const userTokenBalance = useAppSelector((state) =>
+    selectOrgUserTokenBalance(state)
+  );
 
   const cart = useAppSelector((state) => selectCartReverse(state));
   const totalCartCost = useAppSelector((state) => selectTotalCost(state));
@@ -81,6 +85,7 @@ const RedeemPage = ({ userJwt }: Props) => {
           <SelfHeader
             self={self}
             balance={balance}
+            orgTokenBalance={userTokenBalance}
             ethersWallet={ethersWallet}
             refreshWalletBalance={(ethersWallet) =>
               dispatch(fetchWalletBalance({ wallet: ethersWallet }))

@@ -1,4 +1,5 @@
 import { Self, SelfState } from '@/features/selfSlice';
+import { OrganizationState } from '@/features/organization/organizationSlice';
 import { ethers } from 'ethers';
 
 import { formatWalletAddress } from '@/util/avaxEthersUtil';
@@ -6,6 +7,7 @@ import { formatWalletAddress } from '@/util/avaxEthersUtil';
 interface Props {
   self: Self | null;
   balance: SelfState['wallet']['balance'];
+  orgTokenBalance?: OrganizationState['userToken']['balance'];
   ethersWallet: ethers.Wallet | null;
   // eslint-disable-next-line
   refreshWalletBalance: (ethersWallet: ethers.Wallet) => void;
@@ -13,8 +15,8 @@ interface Props {
 const SelfHeader = ({
   self,
   balance,
+  orgTokenBalance,
   ethersWallet,
-  refreshWalletBalance,
 }: Props) => {
   return (
     <>
@@ -41,21 +43,17 @@ const SelfHeader = ({
             </>
           )}
 
+          {(balance || orgTokenBalance) && <p>Your balance:</p>}
           {balance && (
             <>
-              <p>Your balance:</p>
               <p>{balance.valueString} AVAX</p>
-              {ethersWallet && (
-                <button
-                  className="bg-blue-500 disabled:bg-gray-400 hover:bg-blue-700 text-white py-1 px-2 rounded"
-                  disabled={balance.status === 'loading'}
-                  onClick={() => {
-                    refreshWalletBalance(ethersWallet);
-                  }}
-                >
-                  Balance is zero? Refresh!
-                </button>
-              )}
+            </>
+          )}
+          {orgTokenBalance && (
+            <>
+              <p>
+                {orgTokenBalance.valueString} {orgTokenBalance.tokenSymbol}
+              </p>
             </>
           )}
         </div>

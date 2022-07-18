@@ -26,6 +26,12 @@ import {
   reSelectHistoricalTxnsStatus,
 } from '@/features/transactions/transactionsSlice';
 
+import {
+  fetchOrgById,
+  selectOrgStatus,
+  selectOrgUserTokenBalance,
+} from '@/features/organization/organizationSlice';
+
 import SelfHeader from '@/shared_components/selfHeader';
 import NavBar from '@/shared_components/navBar';
 import ShortcutAction from '@/pages_components/home/shortcutAction';
@@ -47,6 +53,11 @@ const Home = ({ userJwt }: Props) => {
   const balance = wallet.balance;
   const ethersWallet = useAppSelector((state) => selectEthersWallet(state));
 
+  const orgStatus = useAppSelector((state) => selectOrgStatus(state));
+  const userTokenBalance = useAppSelector((state) =>
+    selectOrgUserTokenBalance(state)
+  );
+
   const historicalTxns = useAppSelector((state) => selectHistoricalTxns(state));
   // const historicalTxnsStatus = useAppSelector((state) =>
   //   selectHistoricalTxnsStatus(state)
@@ -58,13 +69,19 @@ const Home = ({ userJwt }: Props) => {
   const { signOut } = useAuthenticator((context) => [context.signOut]);
 
   useEffect(() => {
+    if (userJwt && orgId && orgStatus === 'idle') {
+      const id = orgId.toString();
+      dispatch(fetchOrgById({ orgId: id, jwtToken: userJwt }));
+    }
+  }, [orgId, orgStatus, userJwt, dispatch]);
+
+  useEffect(() => {
     if (selfStatus === 'idle') {
       dispatch(fetchSelf(userJwt));
     }
   }, [userJwt, dispatch, self, selfStatus]);
 
   useEffect(() => {
-    console.log('balance status', historicalTxnsStatus);
     if (userJwt && orgId && historicalTxnsStatus === 'idle') {
       dispatch(
         fetchSelfHistoricalTxns({ orgId: orgId.toString(), jwtToken: userJwt })
@@ -82,6 +99,8 @@ const Home = ({ userJwt }: Props) => {
               <SelfHeader
                 self={self}
                 balance={balance}
+                orgTokenBalance={userTokenBalance}
+                // orgTokenBalance={}
                 ethersWallet={ethersWallet}
                 refreshWalletBalance={(ethersWallet) =>
                   dispatch(fetchWalletBalance({ wallet: ethersWallet }))
