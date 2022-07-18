@@ -13,7 +13,7 @@ const avalanche = new Avalanche(
 const cchain = avalanche.CChain();
 
 const avaxTestNetworkNodeUrl = 'https://api.avax-test.network/ext/bc/C/rpc';
-const HTTPSProvider = new ethers.providers.JsonRpcProvider(
+export const HTTPSProvider = new ethers.providers.JsonRpcProvider(
   avaxTestNetworkNodeUrl
 );
 
