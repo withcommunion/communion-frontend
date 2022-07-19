@@ -5,7 +5,7 @@ import {
   createSelector,
 } from '@reduxjs/toolkit';
 import type { RootState } from '@/reduxStore';
-import { ethers } from 'ethers';
+import { Transaction } from 'ethers';
 
 import { DEV_API_URL, User } from '@/util/walletApiUtil';
 
@@ -33,11 +33,8 @@ export interface HistoricalTxn {
   confirmations: string;
 }
 interface TransactionsState {
-  currentEthersTxn: {
-    txn:
-      | ethers.providers.TransactionRequest
-      | ethers.providers.TransactionResponse
-      | null;
+  latestTxn: {
+    txn: Transaction | null;
     status: 'idle' | 'loading' | 'succeeded' | 'failed';
     error: string | null | undefined;
   };
@@ -50,7 +47,7 @@ interface TransactionsState {
 
 // Define the initial state using that type
 const initialState: TransactionsState = {
-  currentEthersTxn: {
+  latestTxn: {
     txn: null,
     status: 'idle',
     error: 'null',
@@ -76,6 +73,18 @@ export const transactionsSlice = createSlice({
       .addCase(fetchSelfHistoricalTxns.rejected, (state, action) => {
         state.historicalTxns.status = 'failed';
         state.historicalTxns.error = action.error.message;
+      })
+      .addCase(fetchSelfTransferFunds.pending, (state) => {
+        state.latestTxn.status = 'loading';
+      })
+      .addCase(fetchSelfTransferFunds.fulfilled, (state, action) => {
+        state.latestTxn.status = 'succeeded';
+        // Add any fetched posts to the array
+        state.latestTxn.txn = action.payload;
+      })
+      .addCase(fetchSelfTransferFunds.rejected, (state, action) => {
+        state.latestTxn.status = 'failed';
+        state.latestTxn.error = action.error.message;
       });
   },
 });
@@ -93,6 +102,40 @@ export const reSelectHistoricalTxnsStatus = createSelector(
   [selectRootHistoricalTxns],
   (root) => {
     return root.status;
+  }
+);
+
+export const fetchSelfTransferFunds = createAsyncThunk(
+  'transactions/fetchSelfTransferFunds',
+  async ({
+    toUserId,
+    orgId,
+    amount,
+    jwtToken,
+  }: {
+    toUserId: string;
+    amount: number;
+    orgId: string;
+    jwtToken: string;
+  }) => {
+    const txnResp = await axios.post<{
+      transaction: Transaction;
+      txnHash: string;
+    }>(
+      `${DEV_API_URL}/user/self/transfer`,
+      {
+        orgId,
+        toUserId,
+        amount,
+      },
+      {
+        headers: {
+          Authorization: jwtToken,
+        },
+      }
+    );
+
+    return txnResp.data.transaction;
   }
 );
 

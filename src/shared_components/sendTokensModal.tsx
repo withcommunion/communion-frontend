@@ -9,6 +9,8 @@ import {
   getEstimatedTxnCosts,
   createBaseTxn,
 } from '@/util/avaxEthersUtil';
+
+import { fetchSelfTransferFunds } from '@/features/transactions/transactionsSlice';
 import Transaction from '@/shared_components/transaction';
 import { useAppDispatch } from '@/reduxHooks';
 import { fetchWalletBalance } from '@/features/selfSlice';
@@ -65,6 +67,18 @@ export default function SendTokensModal({
     if (!isOpen && onClose) {
       onClose();
     }
+  };
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const sendUserTokens = (
+    toUserId: string,
+    amount: number,
+    orgId: string,
+    userJwt: string
+  ) => {
+    dispatch(
+      fetchSelfTransferFunds({ toUserId, orgId, amount, jwtToken: userJwt })
+    );
   };
 
   const sendUserAvax = async (
@@ -163,6 +177,12 @@ export default function SendTokensModal({
                   className="mt-6 w-full"
                   onSubmit={(event) => {
                     event.preventDefault();
+                    // sendUserTokens(
+                    //   toUser.id,
+                    //   amountToSend,
+                    //   toUser.organizations[0].orgId,
+                    //   userJwt
+                    // );
                     sendUserAvax(
                       userJwt,
                       amountToSend.toString(),

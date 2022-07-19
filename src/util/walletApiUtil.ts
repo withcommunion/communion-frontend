@@ -10,6 +10,7 @@ export interface User {
   first_name: string;
   last_name: string;
   organization: string;
+  organizations: { orgId: string; role: string }[];
   role: 'worker' | 'manager' | 'owner' | 'seeder' | string;
   walletPrivateKeyWithLeadingHex?: string;
   walletAddressC: string;
