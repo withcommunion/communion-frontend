@@ -2,18 +2,23 @@
 // TODO: Use Redux - but wait until it is necessary, right now it isn't
 import { useState, useEffect, ReactNode } from 'react';
 import { ethers } from 'ethers';
-import { User, postSeedSelf } from '@/util/walletApiUtil';
-import {
-  sendAvax,
-  formatWalletAddress,
-  getEstimatedTxnCosts,
-  createBaseTxn,
-} from '@/util/avaxEthersUtil';
+import { User } from '@/util/walletApiUtil';
+import { formatWalletAddress } from '@/util/avaxEthersUtil';
 
-import { fetchSelfTransferFunds } from '@/features/transactions/transactionsSlice';
+import {
+  fetchSelfTransferFunds,
+  selectLatestTxnStatus,
+  selectLatestTxn,
+  selectLatestTxnErrorMessage,
+} from '@/features/transactions/transactionsSlice';
 import Transaction from '@/shared_components/transaction';
-import { useAppDispatch } from '@/reduxHooks';
-import { fetchWalletBalance } from '@/features/selfSlice';
+import { useAppDispatch, useAppSelector } from '@/reduxHooks';
+import {
+  fetchOrgTokenBalance,
+  selectOrgContract,
+  selectOrgUserTokenStatus,
+  selectOrgUserTokenBalance,
+} from '@/features/organization/organizationSlice';
 
 interface Props {
   userJwt: string;
@@ -35,15 +40,13 @@ export default function SendTokensModal({
   const [isOpen, setIsOpen] = useState(false);
   const [amountToSend, setAmountToSend] = useState(0);
   const [fromUserBalance, setFromUserBalance] = useState('');
-  const [latestTransaction, setLatestTransaction] = useState<{
-    toAddress?: string;
-    amount?: string;
-    estimatedTxnCost?: string;
-    actualTxnCost?: string;
-    isInProgress: boolean;
-    txnHash?: string;
-    txnExplorerUrl?: string;
-  }>();
+
+  const latestTxnStatus = useAppSelector(selectLatestTxnStatus);
+  const latestTxn = useAppSelector(selectLatestTxn);
+  const latestTxnErrorMessage = useAppSelector(selectLatestTxnErrorMessage);
+  const orgContract = useAppSelector(selectOrgContract);
+  const orgTokenBalance = useAppSelector(selectOrgUserTokenBalance);
+  const orgTokenBalanceStatus = useAppSelector(selectOrgUserTokenStatus);
 
   useEffect(() => {
     const fetchUserBalance = async () => {
@@ -70,62 +73,19 @@ export default function SendTokensModal({
   };
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const sendUserTokens = (
+  const sendUserTokens = async (
     toUserId: string,
     amount: number,
     orgId: string,
     userJwt: string
   ) => {
-    dispatch(
+    await dispatch(
       fetchSelfTransferFunds({ toUserId, orgId, amount, jwtToken: userJwt })
     );
-  };
 
-  const sendUserAvax = async (
-    userJwt: string,
-    amount: string,
-    wallet: ethers.Wallet,
-    toAddress: string
-  ) => {
-    setLatestTransaction({ isInProgress: true });
-
-    const usersBalance = await wallet.getBalance();
-    const baseTxn = await createBaseTxn(wallet.address, amount, toAddress);
-    const { estimatedTotalTxnCost } = await getEstimatedTxnCosts(baseTxn);
-
-    if (usersBalance.lt(estimatedTotalTxnCost)) {
-      console.log('Seeding user, not enough for Gas');
-      await postSeedSelf(userJwt);
+    if (orgContract) {
+      dispatch(fetchOrgTokenBalance({ contract: orgContract }));
     }
-
-    const txnInProgress = await sendAvax(baseTxn, wallet);
-
-    const txn = {
-      amount: ethers.utils.formatEther(txnInProgress.transaction.value),
-      toAddress: toAddress,
-      estimatedTxnCost: ethers.utils.formatEther(txnInProgress.estimatedCost),
-      isInProgress: true,
-      txnHash: txnInProgress.txnHash,
-      txnExplorerUrl: txnInProgress.explorerUrl,
-    };
-
-    setLatestTransaction(txn);
-
-    const finishedTransaction = await txnInProgress.transaction.wait();
-
-    const actualCost = finishedTransaction.effectiveGasPrice.mul(
-      finishedTransaction.gasUsed
-    );
-
-    setLatestTransaction({
-      ...txn,
-      actualTxnCost: ethers.utils.formatEther(actualCost),
-      isInProgress: false,
-    });
-
-    const balanceBigNumber = await wallet.getBalance();
-    setFromUserBalance(ethers.utils.formatEther(balanceBigNumber));
-    dispatch(fetchWalletBalance({ wallet }));
   };
 
   return (
@@ -177,17 +137,11 @@ export default function SendTokensModal({
                   className="mt-6 w-full"
                   onSubmit={(event) => {
                     event.preventDefault();
-                    // sendUserTokens(
-                    //   toUser.id,
-                    //   amountToSend,
-                    //   toUser.organizations[0].orgId,
-                    //   userJwt
-                    // );
-                    sendUserAvax(
-                      userJwt,
-                      amountToSend.toString(),
-                      fromUsersWallet,
-                      toAddress
+                    sendUserTokens(
+                      toUser.id,
+                      amountToSend,
+                      toUser.organizations[0].orgId,
+                      userJwt
                     );
                   }}
                 >
@@ -195,13 +149,17 @@ export default function SendTokensModal({
                     <div className="flex flex-row my-5 leading-7">
                       <p>Asset:</p>
                       <div className="flex flex-col ml-5 px-2 bg-gray-900 w-8/12">
-                        <p className="text-xl">Avax</p>
+                        <p className="text-xl">{orgTokenBalance.tokenSymbol}</p>
 
                         <p>
-                          {latestTransaction?.isInProgress && <small>♻️</small>}{' '}
+                          {(latestTxnStatus === 'loading' ||
+                            orgTokenBalanceStatus === 'loading') && (
+                            <small>♻️</small>
+                          )}{' '}
                           Available Balance:
+                          {orgTokenBalance.valueString &&
+                            orgTokenBalance.valueString}
                         </p>
-                        {fromUserBalance && <p>{fromUserBalance}</p>}
                       </div>
                     </div>
 
@@ -241,9 +199,7 @@ export default function SendTokensModal({
                     </button>
                     <button
                       type="submit"
-                      disabled={
-                        latestTransaction?.isInProgress || !amountToSend
-                      }
+                      disabled={latestTxnStatus === 'loading'}
                       className="bg-white disabled:bg-gray-500 text-gray-800 mt-14 text-base text-center text-white py-6 px-16 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800"
                     >
                       Send
@@ -252,13 +208,23 @@ export default function SendTokensModal({
                 </form>
               </div>
               <div>
-                {latestTransaction && (
+                {latestTxn && (
                   <div className="my-8">
                     <Transaction
-                      transaction={latestTransaction}
+                      transaction={latestTxn}
+                      status={latestTxnStatus}
+                      amount={amountToSend}
                       toFirstName={toUser.first_name}
                       toLastName={toUser.last_name}
                     />
+                  </div>
+                )}
+                {latestTxnStatus === 'failed' && (
+                  <div className="my-8">
+                    <p className="text-red-600">
+                      Transaction failed. Please try again.
+                    </p>
+                    <p>{latestTxnErrorMessage}</p>
                   </div>
                 )}
               </div>
