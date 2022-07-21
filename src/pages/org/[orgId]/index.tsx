@@ -144,7 +144,7 @@ const Home = ({ userJwt }: Props) => {
                   {historicalTxns.map((txn) => (
                     <li key={txn.hash}>
                       <p>
-                        Amount: {ethers.utils.formatUnits(txn.value, 'ether')}
+                        Amount: {ethers.utils.formatUnits(txn.value, 'wei')}
                       </p>
                       <p>
                         From: {txn.fromUser.first_name} {txn.fromUser.last_name}
