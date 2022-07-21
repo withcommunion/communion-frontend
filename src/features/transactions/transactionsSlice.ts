@@ -6,6 +6,7 @@ import {
 } from '@reduxjs/toolkit';
 import type { RootState } from '@/reduxStore';
 import { Transaction } from 'ethers';
+import { HTTPSProvider } from '@/util/avaxEthersUtil';
 
 import { DEV_API_URL, User } from '@/util/walletApiUtil';
 
@@ -80,9 +81,13 @@ export const transactionsSlice = createSlice({
       .addCase(fetchSelfTransferFunds.fulfilled, (state, action) => {
         state.latestTxn.status = 'succeeded';
         // Add any fetched posts to the array
-        state.latestTxn.txn = action.payload;
+        if (action.payload) {
+          state.latestTxn.error = null;
+          state.latestTxn.txn = action.payload;
+        }
       })
       .addCase(fetchSelfTransferFunds.rejected, (state, action) => {
+        state.latestTxn.txn = null;
         state.latestTxn.status = 'failed';
         state.latestTxn.error = action.error.message;
       });
@@ -105,6 +110,21 @@ export const reSelectHistoricalTxnsStatus = createSelector(
   }
 );
 
+export const selectRootLatestTxn = (state: RootState) =>
+  state.transactions.latestTxn;
+export const selectLatestTxn = createSelector(
+  [selectRootLatestTxn],
+  (latestTxn) => latestTxn.txn
+);
+export const selectLatestTxnStatus = createSelector(
+  [selectRootLatestTxn],
+  (latestTxn) => latestTxn.status
+);
+export const selectLatestTxnErrorMessage = createSelector(
+  [selectRootLatestTxn],
+  (latestTxn) => latestTxn.error
+);
+
 export const fetchSelfTransferFunds = createAsyncThunk(
   'transactions/fetchSelfTransferFunds',
   async ({
@@ -118,24 +138,56 @@ export const fetchSelfTransferFunds = createAsyncThunk(
     orgId: string;
     jwtToken: string;
   }) => {
-    const txnResp = await axios.post<{
-      transaction: Transaction;
-      txnHash: string;
-    }>(
-      `${DEV_API_URL}/user/self/transfer`,
-      {
-        orgId,
-        toUserId,
-        amount,
-      },
-      {
-        headers: {
-          Authorization: jwtToken,
+    const waitXSeconds = (seconds: number) =>
+      new Promise((resolve) => setTimeout(resolve, seconds * 1000));
+    try {
+      const txnResp = await axios.post<{
+        transaction: Transaction;
+        txnHash: string;
+      }>(
+        `${DEV_API_URL}/user/self/transfer`,
+        {
+          orgId,
+          toUserId,
+          amount,
         },
-      }
-    );
+        {
+          headers: {
+            Authorization: jwtToken,
+          },
+        }
+      );
 
-    return txnResp.data.transaction;
+      /**
+       * TODO: This is janky, how does uniswap or other handle this?
+       * We will want some retry logic to consistently
+       */
+      await waitXSeconds(3.5);
+      const ethersTxn = await HTTPSProvider.getTransaction(
+        txnResp.data.txnHash
+      );
+      if (ethersTxn) {
+        await ethersTxn.wait();
+      }
+      return txnResp.data.transaction;
+      // @ts-expect-error this is okay
+    } catch (error: axios.AxiosError) {
+      console.error(error);
+      if (axios.isAxiosError(error)) {
+        /**
+         * TODO: This is not ideal.  We can surface this error better on the BE
+         */
+        // @ts-expect-error this is okay for now.
+        // eslint-disable-next-line
+        const errorFromBlockchain = error.response?.data?.error?.error
+          ?.reason as string;
+        if (errorFromBlockchain) {
+          throw new Error(errorFromBlockchain);
+        } else {
+          throw error.response?.data;
+        }
+      }
+    }
   }
 );
 
