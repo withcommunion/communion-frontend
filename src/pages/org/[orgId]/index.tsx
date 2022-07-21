@@ -89,6 +89,7 @@ const Home = ({ userJwt }: Props) => {
     }
   }, [userJwt, orgId, historicalTxnsStatus, dispatch]);
 
+  console.log(userJwt);
   return (
     <>
       <NavBar signOut={signOut} active="home" />

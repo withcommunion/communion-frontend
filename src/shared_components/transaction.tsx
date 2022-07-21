@@ -1,53 +1,41 @@
+import { type Transaction } from 'ethers';
 import { formatTxnHash } from '@/util/avaxEthersUtil';
-export interface Transaction {
-  toAddress?: string;
-  amount?: string;
-  estimatedTxnCost?: string;
-  actualTxnCost?: string;
-  isInProgress: boolean;
-  txnHash?: string;
-  txnExplorerUrl?: string;
-}
 
 interface Props {
   transaction: Transaction;
+  amount: number;
+  status: 'idle' | 'loading' | 'succeeded' | 'failed';
   toFirstName: string;
   toLastName: string;
 }
 
 export default function Transaction({
   transaction,
+  status,
+  amount,
   toFirstName,
   toLastName,
 }: Props) {
   return (
     <ul>
-      {transaction.isInProgress && <li>♻️ Transaction in progress!</li>}
-      {!transaction.isInProgress && <li>✅ Transaction completed!</li>}
-      {transaction.amount && <li>Amount: {transaction.amount}</li>}
-      {transaction.toAddress && (
+      {status === 'loading' && <li>♻️ Transaction in progress!</li>}
+      {status === 'succeeded' && <li>✅ Transaction completed!</li>}
+      <li>
+        To: {toFirstName} {toLastName}
+      </li>
+      <li>Amount: {amount}</li>
+      {status === 'succeeded' && transaction.hash && (
         <li>
-          To: {toFirstName} {toLastName}
-        </li>
-      )}
-      {transaction.txnExplorerUrl && (
-        <li>
-          View Txn:
+          View Txn:{' '}
           <a
             className="underline text-blue-600 hover:text-blue-800 visited:text-purple-600"
-            href={transaction.txnExplorerUrl}
+            href={`https://testnet.snowtrace.io/tx/${transaction.hash}`}
             target="_blank"
             rel="noreferrer"
           >
-            {transaction.txnHash && formatTxnHash(transaction.txnHash)}
+            {transaction.hash && formatTxnHash(transaction.hash)}
           </a>
         </li>
-      )}
-      {transaction.estimatedTxnCost && (
-        <li>Estimated Txn Cost: {transaction.estimatedTxnCost} AVAX</li>
-      )}
-      {transaction.actualTxnCost && (
-        <li>Actual Txn Cost: {transaction.actualTxnCost} AVAX</li>
       )}
     </ul>
   );
