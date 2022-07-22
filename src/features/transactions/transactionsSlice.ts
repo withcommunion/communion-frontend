@@ -10,7 +10,6 @@ import { HTTPSProvider } from '@/util/avaxEthersUtil';
 
 import { DEV_API_URL, User } from '@/util/walletApiUtil';
 
-// Define a type for the slice state
 export interface HistoricalTxn {
   fromUser: User;
   toUser: User;
@@ -19,18 +18,19 @@ export interface HistoricalTxn {
   hash: string;
   nonce: string;
   blockHash: string;
-  transactionIndex: string;
   from: string;
   to: string;
+  contractAddress: string;
   value: string;
+  tokenName: string;
+  tokenSymbol: string;
+  tokenDecimal: string;
+  transactionIndex: string;
   gas: string;
   gasPrice: string;
-  isError: string;
-  txreceipt_status: string;
-  input: string;
-  contractAddress: string;
-  cumulativeGasUsed: string;
   gasUsed: string;
+  cumulativeGasUsed: string;
+  input: string;
   confirmations: string;
 }
 interface TransactionsState {
