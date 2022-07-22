@@ -2,6 +2,8 @@ import {
   createSlice,
   createAsyncThunk,
   createSelector,
+  ThunkDispatch,
+  AnyAction,
 } from '@reduxjs/toolkit';
 import { Contract, utils, BigNumber } from 'ethers';
 import axios from 'axios';
@@ -94,7 +96,7 @@ export const fetchOrgById = createAsyncThunk(
   'organization/fetchOrgById',
   async (
     { orgId, jwtToken }: { orgId: string; jwtToken: string },
-    { dispatch }
+    { getState, dispatch }
   ) => {
     const rawOrg = await axios.get<OrgWithPublicData>(
       `${DEV_API_URL}/org/${orgId}`,
@@ -106,12 +108,7 @@ export const fetchOrgById = createAsyncThunk(
     );
     const org = rawOrg.data;
 
-    const contract = new Contract(
-      org.avax_contract.address,
-      contractAbi.abi,
-      HTTPSProvider
-    );
-    dispatch(fetchOrgTokenBalance({ contract }));
+    fetchUpdateTokenBalanceHelper(getState as () => RootState, dispatch);
 
     return org;
   }
@@ -171,3 +168,16 @@ export const selectOrgUserTokenBalance = createSelector(
   [selectOrgUserToken],
   (token) => token.balance
 );
+
+export const fetchUpdateTokenBalanceHelper = (
+  getState: () => RootState,
+  dispatch: ThunkDispatch<unknown, unknown, AnyAction>
+) => {
+  const { organization } = getState();
+  const contract = new Contract(
+    organization.org.avax_contract.address,
+    contractAbi.abi,
+    HTTPSProvider
+  );
+  dispatch(fetchOrgTokenBalance({ contract }));
+};
