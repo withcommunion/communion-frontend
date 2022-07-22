@@ -159,7 +159,6 @@ const Home = ({ userJwt }: Props) => {
                       >
                         {formatTxnHash(txn.hash)}
                       </a>
-                      <p>Status: {txn.txreceipt_status}</p>
                     </li>
                   ))}
                 </ul>
