@@ -125,6 +125,9 @@ export const fetchOrgTokenBalance = createAsyncThunk(
     const { getState }: { getState: () => RootState } = thunkApi;
 
     const selfAddressC = getState().self?.self?.walletAddressC;
+    if (!selfAddressC) {
+      return null;
+    }
 
     // eslint-disable-next-line
     const balanceBigNumber = (await contract.getBalanceOf(
