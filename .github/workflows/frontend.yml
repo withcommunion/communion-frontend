@@ -1,5 +1,15 @@
 name: frontend
 on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'src/**'
+      - 'public/**'
+      - '.github/workflows/frontend.yml'
+      - '.eslintrc.js'
+      - 'package.json'
+      - 'next.config.js'
   pull_request:
     paths:
       - 'src/**'
