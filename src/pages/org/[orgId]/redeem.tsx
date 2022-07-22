@@ -24,9 +24,13 @@ import {
 } from '@/features/organization/organizationSlice';
 
 import {
+  fetchOrgRedeem,
   redeemableAdded,
   redeemableRemoved,
   selectCartReverse,
+  selectLatestRedeemTxn,
+  selectLatestRedeemTxnErrorMessage,
+  selectLatestRedeemTxnStatus,
   selectTotalCost,
 } from '@/features/cart/cartSlice';
 
@@ -34,6 +38,7 @@ import { getUserJwtTokenOnServer } from '@/util/cognitoAuthUtil';
 
 import NavBar from '@/shared_components/navBar';
 import SelfHeader from '@/shared_components/selfHeader';
+import Transaction from '@/shared_components/transaction';
 
 // https://docs.amplify.aws/lib/client-configuration/configuring-amplify-categories/q/platform/js/#general-configuration
 Amplify.configure({ ...AMPLIFY_CONFIG, ssr: true });
@@ -58,6 +63,15 @@ const RedeemPage = ({ userJwt }: Props) => {
 
   const cart = useAppSelector((state) => selectCartReverse(state));
   const totalCartCost = useAppSelector((state) => selectTotalCost(state));
+  const latestRedeemTxn = useAppSelector((state) =>
+    selectLatestRedeemTxn(state)
+  );
+  const latestRedeemTxnStatus = useAppSelector((state) =>
+    selectLatestRedeemTxnStatus(state)
+  );
+  const latestRedeemTxnErrorMsg = useAppSelector((state) =>
+    selectLatestRedeemTxnErrorMessage(state)
+  );
 
   const wallet = useAppSelector((state) => selectWallet(state));
   const balance = wallet.balance;
@@ -94,7 +108,7 @@ const RedeemPage = ({ userJwt }: Props) => {
 
           {orgRedeemables && self && (
             <div>
-              <h1 className="mt-10 text-2xl">Redeemables</h1>
+              <h1 className="mt-5 text-2xl">Redeemables</h1>
               <ul className="mt-5 flex flex-col items-start gap-y-3 overflow-auto">
                 {orgRedeemables.map((redeemable) => (
                   <li
@@ -116,7 +130,7 @@ const RedeemPage = ({ userJwt }: Props) => {
             </div>
           )}
           {Boolean(cart.length) && (
-            <div className="mt-10 ">
+            <div className="mt-5 ">
               <h1 className="text-xl">Your cart:</h1>
               <ul className="mt-5 flex flex-col items-start gap-y-3 max-h-30vh overflow-scroll">
                 {cart.map((redeemable) => (
@@ -135,6 +149,37 @@ const RedeemPage = ({ userJwt }: Props) => {
                 ))}
               </ul>
               <p className="mt-5">Total Cost: {totalCartCost}</p>
+              <button
+                className="bg-blue-500 disabled:bg-gray-400 hover:bg-blue-700 text-white py-1 px-2 rounded"
+                disabled={latestRedeemTxnStatus === 'loading'}
+                onClick={() =>
+                  dispatch(
+                    fetchOrgRedeem({
+                      amount: totalCartCost,
+                      orgId: (orgId || '').toString(),
+                      jwtToken: userJwt,
+                    })
+                  )
+                }
+              >
+                Checkout
+              </button>
+            </div>
+          )}
+          {latestRedeemTxn && (
+            <div py-10>
+              <Transaction
+                transaction={latestRedeemTxn}
+                amount={totalCartCost}
+                toFirstName={`${cart.map((item) => item.name).toString()}`}
+                toLastName={''}
+                status={latestRedeemTxnStatus}
+              />
+            </div>
+          )}
+          {latestRedeemTxnErrorMsg && (
+            <div className="">
+              <p className="text-red-500">{latestRedeemTxnErrorMsg}</p>
             </div>
           )}
         </div>
