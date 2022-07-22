@@ -30,6 +30,7 @@ import {
   fetchOrgById,
   selectOrgStatus,
   selectOrgUserTokenBalance,
+  selectOrgRedeemables,
 } from '@/features/organization/organizationSlice';
 
 import SelfHeader from '@/shared_components/selfHeader';
@@ -57,6 +58,7 @@ const Home = ({ userJwt }: Props) => {
   const userTokenBalance = useAppSelector((state) =>
     selectOrgUserTokenBalance(state)
   );
+  const orgRedeemables = useAppSelector((state) => selectOrgRedeemables(state));
 
   const historicalTxns = useAppSelector((state) => selectHistoricalTxns(state));
   // const historicalTxnsStatus = useAppSelector((state) =>
@@ -148,9 +150,30 @@ const Home = ({ userJwt }: Props) => {
                       <p>
                         From: {txn.fromUser.first_name} {txn.fromUser.last_name}
                       </p>
-                      <p>
-                        To: {txn.toUser.first_name} {txn.toUser.last_name}
-                      </p>
+                      {txn.toUser.id && (
+                        <p>
+                          To: {txn.toUser.first_name} {txn.toUser.last_name}
+                        </p>
+                      )}
+                      {/**
+                       * TODO: This is hacky
+                       * We need to think of a way to show what it was redeemed for
+                       * Maybe on the API end we can keep track of that
+                       */}
+                      {txn.to ===
+                        '0x0000000000000000000000000000000000000000' && (
+                        <div>
+                          <p className="font-semibold">Redemption</p>
+                          <p>
+                            For:{' '}
+                            {
+                              orgRedeemables.find(
+                                (redeemable) => redeemable.amount === txn.value
+                              )?.name
+                            }
+                          </p>
+                        </div>
+                      )}
                       <a
                         className="underline text-blue-600 hover:text-blue-800 visited:text-purple-600"
                         target="_blank"

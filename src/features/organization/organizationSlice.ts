@@ -147,10 +147,6 @@ export const selectOrgRedeemables = createSelector([selectOrg], (org) => {
 });
 
 export const selectOrgContract = createSelector([selectOrg], (org) => {
-  if (!org.avax_contract || !org.avax_contract.address) {
-    return null;
-  }
-
   return new Contract(
     org.avax_contract.address,
     contractAbi.abi,
