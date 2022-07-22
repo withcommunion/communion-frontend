@@ -8,6 +8,7 @@ import {
   createAsyncThunk,
 } from '@reduxjs/toolkit';
 import type { RootState } from '@/reduxStore';
+import { fetchUpdateTokenBalanceHelper } from '@/features/organization/organizationSlice';
 
 import { OrgRedeemable, DEV_API_URL } from '@/util/walletApiUtil';
 import { HTTPSProvider } from '@/util/avaxEthersUtil';
@@ -99,6 +100,21 @@ export const selectCartReverse = createSelector(
   }
 );
 
+export const selectRootLatestRedeemTxn = (state: RootState) =>
+  state.cart.latestRedeemTxn;
+export const selectLatestRedeemTxn = createSelector(
+  [selectRootLatestRedeemTxn],
+  (latestRedeemTxn) => latestRedeemTxn.txn
+);
+export const selectLatestRedeemTxnStatus = createSelector(
+  [selectRootLatestRedeemTxn],
+  (latestRedeemTxn) => latestRedeemTxn.status
+);
+export const selectLatestRedeemTxnErrorMessage = createSelector(
+  [selectRootLatestRedeemTxn],
+  (latestRedeemTxn) => latestRedeemTxn.error
+);
+
 export const selectTotalCost = createSelector([selectCart], (cart) =>
   cart.reduce((acc, redeemable) => {
     return acc + parseInt(redeemable.amount);
@@ -107,17 +123,21 @@ export const selectTotalCost = createSelector([selectCart], (cart) =>
 
 export const fetchOrgRedeem = createAsyncThunk(
   'cart/fetchOrgRedeem',
-  async ({
-    amount,
-    orgId,
-    jwtToken,
-  }: {
-    amount: number;
-    orgId: string;
-    jwtToken: string;
-  }) => {
+  async (
+    {
+      amount,
+      orgId,
+      jwtToken,
+    }: {
+      amount: number;
+      orgId: string;
+      jwtToken: string;
+    },
+    { getState, dispatch }
+  ) => {
     const waitXSeconds = (seconds: number) =>
       new Promise((resolve) => setTimeout(resolve, seconds * 1000));
+
     try {
       const txnResp = await axios.post<{
         transaction: Transaction;
@@ -145,6 +165,9 @@ export const fetchOrgRedeem = createAsyncThunk(
       if (ethersTxn) {
         await ethersTxn.wait();
       }
+
+      fetchUpdateTokenBalanceHelper(getState as () => RootState, dispatch);
+
       return txnResp.data.transaction;
       // @ts-expect-error this is okay
     } catch (error: axios.AxiosError) {
