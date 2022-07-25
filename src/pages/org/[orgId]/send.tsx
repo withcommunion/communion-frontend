@@ -18,6 +18,8 @@ import {
 
 import {
   fetchOrgById,
+  fetchOrgTokenBalance,
+  selectOrg,
   selectOrgStatus,
   selectOrgUsers,
   selectOrgUserTokenBalance,
@@ -43,6 +45,7 @@ const OrgIdIndex = ({ userJwt }: Props) => {
   const self = useAppSelector((state) => selectSelf(state));
   const selfStatus = useAppSelector((state) => selectSelfStatus(state));
 
+  const org = useAppSelector((state) => selectOrg(state));
   const orgUsers = useAppSelector((state) => selectOrgUsers(state));
   const orgStatus = useAppSelector((state) => selectOrgStatus(state));
   const userTokenBalance = useAppSelector((state) =>
@@ -66,6 +69,21 @@ const OrgIdIndex = ({ userJwt }: Props) => {
       dispatch(fetchOrgById({ orgId: orgId.toString(), jwtToken: userJwt }));
     }
   }, [self, userJwt, orgId, orgStatus, dispatch]);
+
+  useEffect(() => {
+    if (
+      userTokenBalance.status === 'idle' &&
+      org.avax_contract.address &&
+      self
+    ) {
+      dispatch(
+        fetchOrgTokenBalance({
+          walletAddress: self.walletAddressC,
+          contractAddress: org.avax_contract.address,
+        })
+      );
+    }
+  }, [userTokenBalance, org, self, dispatch]);
 
   return (
     <>

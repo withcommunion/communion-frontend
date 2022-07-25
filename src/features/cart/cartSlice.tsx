@@ -8,7 +8,7 @@ import {
   createAsyncThunk,
 } from '@reduxjs/toolkit';
 import type { RootState } from '@/reduxStore';
-import { fetchUpdateTokenBalanceHelper } from '@/features/organization/organizationSlice';
+import { fetchOrgTokenBalance } from '@/features/organization/organizationSlice';
 
 import { OrgRedeemable, DEV_API_URL } from '@/util/walletApiUtil';
 import { HTTPSProvider } from '@/util/avaxEthersUtil';
@@ -166,7 +166,14 @@ export const fetchOrgRedeem = createAsyncThunk(
         await ethersTxn.wait();
       }
 
-      fetchUpdateTokenBalanceHelper(getState as () => RootState, dispatch);
+      const { organization, self } = getState() as RootState;
+
+      dispatch(
+        fetchOrgTokenBalance({
+          contractAddress: organization.org.avax_contract.address,
+          walletAddress: self.self?.walletAddressC || '',
+        })
+      );
 
       return txnResp.data.transaction;
       // @ts-expect-error this is okay

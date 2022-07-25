@@ -28,9 +28,11 @@ import {
 
 import {
   fetchOrgById,
+  selectOrg,
   selectOrgStatus,
   selectOrgUserTokenBalance,
   selectOrgRedeemables,
+  fetchOrgTokenBalance,
 } from '@/features/organization/organizationSlice';
 
 import SelfHeader from '@/shared_components/selfHeader';
@@ -55,6 +57,7 @@ const Home = ({ userJwt }: Props) => {
   const ethersWallet = useAppSelector((state) => selectEthersWallet(state));
 
   const orgStatus = useAppSelector((state) => selectOrgStatus(state));
+  const org = useAppSelector((state) => selectOrg(state));
   const userTokenBalance = useAppSelector((state) =>
     selectOrgUserTokenBalance(state)
   );
@@ -76,6 +79,21 @@ const Home = ({ userJwt }: Props) => {
       dispatch(fetchOrgById({ orgId: id, jwtToken: userJwt }));
     }
   }, [orgId, orgStatus, userJwt, dispatch]);
+
+  useEffect(() => {
+    if (
+      userTokenBalance.status === 'idle' &&
+      org.avax_contract.address &&
+      self
+    ) {
+      dispatch(
+        fetchOrgTokenBalance({
+          walletAddress: self.walletAddressC,
+          contractAddress: org.avax_contract.address,
+        })
+      );
+    }
+  }, [userTokenBalance, org, self, dispatch]);
 
   useEffect(() => {
     if (selfStatus === 'idle') {

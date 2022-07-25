@@ -15,7 +15,7 @@ import Transaction from '@/shared_components/transaction';
 import { useAppDispatch, useAppSelector } from '@/reduxHooks';
 import {
   fetchOrgTokenBalance,
-  selectOrgContract,
+  selectOrg,
   selectOrgUserTokenStatus,
   selectOrgUserTokenBalance,
 } from '@/features/organization/organizationSlice';
@@ -44,7 +44,7 @@ export default function SendTokensModal({
   const latestTxnStatus = useAppSelector(selectLatestTxnStatus);
   const latestTxn = useAppSelector(selectLatestTxn);
   const latestTxnErrorMessage = useAppSelector(selectLatestTxnErrorMessage);
-  const orgContract = useAppSelector(selectOrgContract);
+  const org = useAppSelector(selectOrg);
   const orgTokenBalance = useAppSelector(selectOrgUserTokenBalance);
   const orgTokenBalanceStatus = useAppSelector(selectOrgUserTokenStatus);
 
@@ -83,9 +83,12 @@ export default function SendTokensModal({
       fetchSelfTransferFunds({ toUserId, orgId, amount, jwtToken: userJwt })
     );
 
-    if (orgContract) {
-      dispatch(fetchOrgTokenBalance({ contract: orgContract }));
-    }
+    dispatch(
+      fetchOrgTokenBalance({
+        contractAddress: org.avax_contract.address,
+        walletAddress: fromUsersWallet.address,
+      })
+    );
   };
 
   return (
