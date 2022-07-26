@@ -36,7 +36,7 @@ import {
 } from '@/features/organization/organizationSlice';
 
 import SelfHeader from '@/shared_components/selfHeader';
-import NavBar from '@/shared_components/navBar';
+import NavBar from '@/shared_components/navBarTmp';
 import ShortcutAction from '@/pages_components/home/shortcutAction';
 
 // https://docs.amplify.aws/lib/client-configuration/configuring-amplify-categories/q/platform/js/#general-configuration

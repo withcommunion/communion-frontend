@@ -1,7 +1,7 @@
 import type { GetServerSideProps } from 'next';
 import { useEffect } from 'react';
 
-import NavBar from '@/shared_components/navBar';
+import NavBar from '@/shared_components/navBarTmp';
 import { getUserJwtTokenOnServer } from '@/util/cognitoAuthUtil';
 
 import { useAppSelector, useAppDispatch } from '@/reduxHooks';

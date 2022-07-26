@@ -38,7 +38,7 @@ import {
 
 import { getUserJwtTokenOnServer } from '@/util/cognitoAuthUtil';
 
-import NavBar from '@/shared_components/navBar';
+import NavBar from '@/shared_components/navBarTmp';
 import SelfHeader from '@/shared_components/selfHeader';
 import Transaction from '@/shared_components/transaction';
 
