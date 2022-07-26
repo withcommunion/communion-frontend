@@ -1,7 +1,8 @@
-import { Self, SelfState } from '@/features/selfSlice';
+import { SelfState } from '@/features/selfSlice';
 import { OrganizationState } from '@/features/organization/organizationSlice';
 import { ethers } from 'ethers';
 
+import { Self } from '@/util/walletApiUtil';
 import { formatWalletAddress } from '@/util/avaxEthersUtil';
 
 interface Props {

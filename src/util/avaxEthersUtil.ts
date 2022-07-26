@@ -1,20 +1,24 @@
-import axios from 'axios';
 import Avalanche from 'avalanche';
 import { ethers } from 'ethers';
 
-// TODO: Deal with prod and dev env
+import { isProd } from '@/util/envUtil';
+
+export const prodAvaxUrl = 'api.avalanche.network';
+export const fujiTestAvaxUrl = 'api.avax-test.network';
+export const prodAvaxRpcUrl = 'https://api.avax.network/ext/bc/C/rpc';
+export const fujiTestAvaxRpcUrl = 'https://api.avax-test.network/ext/bc/C/rpc';
+
 const chainId = 43113;
 const avalanche = new Avalanche(
-  'api.avax-test.network',
+  isProd ? prodAvaxUrl : fujiTestAvaxUrl,
   undefined,
   'https',
   chainId
 );
 const cchain = avalanche.CChain();
 
-const avaxTestNetworkNodeUrl = 'https://api.avax-test.network/ext/bc/C/rpc';
 export const HTTPSProvider = new ethers.providers.JsonRpcProvider(
-  avaxTestNetworkNodeUrl
+  isProd ? prodAvaxRpcUrl : fujiTestAvaxRpcUrl
 );
 
 export function getEthersWallet(
@@ -55,15 +59,12 @@ export const getAvaxChainBaseFees = async () => {
   return maxFees;
 };
 
-// TODO: Support prod and dev environment
 export const createBaseTxn = async (
   fromAddress: string,
   amount: string,
   toAddress: string
 ): Promise<ethers.providers.TransactionRequest> => {
   const MAX_GAS_WILLING_TO_SPEND_GWEI = '45';
-  const nodeURL = 'https://api.avax-test.network/ext/bc/C/rpc';
-  const HTTPSProvider = new ethers.providers.JsonRpcProvider(nodeURL);
 
   const nonce = await HTTPSProvider.getTransactionCount(fromAddress);
   const { maxFeePerGasGwei, maxPriorityFeePerGasGwei } =
@@ -97,16 +98,12 @@ export const createBaseTxn = async (
   return baseTx;
 };
 
-// TODO: Support prod and dev environment
 export const getEstimatedTxnCosts = async (
   baseTxn: ethers.providers.TransactionRequest
 ): Promise<{
   estimatedTotalTxnCost: ethers.BigNumber;
   estimatedGasCost: ethers.BigNumber;
 }> => {
-  const nodeURL = 'https://api.avax-test.network/ext/bc/C/rpc';
-  const HTTPSProvider = new ethers.providers.JsonRpcProvider(nodeURL);
-
   // Gas is burned by chain
   const estimatedGasCost = await HTTPSProvider.estimateGas(baseTxn);
 
@@ -118,7 +115,6 @@ export const getEstimatedTxnCosts = async (
   return { estimatedTotalTxnCost, estimatedGasCost };
 };
 
-// TODO: Support prod and dev environment
 export const sendAvax = async (
   unsignedBaseTxn: ethers.providers.TransactionRequest,
   fromWallet: ethers.Wallet
@@ -133,7 +129,9 @@ export const sendAvax = async (
 
   const signedTxn = await fromWallet.signTransaction(fullTxn);
   const txnHash = ethers.utils.keccak256(signedTxn);
-  const explorerUrl = `https://testnet.snowtrace.io/tx/${txnHash}`;
+  const explorerUrl = isProd
+    ? `https://snowtrace.io/tx/${txnHash}`
+    : `https://testnet.snowtrace.io/tx/${txnHash}`;
 
   console.log('Sending signed transaction', {
     signedTxn,
@@ -172,30 +170,6 @@ export interface HistoricalTxn {
   cumulativeGasUsed: string;
   gasUsed: string;
   confirmations: string;
-}
-
-export async function getAddressHistory(address: string) {
-  interface TxListResponse {
-    message: string;
-    result: HistoricalTxn[];
-    status: string;
-  }
-  const rawHistoryResp = await axios.get<TxListResponse>(
-    // TODO: Support dev and prod environment
-    'https://api-testnet.snowtrace.io/api',
-    {
-      params: {
-        module: 'account',
-        action: 'txlist',
-        address,
-        startblock: 1,
-        endblock: 99999999,
-        sort: 'desc',
-      },
-    }
-  );
-
-  return rawHistoryResp.data.result;
 }
 
 export function formatWalletAddress(address: string) {

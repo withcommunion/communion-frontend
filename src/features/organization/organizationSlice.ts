@@ -8,7 +8,7 @@ import axios from 'axios';
 import type { RootState } from '@/reduxStore';
 import contractAbi from '../../contractAbi/jacksPizza/JacksPizzaOrg.json';
 
-import { DEV_API_URL, OrgWithPublicData } from '@/util/walletApiUtil';
+import { API_URL, OrgWithPublicData } from '@/util/walletApiUtil';
 import { HTTPSProvider } from '@/util/avaxEthersUtil';
 
 export interface OrganizationState {
@@ -94,7 +94,7 @@ export const fetchOrgById = createAsyncThunk(
   'organization/fetchOrgById',
   async ({ orgId, jwtToken }: { orgId: string; jwtToken: string }) => {
     const rawOrg = await axios.get<OrgWithPublicData>(
-      `${DEV_API_URL}/org/${orgId}`,
+      `${API_URL}/org/${orgId}`,
       {
         headers: {
           Authorization: jwtToken,
