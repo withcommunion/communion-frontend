@@ -1,13 +1,12 @@
 import Avalanche from 'avalanche';
 import { ethers } from 'ethers';
 
+import { isProd } from '@/util/envUtil';
+
 export const prodAvaxUrl = 'api.avalanche.network';
 export const fujiTestAvaxUrl = 'api.avax-test.network';
 export const prodAvaxRpcUrl = 'https://api.avax.network/ext/bc/C/rpc';
 export const fujiTestAvaxRpcUrl = 'https://api.avax-test.network/ext/bc/C/rpc';
-
-const isProd = Boolean(process.env.NEXT_PUBLIC_VERCEL_STAGE === 'prod');
-// const isDev = Boolean(process.env.NEXT_PUBLIC_VERCEL_STAGE === 'dev');
 
 const chainId = 43113;
 const avalanche = new Avalanche(
