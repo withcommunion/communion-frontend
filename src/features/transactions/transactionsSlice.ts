@@ -8,31 +8,8 @@ import type { RootState } from '@/reduxStore';
 import { Transaction } from 'ethers';
 import { HTTPSProvider } from '@/util/avaxEthersUtil';
 
-import { DEV_API_URL, User } from '@/util/walletApiUtil';
+import { API_URL, HistoricalTxn } from '@/util/walletApiUtil';
 
-export interface HistoricalTxn {
-  fromUser: User;
-  toUser: User;
-  blockNumber: string;
-  timeStamp: string;
-  hash: string;
-  nonce: string;
-  blockHash: string;
-  from: string;
-  to: string;
-  contractAddress: string;
-  value: string;
-  tokenName: string;
-  tokenSymbol: string;
-  tokenDecimal: string;
-  transactionIndex: string;
-  gas: string;
-  gasPrice: string;
-  gasUsed: string;
-  cumulativeGasUsed: string;
-  input: string;
-  confirmations: string;
-}
 interface TransactionsState {
   latestTxn: {
     txn: Transaction | null;
@@ -145,7 +122,7 @@ export const fetchSelfTransferFunds = createAsyncThunk(
         transaction: Transaction;
         txnHash: string;
       }>(
-        `${DEV_API_URL}/user/self/transfer`,
+        `${API_URL}/user/self/transfer`,
         {
           orgId,
           toUserId,
@@ -195,7 +172,7 @@ export const fetchSelfHistoricalTxns = createAsyncThunk(
   'transactions/fetchSelfHistoricalTxns',
   async ({ orgId, jwtToken }: { orgId: string; jwtToken: string }) => {
     const rawWallet = await axios.get<{ txs: HistoricalTxn[] }>(
-      `${DEV_API_URL}/org/${orgId}/txs/self`,
+      `${API_URL}/org/${orgId}/txs/self`,
       {
         headers: {
           Authorization: jwtToken,

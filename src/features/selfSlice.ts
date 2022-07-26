@@ -8,28 +8,8 @@ import {
   createSelector,
 } from '@reduxjs/toolkit';
 
+import { API_URL, Self } from '@/util/walletApiUtil';
 import { getEthersWallet } from '@/util/avaxEthersUtil';
-
-export const DEV_API_URL =
-  'https://p0rddetfk8.execute-api.us-east-1.amazonaws.com';
-
-export interface User {
-  id: string;
-  email?: string;
-  first_name: string;
-  last_name: string;
-  // TODO update to interact with the organization array
-  organization: string;
-  role: 'worker' | 'manager' | 'owner' | 'seeder' | string;
-  walletPrivateKeyWithLeadingHex?: string;
-  walletAddressC: string;
-  walletAddressP: string;
-  walletAddressX: string;
-}
-
-export interface Self extends User {
-  walletPrivateKeyWithLeadingHex: string;
-}
 
 // Define a type for the slice state
 export interface SelfState {
@@ -126,7 +106,7 @@ export const fetchWalletBalance = createAsyncThunk(
 export const fetchSelf = createAsyncThunk(
   'self/fetchSelf',
   async (jwtToken: string, { dispatch }) => {
-    const rawSelf = await axios.get<Self>(`${DEV_API_URL}/user/self`, {
+    const rawSelf = await axios.get<Self>(`${API_URL}/user/self`, {
       headers: {
         Authorization: jwtToken,
       },
@@ -150,7 +130,6 @@ export const selectWallet = (state: RootState) => state.self.wallet;
 export const selectEthersWallet = createSelector([selectWallet], (wallet) =>
   wallet.ethersWalletKey ? getEthersWallet(wallet.ethersWalletKey) : null
 );
-
 export const selectWalletBalance = (state: RootState) =>
   state.self.wallet.balance;
 export const selectWalletBalanceBigNumber = createSelector(

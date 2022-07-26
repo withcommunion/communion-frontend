@@ -10,7 +10,7 @@ import {
 import type { RootState } from '@/reduxStore';
 import { fetchOrgTokenBalance } from '@/features/organization/organizationSlice';
 
-import { OrgRedeemable, DEV_API_URL } from '@/util/walletApiUtil';
+import { OrgRedeemable, API_URL } from '@/util/walletApiUtil';
 import { HTTPSProvider } from '@/util/avaxEthersUtil';
 
 interface OrgRedeemableInCart extends OrgRedeemable {
@@ -143,7 +143,7 @@ export const fetchOrgRedeem = createAsyncThunk(
         transaction: Transaction;
         txnHash: string;
       }>(
-        `${DEV_API_URL}/org/${orgId}/redeem`,
+        `${API_URL}/org/${orgId}/redeem`,
         {
           amount,
         },
