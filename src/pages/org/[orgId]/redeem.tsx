@@ -185,7 +185,7 @@ const RedeemPage = ({ userJwt }: Props) => {
             </div>
           )}
           {latestRedeemTxn && (
-            <div py-10>
+            <div className="py-5">
               <Transaction
                 transaction={latestRedeemTxn}
                 amount={totalCartCost}
