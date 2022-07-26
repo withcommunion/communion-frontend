@@ -1,7 +1,11 @@
+import Home from "./home/Home";
+import Menu from "./menu/Menu";
+
 const OrgSample = () => {
   return (
     <>
-      <p>Hi I am a sample component</p>
+        <Home/>
+        <Menu/>
     </>
   );
 };

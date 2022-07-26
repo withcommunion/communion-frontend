@@ -5,11 +5,7 @@ import { OrgSample } from '@/pages_components/org/[orgId]/orgIdIndexComponents';
 
 const indexPage = () => {
   return (
-    <div className="py-4 flex flex-col items-center ">
-      <p>Have fun 😊</p>
-      <p>Thank you 🙏</p>
       <OrgSample />
-    </div>
   );
 };
 
