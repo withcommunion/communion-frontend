@@ -1,4 +1,4 @@
-import OrgTransactionHistory from '@/pages_components/org/[orgId]/orgIdIndex/history/orgTransactionHistory/OrgTransactionHistory';
+import OrgTransactionHistory from '@/pages_components/org/[orgId]/orgIdIndex/history/orgTransactionHistory/OrgTransactionHistoryItem';
 
 export interface ITransactions {
   status: string;
