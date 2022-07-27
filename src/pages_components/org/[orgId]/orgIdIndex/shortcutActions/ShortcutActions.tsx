@@ -1,26 +1,23 @@
-import ShortcutAction from "@/pages_components/org/[orgId]/orgIdIndex/shortcutActions/shortcutAction/ShortcutAction";
+import ShortcutAction from '@/pages_components/org/[orgId]/orgIdIndex/shortcutActions/shortcutAction/ShortcutAction';
 
 export interface IShortcutActions {
-    name:string,value:string | number,image:string
+  name: string;
+  value: string | number;
+  image: string;
 }
 
-const ShortcutActions = () => {
-
-    const shortcutActions: IShortcutActions[] = [
-        {name: "Compliance", value: 15,image: "/images/home/tokenTips/Compliance.png"},
-        {name: "Kindness", value: 10,image: "/images/home/tokenTips/Kindness.png"},
-        {name: "Politeness", value: 25,image: "/images/home/tokenTips/Politeness.png"},
-    ]
-
-    const shortcutAction = shortcutActions.map((action,num:number) => {return(
-        // eslint-disable-next-line react/jsx-no-undef
-        <ShortcutAction key={num} action={action}/>
-    )})
-    return(
-        <>
-            {shortcutAction}
-        </>
-    )
+interface Props {
+  shortcutActions: IShortcutActions[];
 }
 
-export default ShortcutActions
+const ShortcutActions = ({ shortcutActions }: Props) => {
+  return (
+    <>
+      {shortcutActions.map((action, num: number) => (
+        <ShortcutAction key={num} action={action} />
+      ))}
+    </>
+  );
+};
+
+export default ShortcutActions;

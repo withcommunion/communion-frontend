@@ -1,1 +1,2 @@
-export { default as OrgSample } from './orgIdIndex/OrgSample';
+export { default as ShortcutActions } from './orgIdIndex/shortcutActions/ShortcutActions';
+export { default as OrgTransactionHistoryList } from './orgIdIndex/history/HistoryOrg';
