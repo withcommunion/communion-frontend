@@ -22,7 +22,7 @@ interface MultisendState {
     status: 'idle' | 'loading' | 'succeeded' | 'failed';
     error: string | null | undefined;
   };
-  selectedUsersAndAmountsMap: UserAndAmount[];
+  selectedUsersAndAmounts: UserAndAmount[];
 }
 
 // Define the initial state using that type
@@ -32,7 +32,7 @@ const initialState: MultisendState = {
     status: 'idle',
     error: 'null',
   },
-  selectedUsersAndAmountsMap: [],
+  selectedUsersAndAmounts: [],
 };
 
 export const multisendSlice = createSlice({
@@ -41,26 +41,25 @@ export const multisendSlice = createSlice({
   initialState,
   reducers: {
     userAdded(state: MultisendState, action: PayloadAction<UserAndAmount>) {
-      const userExists = state.selectedUsersAndAmountsMap.find(
+      const userExists = state.selectedUsersAndAmounts.find(
         (userAndAmount) => userAndAmount.userId === action.payload.userId
       );
 
       if (!userExists) {
-        state.selectedUsersAndAmountsMap.push(action.payload);
+        state.selectedUsersAndAmounts.push(action.payload);
       }
     },
     userRemoved(state: MultisendState, action: PayloadAction<UserAndAmount>) {
-      state.selectedUsersAndAmountsMap =
-        state.selectedUsersAndAmountsMap.filter(
-          (selectUserAndAmount) =>
-            selectUserAndAmount.userId !== action.payload.userId
-        );
+      state.selectedUsersAndAmounts = state.selectedUsersAndAmounts.filter(
+        (selectUserAndAmount) =>
+          selectUserAndAmount.userId !== action.payload.userId
+      );
     },
     updatedUserAmount(
       state: MultisendState,
       action: PayloadAction<UserAndAmount>
     ) {
-      const updatedUser = state.selectedUsersAndAmountsMap.find(
+      const updatedUser = state.selectedUsersAndAmounts.find(
         (userAndAmount) => userAndAmount.userId === action.payload.userId
       );
 
@@ -90,8 +89,8 @@ export const multisendSlice = createSlice({
   },
 });
 
-export const selectUsersAndAmountsMap = (state: RootState) =>
-  state.multisend.selectedUsersAndAmountsMap;
+export const selectUsersAndAmounts = (state: RootState) =>
+  state.multisend.selectedUsersAndAmounts;
 
 // Other code such as selectors can use the imported `RootState` type
 export const selectRootLatestTxn = (state: RootState) =>
