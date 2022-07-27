@@ -23,6 +23,7 @@ interface MultisendState {
     error: string | null | undefined;
   };
   selectedUsersAndAmounts: UserAndAmount[];
+  baseAmount: number;
 }
 
 // Define the initial state using that type
@@ -33,6 +34,7 @@ const initialState: MultisendState = {
     error: 'null',
   },
   selectedUsersAndAmounts: [],
+  baseAmount: 0,
 };
 
 export const multisendSlice = createSlice({
@@ -40,13 +42,20 @@ export const multisendSlice = createSlice({
   // `createSlice` will infer the state type from the `initialState` argument
   initialState,
   reducers: {
+    setBaseAmount: (state: MultisendState, action: PayloadAction<number>) => {
+      state.baseAmount = action.payload;
+    },
     userAdded(state: MultisendState, action: PayloadAction<UserAndAmount>) {
       const userExists = state.selectedUsersAndAmounts.find(
         (userAndAmount) => userAndAmount.userId === action.payload.userId
       );
 
       if (!userExists) {
-        state.selectedUsersAndAmounts.push(action.payload);
+        const { userId, amount } = action.payload;
+        state.selectedUsersAndAmounts.push({
+          userId,
+          amount: amount || state.baseAmount,
+        });
       }
     },
     userRemoved(state: MultisendState, action: PayloadAction<UserAndAmount>) {
@@ -172,7 +181,7 @@ export const fetchMultisendFunds = createAsyncThunk(
   }
 );
 
-export const { userAdded, userRemoved, updatedUserAmount } =
+export const { setBaseAmount, userAdded, userRemoved, updatedUserAmount } =
   multisendSlice.actions;
 
 export default multisendSlice.reducer;
