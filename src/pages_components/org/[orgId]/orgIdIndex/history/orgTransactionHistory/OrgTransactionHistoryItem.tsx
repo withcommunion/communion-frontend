@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { ITransactions } from '@/pages_components/org/[orgId]/orgIdIndex/history/HistoryOrg';
+import { ITransactions } from '@/pages_components/org/[orgId]/orgIdIndex/history/OrgTransactionHistoryList';
 import Image from 'next/image';
 
 const OrgTransactionHistory: FC<{ transaction: ITransactions }> = ({
