@@ -27,7 +27,7 @@ import {
 
 import NavBarOld from '@/shared_components/navBarTmp';
 
-import NavBar from '@/shared_components/navBar/NavBar';
+import NavBar, { AvailablePages } from '@/shared_components/navBar/NavBar';
 import SelfOrgHeader from '@/shared_components/selfHeader/selfOrgHeader';
 
 import {
@@ -129,7 +129,10 @@ const Home = ({ userJwt }: Props) => {
             </div>
           </div>
         </div>
-        <NavBar />
+        <NavBar
+          activePage={AvailablePages.orgHome}
+          activeOrgId={(orgId || '').toString()}
+        />
       </>
     </>
   );
