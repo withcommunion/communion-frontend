@@ -52,6 +52,27 @@ module.exports = {
       maxWidth: vwMap,
       minWidth: vwMap,
     },
+    colors: {
+      'primaryGray': '#606279',
+      'primaryPurple': '#6D6F8A',
+      'secondaryPurple' : '#9094BB',
+      'secondaryGray' : '#A9ABB9',
+      'primaryLightGray' : "#EDEDF3",
+      'secondaryLightGray': "#F8F8F9",
+      'white' : "#ffffff",
+      'primaryOrange': "#FF8A00",
+    },
+    fontSize: {
+      '19px': '19px',
+      '17px': '17px',
+      '45px': '45px',
+      '13px' : '13px',
+      '15px' : '15px'
+    },
+    boxShadow: {
+      'menuShadow': '0px 37px 75px 0px rgba(0,0,0,0.59)',
+    }
+
   },
   plugins: [],
 };
