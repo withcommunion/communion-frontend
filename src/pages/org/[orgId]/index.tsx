@@ -32,7 +32,7 @@ import SelfOrgHeader from '@/shared_components/selfHeader/selfOrgHeader';
 
 import {
   OrgTransactionHistoryList,
-  ShortcutActions,
+  ShortcutActionsList,
 } from '@/pages_components/org/[orgId]/orgIdIndexComponents';
 
 // https://docs.amplify.aws/lib/client-configuration/configuring-amplify-categories/q/platform/js/#general-configuration
@@ -112,7 +112,7 @@ const Home = ({ userJwt }: Props) => {
               name={self?.first_name}
             />
             <ul className="my-6">
-              <ShortcutActions shortcutActions={org.actions} />
+              <ShortcutActionsList shortcutActions={org.actions} />
             </ul>
             <div className="my-8">
               <OrgTransactionHistoryList
