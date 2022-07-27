@@ -104,8 +104,8 @@ const Home = ({ userJwt }: Props) => {
     <>
       <NavBarOld signOut={signOut} active="home" />
       <>
-        <div className="bg-secondaryLightGray pb-2 h-screen">
-          <div className="container w-full px-6 my-0 mx-auto">
+        <div className="bg-secondaryLightGray pb-2 min-h-100vh ">
+          <div className="container w-full px-6 my-0 mx-auto md:max-w-50vw">
             <SelfOrgHeader
               tokenAmount={userTokenBalance.valueString}
               tokenSymbol={userTokenBalance.tokenSymbol}

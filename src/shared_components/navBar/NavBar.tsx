@@ -79,7 +79,9 @@ export default function NavBar() {
 
   return (
     <nav className="fixed h-14 inset-x-0 bottom-0 bg-white shadow-menuShadow z-30">
-      <ul className="flex justify-around items-center mx-1 h-full ">{Links}</ul>
+      <ul className="flex justify-around items-center mx-1 h-full mx-auto md:max-w-50vw ">
+        {Links}
+      </ul>
     </nav>
   );
 }
