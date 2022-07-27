@@ -1,8 +1,8 @@
 import Image from 'next/image';
 
 interface Props {
-  tokenAmount: number | string;
-  tokenSymbol: string;
+  tokenAmount?: number | string | null;
+  tokenSymbol?: string;
 }
 const TokenBalance = ({ tokenAmount, tokenSymbol }: Props) => {
   return (

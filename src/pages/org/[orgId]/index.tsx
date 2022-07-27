@@ -36,8 +36,16 @@ import {
 } from '@/features/organization/organizationSlice';
 
 import SelfHeader from '@/shared_components/selfHeader';
-import NavBar from '@/shared_components/navBarTmp';
+import NavBarOld from '@/shared_components/navBarTmp';
 import ShortcutAction from '@/pages_components/home/shortcutAction';
+
+import NavBar from '@/shared_components/navBar/NavBar';
+import SelfOrgHeader from '@/shared_components/selfHeader/selfOrgHeader';
+
+import {
+  OrgTransactionHistoryList,
+  ShortcutActions,
+} from '@/pages_components/org/[orgId]/orgIdIndexComponents';
 
 // https://docs.amplify.aws/lib/client-configuration/configuring-amplify-categories/q/platform/js/#general-configuration
 Amplify.configure({ ...AMPLIFY_CONFIG, ssr: true });
@@ -111,103 +119,25 @@ const Home = ({ userJwt }: Props) => {
 
   return (
     <>
-      <NavBar signOut={signOut} active="home" />
-      <div className="h-fit">
-        <div className="py-4 flex flex-col items-center ">
-          <div className="w-full md:w-1/4 px-5">
-            <div className="container flex flex-col items-center">
-              <SelfHeader
-                self={self}
-                balance={balance}
-                orgTokenBalance={userTokenBalance}
-                // orgTokenBalance={}
-                ethersWallet={ethersWallet}
-                refreshWalletBalance={(ethersWallet) =>
-                  dispatch(fetchWalletBalance({ wallet: ethersWallet }))
-                }
-              />
-
-              <div className="mt-8">
-                <h2 className="text-xl">Shortcut Actions:</h2>
-                <ul className="mt-2 flex flex-col items-start gap-y-3 overflow-visible">
-                  <li>
-                    <ShortcutAction actionAmount={5} actionName={'Kindness'} />
-                  </li>
-                  <li>
-                    <ShortcutAction actionAmount={10} actionName={'Support'} />
-                  </li>
-                </ul>
-              </div>
-
-              <div className="mt-8">
-                <div className="flex gap-x-1 ">
-                  <button
-                    disabled={historicalTxnsStatus === 'loading'}
-                    className="text-sm bg-blue-500 disabled:bg-gray-400 hover:bg-blue-700 text-white py-1 px-2 rounded"
-                    onClick={() => {
-                      if (orgId) {
-                        dispatch(
-                          fetchSelfHistoricalTxns({
-                            orgId: orgId.toString(),
-                            jwtToken: userJwt,
-                          })
-                        );
-                      }
-                    }}
-                  >
-                    Refresh
-                  </button>
-                  <h2 className="text-xl">Recent Transactions:</h2>
-                </div>
-                <ul className="mt-2 max-h-35vh flex flex-col items-start gap-y-3 overflow-auto">
-                  {historicalTxns.map((txn) => (
-                    <li key={txn.hash}>
-                      <p>
-                        Amount: {ethers.utils.formatUnits(txn.value, 'wei')}
-                      </p>
-                      <p>
-                        From: {txn.fromUser.first_name} {txn.fromUser.last_name}
-                      </p>
-                      {txn.toUser.id && (
-                        <p>
-                          To: {txn.toUser.first_name} {txn.toUser.last_name}
-                        </p>
-                      )}
-                      {/**
-                       * TODO: This is hacky
-                       * We need to think of a way to show what it was redeemed for
-                       * Maybe on the API end we can keep track of that
-                       */}
-                      {txn.to ===
-                        '0x0000000000000000000000000000000000000000' && (
-                        <div>
-                          <p className="font-semibold">Redemption</p>
-                          <p>
-                            For:{' '}
-                            {
-                              orgRedeemables.find(
-                                (redeemable) => redeemable.amount === txn.value
-                              )?.name
-                            }
-                          </p>
-                        </div>
-                      )}
-                      <a
-                        className="underline text-blue-600 hover:text-blue-800 visited:text-purple-600"
-                        target="_blank"
-                        rel="noreferrer"
-                        href={`https://testnet.snowtrace.io/tx/${txn.hash}`}
-                      >
-                        {formatTxnHash(txn.hash)}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+      <NavBarOld signOut={signOut} active="home" />
+      <>
+        <div className="bg-secondaryLightGray pb-2 h-screen">
+          <div className="container w-full px-6 my-0 mx-auto">
+            <SelfOrgHeader
+              tokenAmount={userTokenBalance.valueString}
+              tokenSymbol={userTokenBalance.tokenSymbol}
+              name={self?.first_name}
+            />
+            <ul className="my-6">
+              <ShortcutActions shortcutActions={org.actions} />
+            </ul>
+            <div className="my-8">
+              {/* <OrgTransactionHistoryList transactions={transactions} /> */}
             </div>
           </div>
         </div>
-      </div>
+        <NavBar />
+      </>
     </>
   );
 };
