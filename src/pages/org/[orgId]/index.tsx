@@ -1,23 +1,14 @@
 import type { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
-import { ethers } from 'ethers';
 import { Amplify } from 'aws-amplify';
 import { useAuthenticator } from '@aws-amplify/ui-react';
 import { useEffect } from 'react';
 
-import { formatTxnHash } from '@/util/avaxEthersUtil';
 import { AMPLIFY_CONFIG } from '@/util/cognitoAuthUtil';
 import { getUserJwtTokenOnServer } from '@/util/cognitoAuthUtil';
 
 import { useAppSelector, useAppDispatch } from '@/reduxHooks';
-import {
-  selectSelf,
-  selectSelfStatus,
-  selectWallet,
-  selectEthersWallet,
-  fetchSelf,
-  fetchWalletBalance,
-} from '@/features/selfSlice';
+import { selectSelf, selectSelfStatus, fetchSelf } from '@/features/selfSlice';
 
 import {
   fetchSelfHistoricalTxns,
@@ -31,13 +22,10 @@ import {
   selectOrg,
   selectOrgStatus,
   selectOrgUserTokenBalance,
-  selectOrgRedeemables,
   fetchOrgTokenBalance,
 } from '@/features/organization/organizationSlice';
 
-import SelfHeader from '@/shared_components/selfHeader';
 import NavBarOld from '@/shared_components/navBarTmp';
-import ShortcutAction from '@/pages_components/home/shortcutAction';
 
 import NavBar from '@/shared_components/navBar/NavBar';
 import SelfOrgHeader from '@/shared_components/selfHeader/selfOrgHeader';
@@ -60,16 +48,11 @@ const Home = ({ userJwt }: Props) => {
   const self = useAppSelector((state) => selectSelf(state));
   const selfStatus = useAppSelector((state) => selectSelfStatus(state));
 
-  const wallet = useAppSelector((state) => selectWallet(state));
-  const balance = wallet.balance;
-  const ethersWallet = useAppSelector((state) => selectEthersWallet(state));
-
   const orgStatus = useAppSelector((state) => selectOrgStatus(state));
   const org = useAppSelector((state) => selectOrg(state));
   const userTokenBalance = useAppSelector((state) =>
     selectOrgUserTokenBalance(state)
   );
-  const orgRedeemables = useAppSelector((state) => selectOrgRedeemables(state));
 
   const historicalTxns = useAppSelector((state) => selectHistoricalTxns(state));
   // const historicalTxnsStatus = useAppSelector((state) =>
@@ -132,7 +115,17 @@ const Home = ({ userJwt }: Props) => {
               <ShortcutActions shortcutActions={org.actions} />
             </ul>
             <div className="my-8">
-              {/* <OrgTransactionHistoryList transactions={transactions} /> */}
+              <OrgTransactionHistoryList
+                fetchRefreshTxns={() =>
+                  dispatch(
+                    fetchSelfHistoricalTxns({
+                      orgId: (orgId || '').toString(),
+                      jwtToken: userJwt,
+                    })
+                  )
+                }
+                transactions={historicalTxns}
+              />
             </div>
           </div>
         </div>
