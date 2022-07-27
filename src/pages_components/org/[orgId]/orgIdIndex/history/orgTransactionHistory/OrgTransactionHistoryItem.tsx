@@ -25,7 +25,7 @@ const OrgTransactionHistory = ({ transaction, selfWalletAddress }: Props) => {
   const isSentTxn = !isRedemptionTxn && !isReceivedTxn;
 
   return (
-    <li className="bg-white my-1 rounded px-3 py-4">
+    <li className="bg-white my-1 rounded px-3 py-4 cursor-pointer">
       <div
         className="flex items-center justify-between "
         onClick={() => {
