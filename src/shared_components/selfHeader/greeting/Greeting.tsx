@@ -1,7 +1,7 @@
 import Image from 'next/image';
 
 interface Props {
-  name: string;
+  name?: string;
 }
 const Greeting = ({ name }: Props) => {
   return (
