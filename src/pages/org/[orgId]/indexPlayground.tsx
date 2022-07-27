@@ -1,7 +1,7 @@
 import { getUserJwtTokenOnServer } from '@/util/cognitoAuthUtil';
 import { GetServerSideProps } from 'next';
 import NavBar from '@/shared_components/navBar/NavBar';
-import SelfHeaderOrg from '@/shared_components/selfHeader/selfHeaderOrg';
+import SelfOrgHeader from '@/shared_components/selfHeader/selfOrgHeader';
 
 import {
   OrgTransactionHistoryList,
@@ -57,15 +57,15 @@ const shortcutActions = [
 ];
 
 const indexPage = () => {
-  const selfHeader: ISelfHeader[] = [
-    { tokenAmount: 5500, tokenSymbol: 'PPP', name: 'Alexandr' },
-  ];
-
   return (
     <>
       <div className="bg-secondaryLightGray pb-2 h-screen">
         <div className="container w-full px-6 my-0 mx-auto">
-          <SelfHeaderOrg selfHeader={selfHeader} />
+          <SelfOrgHeader
+            tokenAmount={5500}
+            tokenSymbol={'JPET'}
+            name="Alexandr"
+          />
           <ul className="my-6">
             <ShortcutActions shortcutActions={shortcutActions} />
           </ul>

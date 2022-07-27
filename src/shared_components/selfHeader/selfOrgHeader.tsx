@@ -1,6 +1,5 @@
 import Greeting from '@/shared_components/selfHeader/greeting/Greeting';
 import TokenBalance from '@/shared_components/selfHeader/tokenBalance/TokenBalance';
-import { FC } from 'react';
 
 interface Props {
   tokenAmount: number;
@@ -8,13 +7,13 @@ interface Props {
   name: string;
 }
 
-const SelfHeaderOrg: FC<{ selfHeader: Props[] }> = ({ selfHeader }) => {
+const SelfOrgHeader = ({ tokenAmount, tokenSymbol, name }: Props) => {
   return (
     <>
-      <Greeting selfHeader={selfHeader} />
-      <TokenBalance selfHeader={selfHeader} />
+      <Greeting name={name} />
+      <TokenBalance tokenAmount={tokenAmount} tokenSymbol={tokenSymbol} />
     </>
   );
 };
 
-export default SelfHeaderOrg;
+export default SelfOrgHeader;
