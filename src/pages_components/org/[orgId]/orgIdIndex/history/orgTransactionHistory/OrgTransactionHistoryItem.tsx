@@ -1,6 +1,7 @@
 import { HistoricalTxn } from '@/util/walletApiUtil';
 import { useState } from 'react';
 import { formatTxnHash } from '@/util/avaxEthersUtil';
+import { isProd } from '@/util/envUtil';
 import Image from 'next/image';
 
 interface Props {
@@ -69,7 +70,11 @@ const OrgTransactionHistory = ({ transaction, selfWalletAddress }: Props) => {
           </span>
           <a
             className="underline text-15px text-blue-600 hover:text-blue-800 visited:text-purple-600"
-            href={`https://testnet.snowtrace.io/tx/${transaction.hash}`}
+            href={
+              isProd
+                ? `https://snowtrace.io/tx/${transaction.hash}`
+                : `https://testnet.snowtrace.io/tx/${transaction.hash}`
+            }
             target="_blank"
             rel="noreferrer"
           >
