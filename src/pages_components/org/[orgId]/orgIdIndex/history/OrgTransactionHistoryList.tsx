@@ -4,9 +4,14 @@ import { HistoricalTxn } from '@/util/walletApiUtil';
 interface Props {
   fetchRefreshTxns: () => void;
   transactions: HistoricalTxn[];
+  selfWalletAddress: string;
 }
 
-const HistoryOrg = ({ transactions, fetchRefreshTxns }: Props) => {
+const HistoryOrg = ({
+  transactions,
+  fetchRefreshTxns,
+  selfWalletAddress,
+}: Props) => {
   return (
     <>
       <div className="my-4 flex justify-between text-center">
@@ -24,7 +29,11 @@ const HistoryOrg = ({ transactions, fetchRefreshTxns }: Props) => {
       </div>
       <ul>
         {transactions.map((transaction, num: number) => (
-          <OrgTransactionHistoryItem key={num} transaction={transaction} />
+          <OrgTransactionHistoryItem
+            key={num}
+            transaction={transaction}
+            selfWalletAddress={selfWalletAddress}
+          />
         ))}
       </ul>
     </>

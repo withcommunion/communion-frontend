@@ -116,6 +116,8 @@ const Home = ({ userJwt }: Props) => {
             </ul>
             <div className="my-8">
               <OrgTransactionHistoryList
+                selfWalletAddress={self?.walletAddressC || ''}
+                transactions={historicalTxns}
                 fetchRefreshTxns={() =>
                   dispatch(
                     fetchSelfHistoricalTxns({
@@ -124,7 +126,6 @@ const Home = ({ userJwt }: Props) => {
                     })
                   )
                 }
-                transactions={historicalTxns}
               />
             </div>
           </div>
