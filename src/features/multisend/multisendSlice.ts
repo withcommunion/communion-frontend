@@ -1,5 +1,6 @@
 import axios from 'axios';
 import {
+  PayloadAction,
   createSlice,
   createAsyncThunk,
   createSelector,
@@ -8,7 +9,12 @@ import type { RootState } from '@/reduxStore';
 import { Transaction } from 'ethers';
 import { HTTPSProvider } from '@/util/avaxEthersUtil';
 
-import { API_URL, HistoricalTxn } from '@/util/walletApiUtil';
+import { API_URL } from '@/util/walletApiUtil';
+
+interface UserAndAmount {
+  userId: string;
+  amount: number;
+}
 
 interface MultisendState {
   latestTxn: {
@@ -16,6 +22,7 @@ interface MultisendState {
     status: 'idle' | 'loading' | 'succeeded' | 'failed';
     error: string | null | undefined;
   };
+  selectedUsersAndAmountsMap: UserAndAmount[];
 }
 
 // Define the initial state using that type
@@ -25,13 +32,43 @@ const initialState: MultisendState = {
     status: 'idle',
     error: 'null',
   },
+  selectedUsersAndAmountsMap: [],
 };
 
 export const multisendSlice = createSlice({
-  name: 'transactions',
+  name: 'multisend',
   // `createSlice` will infer the state type from the `initialState` argument
   initialState,
-  reducers: {},
+  reducers: {
+    userAdded(state: MultisendState, action: PayloadAction<UserAndAmount>) {
+      const userExists = state.selectedUsersAndAmountsMap.find(
+        (userAndAmount) => userAndAmount.userId === action.payload.userId
+      );
+
+      if (!userExists) {
+        state.selectedUsersAndAmountsMap.push(action.payload);
+      }
+    },
+    userRemoved(state: MultisendState, action: PayloadAction<UserAndAmount>) {
+      state.selectedUsersAndAmountsMap =
+        state.selectedUsersAndAmountsMap.filter(
+          (selectUserAndAmount) =>
+            selectUserAndAmount.userId !== action.payload.userId
+        );
+    },
+    updatedUserAmount(
+      state: MultisendState,
+      action: PayloadAction<UserAndAmount>
+    ) {
+      const updatedUser = state.selectedUsersAndAmountsMap.find(
+        (userAndAmount) => userAndAmount.userId === action.payload.userId
+      );
+
+      if (updatedUser) {
+        updatedUser.amount = action.payload.amount;
+      }
+    },
+  },
   extraReducers(builder) {
     builder
       .addCase(fetchMultisendFunds.pending, (state) => {
@@ -53,6 +90,9 @@ export const multisendSlice = createSlice({
   },
 });
 
+export const selectUsersAndAmountsMap = (state: RootState) =>
+  state.multisend.selectedUsersAndAmountsMap;
+
 // Other code such as selectors can use the imported `RootState` type
 export const selectRootLatestTxn = (state: RootState) =>
   state.multisend.latestTxn;
@@ -72,11 +112,11 @@ export const selectLatestTxnErrorMessage = createSelector(
 export const fetchMultisendFunds = createAsyncThunk(
   'transactions/fetchMultisendFunds',
   async ({
-    toUserIdsAmountMap,
+    toUserIdsAmount,
     orgId,
     jwtToken,
   }: {
-    toUserIdsAmountMap: string[];
+    toUserIdsAmount: UserAndAmount[];
     amount: number;
     orgId: string;
     jwtToken: string;
@@ -88,10 +128,10 @@ export const fetchMultisendFunds = createAsyncThunk(
         transaction: Transaction;
         txnHash: string;
       }>(
-        `${API_URL}/user/self/transfer`,
+        `${API_URL}/user/self/multisend`,
         {
           orgId,
-          toUserIdsAmountMap,
+          toUserIdsAmount,
         },
         {
           headers: {
@@ -133,20 +173,7 @@ export const fetchMultisendFunds = createAsyncThunk(
   }
 );
 
-export const fetchSelfHistoricalTxns = createAsyncThunk(
-  'transactions/fetchSelfHistoricalTxns',
-  async ({ orgId, jwtToken }: { orgId: string; jwtToken: string }) => {
-    const rawWallet = await axios.get<{ txs: HistoricalTxn[] }>(
-      `${API_URL}/org/${orgId}/txs/self`,
-      {
-        headers: {
-          Authorization: jwtToken,
-        },
-      }
-    );
-    const selfTxs = rawWallet.data;
-    return selfTxs.txs;
-  }
-);
+export const { userAdded, userRemoved, updatedUserAmount } =
+  multisendSlice.actions;
 
 export default multisendSlice.reducer;
