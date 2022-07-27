@@ -1,11 +1,20 @@
-import { FC } from 'react';
-import { ITransactions } from '@/pages_components/org/[orgId]/orgIdIndex/history/OrgTransactionHistoryList';
+import { HistoricalTxn } from '@/util/walletApiUtil';
 import Image from 'next/image';
 
-const OrgTransactionHistory: FC<{ transaction: ITransactions }> = ({
-  transaction,
-}) => {
-  const { status, name, value, date, tokenSymbol } = transaction;
+interface Props {
+  transaction: HistoricalTxn;
+}
+// TODO: Need to get Status from TXN, need to handle redemptions!
+const OrgTransactionHistory = ({ transaction }: Props) => {
+  const { toUser, timeStamp, tokenSymbol, value, to } = transaction;
+  const status = 'succeeded';
+  const date = new Date(parseInt(timeStamp) * 1000);
+  const dateString = date.toLocaleDateString('en-US', {
+    hour: 'numeric',
+    minute: 'numeric',
+  });
+
+  const isRedemptionTxn = to === '0x0000000000000000000000000000000000000000';
 
   return (
     <li className="flex items-center justify-between px-3 bg-white my-1 rounded">
@@ -21,13 +30,18 @@ const OrgTransactionHistory: FC<{ transaction: ITransactions }> = ({
           height="22px"
         />
         <span className="py-4 text-primaryGray font-normal text-15px ml-2">
-          {status === 'succeeded' ? `Sent ${name} ` : 'Claiming '} {value}{' '}
-          {tokenSymbol}
+          {isRedemptionTxn && 'Redeemed award for '}
+          {!isRedemptionTxn && `Sent ${toUser.first_name} `}
+          {/** TODO: Handle statuses! */}
+          {/* {status === 'succeeded'
+            ? `Sent ${toUser.first_name} `
+            : 'Claiming '}{' '} */}
+          {value} {tokenSymbol}
         </span>
       </div>
       <div>
         <span className="text-secondaryPurple text-13px font-light">
-          {date}
+          {dateString}
         </span>
       </div>
     </li>
