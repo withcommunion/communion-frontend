@@ -140,12 +140,7 @@ export default function SendTokensModal({
                   className="mt-6 w-full"
                   onSubmit={(event) => {
                     event.preventDefault();
-                    sendUserTokens(
-                      toUser.id,
-                      amountToSend,
-                      toUser.organizations[0].orgId,
-                      userJwt
-                    );
+                    sendUserTokens(toUser.id, amountToSend, org.id, userJwt);
                   }}
                 >
                   <div className="w-full">
