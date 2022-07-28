@@ -9,10 +9,10 @@ import type { RootState } from '@/reduxStore';
 import { Transaction } from 'ethers';
 import { HTTPSProvider } from '@/util/avaxEthersUtil';
 
-import { API_URL } from '@/util/walletApiUtil';
+import { API_URL, User } from '@/util/walletApiUtil';
 
 interface UserAndAmount {
-  userId: string;
+  user: User;
   amount: number;
 }
 
@@ -47,13 +47,13 @@ export const multisendSlice = createSlice({
     },
     userAdded(state: MultisendState, action: PayloadAction<UserAndAmount>) {
       const userExists = state.selectedUsersAndAmounts.find(
-        (userAndAmount) => userAndAmount.userId === action.payload.userId
+        (userAndAmount) => userAndAmount.user.id === action.payload.user.id
       );
 
       if (!userExists) {
-        const { userId, amount } = action.payload;
+        const { user, amount } = action.payload;
         state.selectedUsersAndAmounts.push({
-          userId,
+          user,
           amount: amount || state.baseAmount,
         });
       }
@@ -61,7 +61,7 @@ export const multisendSlice = createSlice({
     userRemoved(state: MultisendState, action: PayloadAction<UserAndAmount>) {
       state.selectedUsersAndAmounts = state.selectedUsersAndAmounts.filter(
         (selectUserAndAmount) =>
-          selectUserAndAmount.userId !== action.payload.userId
+          selectUserAndAmount.user.id !== action.payload.user.id
       );
     },
     updatedUserAmount(
@@ -69,7 +69,7 @@ export const multisendSlice = createSlice({
       action: PayloadAction<UserAndAmount>
     ) {
       const updatedUser = state.selectedUsersAndAmounts.find(
-        (userAndAmount) => userAndAmount.userId === action.payload.userId
+        (userAndAmount) => userAndAmount.user.id === action.payload.user.id
       );
 
       if (updatedUser) {
@@ -120,17 +120,21 @@ export const selectLatestTxnErrorMessage = createSelector(
 export const fetchMultisendFunds = createAsyncThunk(
   'transactions/fetchMultisendFunds',
   async ({
-    toUserIdsAmount,
+    toUsersAndAmounts,
     orgId,
     jwtToken,
   }: {
-    toUserIdsAmount: UserAndAmount[];
-    amount: number;
+    toUsersAndAmounts: UserAndAmount[];
     orgId: string;
     jwtToken: string;
   }) => {
     const waitXSeconds = (seconds: number) =>
       new Promise((resolve) => setTimeout(resolve, seconds * 1000));
+
+    const toUserIdAndAmountObjs = toUsersAndAmounts.map((userAndAmount) => ({
+      userId: userAndAmount.user.id,
+      amount: userAndAmount.amount,
+    }));
     try {
       const txnResp = await axios.post<{
         transaction: Transaction;
@@ -139,7 +143,7 @@ export const fetchMultisendFunds = createAsyncThunk(
         `${API_URL}/user/self/multisend`,
         {
           orgId,
-          toUserIdsAmount,
+          toUserIdAndAmountObjs,
         },
         {
           headers: {
