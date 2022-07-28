@@ -111,9 +111,12 @@ const Home = ({ userJwt }: Props) => {
               tokenSymbol={userTokenBalance.tokenSymbol}
               name={self?.first_name}
             />
-            <ul className="my-6">
-              <ShortcutActionsList shortcutActions={org.actions} />
-            </ul>
+            <div className="my-6">
+              <ShortcutActionsList
+                shortcutActions={org.actions}
+                orgId={(orgId || '').toString()}
+              />
+            </div>
             <div className="my-8">
               <OrgTransactionHistoryList
                 selfWalletAddress={self?.walletAddressC || ''}
