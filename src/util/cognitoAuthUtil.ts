@@ -35,7 +35,7 @@ function getCookieStorage() {
     // eslint-disable-next-line
     return {
       ...cookieStorageBase,
-      domain: `.dev.withcommunion.com`,
+      domain: `.withcommunion.com`,
       secure: true,
     };
   }
