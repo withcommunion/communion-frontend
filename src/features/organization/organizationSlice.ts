@@ -6,7 +6,7 @@ import {
 import { Contract, utils, BigNumber } from 'ethers';
 import axios from 'axios';
 import type { RootState } from '@/reduxStore';
-import contractAbi from '../../contractAbi/jacksPizza/JacksPizzaOrg.json';
+import contractAbi from '../../contractAbi/jacksPizza/JacksPizzaGovernance.json';
 
 import { API_URL, OrgWithPublicData } from '@/util/walletApiUtil';
 import { HTTPSProvider } from '@/util/avaxEthersUtil';

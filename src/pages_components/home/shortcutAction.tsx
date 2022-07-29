@@ -8,7 +8,7 @@ interface Props {
 
 const ShortcutAction = ({ actionAmount, actionName }: Props) => {
   return (
-    <Link href="/org/org-jacks-pizza-1/send" passHref>
+    <Link href="/org/jacks-pizza-pittsfield/send" passHref>
       <button className="bg-slate-200 p-2 rounded-lg hover:bg-slate-400">
         <div className="relative">
           <div className="flex items-center min-w-55vw md:min-w-15vw max-h-10vh">
