@@ -18,7 +18,7 @@ export default function NavBar({ signOut, active }: Props) {
             <button
               className={cx(buttonClass, { 'bg-blue-200': active === 'home' })}
             >
-              <Link href="/org/org-jacks-pizza-1">Home</Link>
+              <Link href="/org/jacks-pizza-pittsfield">Home</Link>
             </button>
           </li>
 
@@ -26,7 +26,7 @@ export default function NavBar({ signOut, active }: Props) {
             <button
               className={cx(buttonClass, { 'bg-blue-200': active === 'send' })}
             >
-              <Link href="/org/org-jacks-pizza-1/send">Send</Link>
+              <Link href="/org/jacks-pizza-pittsfield/send">Send</Link>
             </button>
           </li>
 
@@ -36,7 +36,7 @@ export default function NavBar({ signOut, active }: Props) {
                 'bg-blue-200': active === 'redeem',
               })}
             >
-              <Link href="/org/org-jacks-pizza-1/redeem">Redeem</Link>
+              <Link href="/org/jacks-pizza-pittsfield/redeem">Redeem</Link>
             </button>
           </li>
 
