@@ -33,7 +33,7 @@ function getCookieStorage() {
      */
     // NEXT_PUBLIC_VERCEL_GIT_COMMIT_REF will be populated
     // eslint-disable-next-line
-    const prBranchDomainName = `communion-frontend-git-${process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_REF}-communion.vercel.app`;
+    const prBranchDomainName = `dev.withcommunion.com`;
     return { ...cookieStorageBase, domain: prBranchDomainName, secure: true };
   }
 
