@@ -1,9 +1,9 @@
-import { FC } from 'react';
-import { ISelfHeader } from '@/pages/org/[orgId]/indexPlayground';
 import Image from 'next/image';
 
-const Greeting: FC<{ selfHeader: ISelfHeader[] }> = ({ selfHeader }) => {
-  const { name } = selfHeader[0];
+interface Props {
+  name?: string;
+}
+const Greeting = ({ name }: Props) => {
   return (
     <div className="flex py-5">
       <Image

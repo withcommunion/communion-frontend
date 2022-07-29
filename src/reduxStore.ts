@@ -5,6 +5,7 @@ import selfReducer from '@/features/selfSlice';
 import transactionsReducer from '@/features/transactions/transactionsSlice';
 import organizationReducer from '@/features/organization/organizationSlice';
 import cartReducer from '@/features/cart/cartSlice';
+import multisendReducer from '@/features/multisend/multisendSlice';
 
 const store = configureStore({
   reducer: {
@@ -16,6 +17,7 @@ const store = configureStore({
     transactions: transactionsReducer,
     organization: organizationReducer,
     cart: cartReducer,
+    multisend: multisendReducer,
   },
 });
 
