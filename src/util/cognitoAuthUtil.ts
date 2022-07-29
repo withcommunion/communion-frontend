@@ -17,11 +17,11 @@ function getCookieStorage() {
     domain: undefined,
     secure: undefined,
     path: '/',
-    expires: 30,
+    expires: 365,
   };
 
   if (isProd) {
-    return { ...cookieStorageBase, domain: 'withcommunion.com', secure: false };
+    return { ...cookieStorageBase, domain: 'withcommunion.com', secure: true };
   }
 
   if (isDev) {
@@ -33,8 +33,11 @@ function getCookieStorage() {
      */
     // NEXT_PUBLIC_VERCEL_GIT_COMMIT_REF will be populated
     // eslint-disable-next-line
-    const prBranchDomainName = `dev.withcommunion.com`;
-    return { ...cookieStorageBase, domain: prBranchDomainName, secure: false };
+    return {
+      ...cookieStorageBase,
+      domain: `.dev.withcommunion.com`,
+      secure: true,
+    };
   }
 
   return { ...cookieStorageBase, domain: 'localhost', secure: false };
