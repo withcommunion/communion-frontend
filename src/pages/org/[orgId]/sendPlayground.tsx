@@ -1,14 +1,22 @@
 import { getUserJwtTokenOnServer } from '@/util/cognitoAuthUtil';
 import { GetServerSideProps } from 'next';
 
-import { SendSample } from '@/pages_components/org/[orgId]/sendComponents';
+import NavBar from '@/shared_components/navBar/NavBar';
+import {
+  PageTitle,
+  SearchPanel,
+  CardsListWrapper,
+} from '@/pages_components/org/[orgId]/sendComponents';
 
 const sendPage = () => {
   return (
-    <div className="py-4 flex flex-col items-center ">
-      <p>Have fun 😊</p>
-      <p>Thank you 🙏</p>
-      <SendSample />
+    <div className="pb-6 h-full bg-secondaryLightGray">
+      <div className="container w-full px-6 my-0 mx-auto mb-10">
+        <PageTitle />
+        <SearchPanel />
+        <CardsListWrapper />
+        <NavBar />
+      </div>
     </div>
   );
 };

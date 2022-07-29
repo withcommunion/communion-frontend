@@ -27,7 +27,7 @@ export default function NavBar() {
       name: 'send',
       image: '/images/menu/Send.svg',
       activeImage: '/images/menu/SendActive.svg',
-      linkHref: '#',
+      linkHref: '/org/org-jacks-pizza-1/sendPlayground',
       width: '17px',
       height: '19px',
     },
@@ -78,7 +78,7 @@ export default function NavBar() {
   });
 
   return (
-    <nav className="fixed h-14 inset-x-0 bottom-0 bg-white shadow-menuShadow z-30">
+    <nav className="fixed h-14 inset-x-0 bottom-0 bg-white shadow-menuShadow z-60">
       <ul className="flex justify-around items-center mx-1 h-full ">{Links}</ul>
     </nav>
   );
