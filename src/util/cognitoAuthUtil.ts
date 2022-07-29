@@ -18,6 +18,7 @@ function getCookieStorage() {
     secure: undefined,
     path: '/',
     expires: 365,
+    sameSite: 'strict',
   };
 
   if (isProd) {
