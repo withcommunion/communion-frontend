@@ -1,5 +1,4 @@
 import { Authenticator } from '@aws-amplify/ui-react';
-import { SelectField } from '@aws-amplify/ui-react';
 
 const formFields = {
   signUp: {
@@ -42,27 +41,6 @@ const AuthComponent = () => {
             return (
               <>
                 {/* Re-use default `Authenticator.SignUp.FormFields` */}
-                <SelectField
-                  label="Organization"
-                  labelHidden={true}
-                  id="organization"
-                  name="custom:organization"
-                  defaultValue="org-jacks-pizza-1"
-                >
-                  <option value="org-jacks-pizza-1">Jacks Pizza</option>
-                </SelectField>
-
-                <SelectField
-                  label="Role"
-                  labelHidden={true}
-                  id="role"
-                  name="custom:role"
-                  defaultValue="worker"
-                >
-                  <option value="worker">Worker</option>
-                  <option value="manager">Manager</option>
-                  <option value="owner">Owner</option>
-                </SelectField>
                 <Authenticator.SignUp.FormFields />
               </>
             );
