@@ -12,7 +12,7 @@ import {
   baseAmountUpdated,
 } from '@/features/multisend/multisendSlice';
 import OrgMemberCard from './sendMemberList/orgMemberCard';
-import ButtonsWrapper from '@/pages_components/org/[orgId]/send/bottomStickyButton/bottomStickyButtonContainer';
+import BottomStickyButton from '@/pages_components/org/[orgId]/send/bottomStickyButton/bottomStickyButtonContainer';
 import SendTokenTipsModal from '@/pages_components/org/[orgId]/send/sendTokensModal/sendTokensModal';
 import {
   selectOrg,
@@ -36,31 +36,34 @@ const SendMemberListContainer = ({ userJwt }: Props) => {
   const [showModal, setShowModal] = useState<boolean>(false);
 
   const isMemberSelected = selectedUsersAndAmounts.length > 0;
+  const showBottomStickyButton = isMemberSelected && !showModal;
   return (
     <>
-      <div className={`${isMemberSelected ? 'pb-20' : ''}`}>
-        <ul className="my-4">
-          {orgUsers.map((user) => {
-            // TODO: This is super inefficient, let's move to a map
-            const isUserSelected = Boolean(
-              selectedUsersAndAmounts.find(
-                (selectedUser) => selectedUser.user.id === user.id
-              )
-            );
-            return (
-              <OrgMemberCard
-                key={user.id}
-                userInOrg={user}
-                toggleChecked={() => {
-                  isUserSelected
-                    ? dispatch(userRemoved({ userId: user.id }))
-                    : dispatch(userAdded({ user, amount: baseAmountToSend }));
-                }}
-                isChecked={isUserSelected}
-              />
-            );
-          })}
-        </ul>
+      <div className={`${showBottomStickyButton ? 'pb-20' : ''}`}>
+        {!showModal && (
+          <ul className="my-4">
+            {orgUsers.map((user) => {
+              // TODO: This is super inefficient, let's move to a map
+              const isUserSelected = Boolean(
+                selectedUsersAndAmounts.find(
+                  (selectedUser) => selectedUser.user.id === user.id
+                )
+              );
+              return (
+                <OrgMemberCard
+                  key={user.id}
+                  userInOrg={user}
+                  toggleChecked={() => {
+                    isUserSelected
+                      ? dispatch(userRemoved({ userId: user.id }))
+                      : dispatch(userAdded({ user, amount: baseAmountToSend }));
+                  }}
+                  isChecked={isUserSelected}
+                />
+              );
+            })}
+          </ul>
+        )}
       </div>
 
       {/* TODO: Move to page container */}
@@ -90,8 +93,8 @@ const SendMemberListContainer = ({ userJwt }: Props) => {
       )}
 
       {/* TODO: Move to page container */}
-      {isMemberSelected && (
-        <ButtonsWrapper
+      {showBottomStickyButton && (
+        <BottomStickyButton
           onCancelClick={() => {
             dispatch(clearedUsers());
           }}
