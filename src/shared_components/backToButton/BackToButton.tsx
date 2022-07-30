@@ -3,12 +3,12 @@ import { FC, memo } from 'react';
 
 const BackToButton: FC<{
   text: string;
-  functionButton: () => void;
-}> = ({ text, functionButton }) => {
+  onClick: () => void;
+}> = ({ text, onClick }) => {
   return (
     <button
       onClick={() => {
-        functionButton();
+        onClick();
       }}
       className="my-11px"
     >
