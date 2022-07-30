@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import { Amplify } from 'aws-amplify';
-import { useAuthenticator } from '@aws-amplify/ui-react';
 
 import { AMPLIFY_CONFIG } from '@/util/cognitoAuthUtil';
 
@@ -27,9 +26,14 @@ import {
 
 import { getUserJwtTokenOnServer } from '@/util/cognitoAuthUtil';
 
-import NavBar from '@/shared_components/navBarTmp';
 import SendTokensModal from '@/shared_components/sendTokensModal';
 import SelfHeader from '@/shared_components/selfHeader';
+import SelfOrgHeader from '@/shared_components/selfHeader/selfOrgHeader';
+import NavBar, { AvailablePages } from '@/shared_components/navBar/NavBar';
+import {
+  SendPageHeader,
+  SendMemberListContainer,
+} from '@/pages_components/org/[orgId]/sendComponents';
 
 // https://docs.amplify.aws/lib/client-configuration/configuring-amplify-categories/q/platform/js/#general-configuration
 Amplify.configure({ ...AMPLIFY_CONFIG, ssr: true });
@@ -55,8 +59,6 @@ const OrgIdIndex = ({ userJwt }: Props) => {
   const wallet = useAppSelector((state) => selectWallet(state));
   const ethersWallet = useAppSelector((state) => selectEthersWallet(state));
   const balance = wallet.balance;
-
-  const { signOut } = useAuthenticator((context) => [context.signOut]);
 
   useEffect(() => {
     if (selfStatus === 'idle') {
@@ -87,7 +89,22 @@ const OrgIdIndex = ({ userJwt }: Props) => {
 
   return (
     <>
-      <NavBar signOut={signOut} active="send" />
+      <div className="pb-6 h-full bg-secondaryLightGray">
+        <div className="container w-full px-6 my-0 mx-auto mb-10">
+          <SelfOrgHeader
+            tokenAmount={userTokenBalance.valueString}
+            tokenSymbol={userTokenBalance.tokenSymbol}
+            name={self?.first_name}
+          />
+          <SendPageHeader />
+          {/* <SearchPanel /> */}
+          <SendMemberListContainer userJwt={userJwt} />
+          <NavBar
+            activePage={AvailablePages.orgSend}
+            activeOrgId={(orgId || '').toString()}
+          />
+        </div>
+      </div>
       <div className="py-4 flex flex-col items-center ">
         <div className="w-full md:w-1/4 px-5">
           <SelfHeader
@@ -127,6 +144,10 @@ const OrgIdIndex = ({ userJwt }: Props) => {
           )}
         </div>
       </div>
+      <NavBar
+        activePage={AvailablePages.orgSend}
+        activeOrgId={'communion-test-org'}
+      />
     </>
   );
 };

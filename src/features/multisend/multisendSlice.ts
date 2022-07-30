@@ -11,7 +11,7 @@ import { HTTPSProvider } from '@/util/avaxEthersUtil';
 
 import { API_URL, User } from '@/util/walletApiUtil';
 
-interface UserAndAmount {
+export interface UserAndAmount {
   user: User;
   amount: number;
 }
@@ -42,8 +42,18 @@ export const multisendSlice = createSlice({
   // `createSlice` will infer the state type from the `initialState` argument
   initialState,
   reducers: {
-    setBaseAmount: (state: MultisendState, action: PayloadAction<number>) => {
-      state.baseAmount = action.payload;
+    baseAmountUpdated: (
+      state: MultisendState,
+      action: PayloadAction<number>
+    ) => {
+      const baseAmount = action.payload;
+      state.baseAmount = baseAmount;
+      state.selectedUsersAndAmounts = state.selectedUsersAndAmounts.map(
+        (selectedUserAndAmount) => ({
+          ...selectedUserAndAmount,
+          amount: baseAmount,
+        })
+      );
     },
     userAdded(state: MultisendState, action: PayloadAction<UserAndAmount>) {
       const userExists = state.selectedUsersAndAmounts.find(
@@ -58,11 +68,17 @@ export const multisendSlice = createSlice({
         });
       }
     },
-    userRemoved(state: MultisendState, action: PayloadAction<UserAndAmount>) {
+    userRemoved(
+      state: MultisendState,
+      action: PayloadAction<{ userId: string }>
+    ) {
       state.selectedUsersAndAmounts = state.selectedUsersAndAmounts.filter(
         (selectUserAndAmount) =>
-          selectUserAndAmount.user.id !== action.payload.user.id
+          selectUserAndAmount.user.id !== action.payload.userId
       );
+    },
+    clearedUsers(state: MultisendState) {
+      state.selectedUsersAndAmounts = [];
     },
     updatedUserAmount(
       state: MultisendState,
@@ -100,6 +116,17 @@ export const multisendSlice = createSlice({
 
 export const selectUsersAndAmounts = (state: RootState) =>
   state.multisend.selectedUsersAndAmounts;
+export const selectTotalAmountSending = createSelector(
+  [selectUsersAndAmounts],
+  (usersAndAmount) =>
+    usersAndAmount.reduce(
+      (total, userAndAmount) => total + userAndAmount.amount,
+      0
+    )
+);
+
+export const selectBaseAmount = (state: RootState) =>
+  state.multisend.baseAmount;
 
 // Other code such as selectors can use the imported `RootState` type
 export const selectRootLatestTxn = (state: RootState) =>
@@ -185,7 +212,12 @@ export const fetchMultisendFunds = createAsyncThunk(
   }
 );
 
-export const { setBaseAmount, userAdded, userRemoved, updatedUserAmount } =
-  multisendSlice.actions;
+export const {
+  baseAmountUpdated,
+  userAdded,
+  userRemoved,
+  updatedUserAmount,
+  clearedUsers,
+} = multisendSlice.actions;
 
 export default multisendSlice.reducer;

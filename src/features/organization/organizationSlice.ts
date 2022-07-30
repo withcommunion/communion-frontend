@@ -52,7 +52,7 @@ const initialState: OrganizationState = {
 };
 
 const organizationSlice = createSlice({
-  name: 'posts',
+  name: 'organization',
   initialState,
   reducers: {
     reset: () => {

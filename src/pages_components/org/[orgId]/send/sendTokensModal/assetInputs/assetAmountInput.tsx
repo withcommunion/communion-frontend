@@ -1,6 +1,11 @@
 import Image from 'next/image';
 
-const AssetAmountInput = () => {
+interface Props {
+  amount: number;
+  tokenSymbol: string;
+  onChange: (value: number) => void;
+}
+const AssetAmountInput = ({ amount, tokenSymbol, onChange }: Props) => {
   return (
     <div className="rounded-4px bg-secondaryLightGray border-1px border-thirdLightGray p-15px my-15px">
       <div className="flex justify-between items-center pb-15px">
@@ -10,10 +15,15 @@ const AssetAmountInput = () => {
         </button>
       </div>
       <div className="bg-white border-thirdLightGray border-1px pl-5 pr-4 py-6 flex justify-between items-center">
-        <span className="text-primaryPurple">10</span>
+        <input
+          className="text-primaryPurple bg-white w-full border-thirdLightGray border-1px pl-5 pr-4 py-2"
+          onChange={(event) => onChange(parseInt(event.target.value))}
+          value={amount}
+        />
+
         <div>
           <span className="font-light text-17px mx-15px text-fourthGray">
-            PPP
+            {tokenSymbol}
           </span>
           <Image
             src="/images/send/asses/swap.svg"

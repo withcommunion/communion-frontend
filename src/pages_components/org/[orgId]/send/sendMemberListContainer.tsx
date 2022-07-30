@@ -1,118 +1,100 @@
 import { useState } from 'react';
+import { useAppSelector, useAppDispatch } from '@/reduxHooks';
 
+import {
+  selectUsersAndAmounts,
+  fetchMultisendFunds,
+  userAdded,
+  userRemoved,
+  clearedUsers,
+  selectTotalAmountSending,
+  selectBaseAmount,
+  baseAmountUpdated,
+} from '@/features/multisend/multisendSlice';
 import OrgMemberCard from './sendMemberList/orgMemberCard';
 import ButtonsWrapper from '@/pages_components/org/[orgId]/send/bottomStickyButton/bottomStickyButtonContainer';
 import SendTokenTipsModal from '@/pages_components/org/[orgId]/send/sendTokensModal/sendTokensModal';
+import {
+  selectOrg,
+  selectOrgUsers,
+} from '@/features/organization/organizationSlice';
 
-const MemberListContainer = () => {
+interface Props {
+  userJwt: string;
+}
+const SendMemberListContainer = ({ userJwt }: Props) => {
+  const dispatch = useAppDispatch();
+  const org = useAppSelector((state) => selectOrg(state));
+  const orgUsers = useAppSelector((state) => selectOrgUsers(state));
+  const selectedUsersAndAmounts = useAppSelector((state) =>
+    selectUsersAndAmounts(state)
+  );
+  const baseAmountToSend = useAppSelector((state) => selectBaseAmount(state));
+  const totalAmountSending = useAppSelector((state) =>
+    selectTotalAmountSending(state)
+  );
   const [showModal, setShowModal] = useState<boolean>(false);
 
-  const [members, setMembers] = useState([
-    {
-      id: 1,
-      avatar: '/images/send/avatar.svg',
-      name: 'Abby Arman',
-      isChecked: false,
-    },
-    {
-      id: 2,
-      avatar: '/images/send/avatar.svg',
-      name: 'Margarita Stepankova',
-      isChecked: false,
-    },
-    {
-      id: 3,
-      avatar: '/images/send/avatar.svg',
-      name: 'Abby Arman',
-      isChecked: false,
-    },
-    {
-      id: 4,
-      avatar: '/images/send/avatar.svg',
-      name: 'Margarita Stepankova',
-      isChecked: false,
-    },
-    {
-      id: 5,
-      avatar: '/images/send/avatar.svg',
-      name: 'Margarita Stepankova',
-      isChecked: false,
-    },
-    {
-      id: 6,
-      avatar: '/images/send/avatar.svg',
-      name: 'Margarita Stepankova',
-      isChecked: false,
-    },
-    {
-      id: 7,
-      avatar: '/images/send/avatar.svg',
-      name: 'Margarita Stepankova',
-      isChecked: false,
-    },
-    {
-      id: 8,
-      avatar: '/images/send/avatar.svg',
-      name: 'Margarita Stepankova',
-      isChecked: false,
-    },
-    {
-      id: 9,
-      avatar: '/images/send/avatar.svg',
-      name: 'Margarita Stepankova',
-      isChecked: false,
-    },
-    {
-      id: 10,
-      avatar: '/images/send/avatar.svg',
-      name: 'Margarita Stepankova',
-      isChecked: false,
-    },
-  ]);
-
-  const setIsChecked = (id: number, isChecked: boolean) => {
-    setMembers(
-      members.map((member) =>
-        member.id === id ? { ...member, isChecked: isChecked } : member
-      )
-    );
-  };
-
-  const onCancelButton = () => {
-    setMembers(
-      members.map((member) => {
-        return { ...member, isChecked: false };
-      })
-    );
-  };
-
-  const isMemberSelected = members.some((item) => item.isChecked === true);
+  const isMemberSelected = selectedUsersAndAmounts.length > 0;
   return (
     <>
       <div className={`${isMemberSelected ? 'pb-20' : ''}`}>
         <ul className="my-4">
-          {members.map((communityMember, num: number) => (
-            <OrgMemberCard
-              key={num}
-              userInOrg={communityMember}
-              setIsChecked={setIsChecked}
-            />
-          ))}
+          {orgUsers.map((user) => {
+            // TODO: This is super inefficient, let's move to a map
+            const isUserSelected = Boolean(
+              selectedUsersAndAmounts.find(
+                (selectedUser) => selectedUser.user.id === user.id
+              )
+            );
+            return (
+              <OrgMemberCard
+                key={user.id}
+                userInOrg={user}
+                toggleChecked={() => {
+                  isUserSelected
+                    ? dispatch(userRemoved({ userId: user.id }))
+                    : dispatch(userAdded({ user, amount: baseAmountToSend }));
+                }}
+                isChecked={isUserSelected}
+              />
+            );
+          })}
         </ul>
       </div>
 
       {/* TODO: Move to page container */}
       {showModal && (
         <SendTokenTipsModal
-          onToggleModal={() => setShowModal(!showModal)}
-          usersInOrg={members}
+          closeModal={() => setShowModal(false)}
+          selectedUsersAndAmounts={selectedUsersAndAmounts}
+          removeSelectedUser={(userId: string) =>
+            dispatch(userRemoved({ userId }))
+          }
+          baseAmountToSendPerUser={baseAmountToSend}
+          totalAmountSending={totalAmountSending}
+          tokenSymbol={org.avax_contract.token_symbol}
+          onAssetAmountChange={(value: number) => {
+            dispatch(baseAmountUpdated(value));
+          }}
+          onPrimaryButtonClick={() => {
+            dispatch(
+              fetchMultisendFunds({
+                toUsersAndAmounts: selectedUsersAndAmounts,
+                orgId: org.id,
+                jwtToken: userJwt,
+              })
+            );
+          }}
         />
       )}
 
       {/* TODO: Move to page container */}
       {isMemberSelected && (
         <ButtonsWrapper
-          onCancelClick={onCancelButton}
+          onCancelClick={() => {
+            dispatch(clearedUsers());
+          }}
           onPrimaryClick={() => {
             setShowModal(true);
           }}
@@ -122,4 +104,4 @@ const MemberListContainer = () => {
   );
 };
 
-export default MemberListContainer;
+export default SendMemberListContainer;
