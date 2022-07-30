@@ -1,6 +1,6 @@
 import Image from 'next/image';
 
-const SearchPanel = () => {
+const SendPageMemberSearch = () => {
   return (
     <div className="flex">
       <input
@@ -8,10 +8,15 @@ const SearchPanel = () => {
         placeholder="List of community members:"
       />
       <button className="flex justify-center items-center">
-        <Image src="/images/send/search.svg" width="22px" height="22px" />
+        <Image
+          src="/images/send/search.svg"
+          width="22px"
+          height="22px"
+          alt="SearchIcon"
+        />
       </button>
     </div>
   );
 };
 
-export default SearchPanel;
+export default SendPageMemberSearch;
