@@ -1,13 +1,14 @@
 import SelectedMemberCard from './selectedMemberCard';
-import { FC } from 'react';
 import { ICommunityMembers } from '@/pages_components/org/[orgId]/send/sendMemberList/orgMemberCard';
 
-const MemberSendList: FC<{ communityMembers: ICommunityMembers[] }> = ({
-  communityMembers,
-}) => {
+interface Props {
+  usersInOrg: ICommunityMembers[];
+}
+
+const MemberSendList = ({ usersInOrg }: Props) => {
   return (
     <ul>
-      {communityMembers.map(
+      {usersInOrg.map(
         (communityMember) =>
           communityMember.isChecked && (
             <SelectedMemberCard

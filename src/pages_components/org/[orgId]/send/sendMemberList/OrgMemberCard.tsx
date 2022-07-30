@@ -1,21 +1,16 @@
 import Image from 'next/image';
-import { FC } from 'react';
-
 export interface ICommunityMembers {
   id: number;
   avatar: string;
   name: string;
   isChecked?: boolean;
 }
-interface IOrgMemberCard {
+interface Props {
   communityMember: ICommunityMembers;
   setIsChecked: (id: number, isChecked: boolean) => void;
 }
 
-const OrgMemberCard: FC<IOrgMemberCard> = ({
-  communityMember,
-  setIsChecked,
-}) => {
+const OrgMemberCard = ({ communityMember, setIsChecked }: Props) => {
   const { isChecked, id } = communityMember;
 
   const onSwitchChecked = () => {
@@ -40,7 +35,7 @@ const OrgMemberCard: FC<IOrgMemberCard> = ({
               : 'mx-2.5 flex items-center'
           }
         >
-          <Image src={avatar} width="30px" height="30px" />
+          <Image src={avatar} width="30px" height="30px" alt="user avatar" />
         </span>
         <span className="text-primaryGray text-15px">{name}</span>
       </div>

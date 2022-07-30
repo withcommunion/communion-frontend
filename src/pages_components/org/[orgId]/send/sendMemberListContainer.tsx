@@ -110,7 +110,7 @@ const MemberListContainer = () => {
       {showModal && (
         <SendTokenTipsModal
           onToggleModal={() => setShowModal(!showModal)}
-          communityMembers={members}
+          usersInOrg={members}
         />
       )}
     </>
