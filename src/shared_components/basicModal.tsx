@@ -1,20 +1,28 @@
 import PrimaryBigButton from '@/shared_components/primaryButton/PrimaryBigButton';
 
 import Image from 'next/image';
-import React, { FC } from 'react';
+import React from 'react';
 
-const SendTokensModal: FC<{
+interface Props {
   title: string;
-  onModalClose: () => void;
-  onContinueClick: () => void;
-  buttonText: string;
+  toggleModal: () => void;
+  onPrimaryActionButtonClick: () => void;
+  primaryActionButtonText: string;
   children: React.ReactNode;
-}> = ({ title, onModalClose, onContinueClick, buttonText, children }) => {
+}
+
+const BasicModal = ({
+  title,
+  toggleModal,
+  onPrimaryActionButtonClick,
+  primaryActionButtonText,
+  children,
+}: Props) => {
   return (
     <div className="shadow-primaryModalShadow rounded-4px bg-white mb-16">
       <div className="bg-thirdGray p-15px flex justify-between items-center rounded-tl-4px rounded-tr-4px">
         <span className="text-white font-medium text-17px">{title}</span>
-        <button onClick={onModalClose}>
+        <button onClick={toggleModal}>
           <Image
             src="/images/whiteExit.svg"
             width="12px"
@@ -27,10 +35,13 @@ const SendTokensModal: FC<{
         <div className="mb-3">{children}</div>
       </div>
       <div className="px-15px pb-5 flex justify-center items-center flex-col">
-        <PrimaryBigButton text={buttonText} functionButton={onContinueClick} />
+        <PrimaryBigButton
+          text={primaryActionButtonText}
+          functionButton={onPrimaryActionButtonClick}
+        />
       </div>
     </div>
   );
 };
 
-export default SendTokensModal;
+export default BasicModal;
