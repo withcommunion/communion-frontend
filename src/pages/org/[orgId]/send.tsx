@@ -6,28 +6,18 @@ import { Amplify } from 'aws-amplify';
 import { AMPLIFY_CONFIG } from '@/util/cognitoAuthUtil';
 
 import { useAppSelector, useAppDispatch } from '@/reduxHooks';
-import {
-  selectSelf,
-  selectSelfStatus,
-  selectWallet,
-  selectEthersWallet,
-  fetchSelf,
-  fetchWalletBalance,
-} from '@/features/selfSlice';
+import { selectSelf, selectSelfStatus, fetchSelf } from '@/features/selfSlice';
 
 import {
   fetchOrgById,
   fetchOrgTokenBalance,
   selectOrg,
   selectOrgStatus,
-  selectOrgUsers,
   selectOrgUserTokenBalance,
 } from '@/features/organization/organizationSlice';
 
 import { getUserJwtTokenOnServer } from '@/util/cognitoAuthUtil';
 
-import SendTokensModal from '@/shared_components/sendTokensModal';
-import SelfHeader from '@/shared_components/selfHeader';
 import SelfOrgHeader from '@/shared_components/selfHeader/selfOrgHeader';
 import NavBar, { AvailablePages } from '@/shared_components/navBar/NavBar';
 import {
@@ -50,15 +40,10 @@ const OrgIdIndex = ({ userJwt }: Props) => {
   const selfStatus = useAppSelector((state) => selectSelfStatus(state));
 
   const org = useAppSelector((state) => selectOrg(state));
-  const orgUsers = useAppSelector((state) => selectOrgUsers(state));
   const orgStatus = useAppSelector((state) => selectOrgStatus(state));
   const userTokenBalance = useAppSelector((state) =>
     selectOrgUserTokenBalance(state)
   );
-
-  const wallet = useAppSelector((state) => selectWallet(state));
-  const ethersWallet = useAppSelector((state) => selectEthersWallet(state));
-  const balance = wallet.balance;
 
   useEffect(() => {
     if (selfStatus === 'idle') {
@@ -90,7 +75,7 @@ const OrgIdIndex = ({ userJwt }: Props) => {
   return (
     <>
       <div className="pb-6 h-full bg-secondaryLightGray">
-        <div className="container w-full px-6 my-0 mx-auto mb-10">
+        <div className="container w-full px-6 my-0 mx-auto mb-10 md:max-w-50vw">
           <SelfOrgHeader
             tokenAmount={userTokenBalance.valueString}
             tokenSymbol={userTokenBalance.tokenSymbol}
@@ -105,49 +90,6 @@ const OrgIdIndex = ({ userJwt }: Props) => {
           />
         </div>
       </div>
-      <div className="py-4 flex flex-col items-center ">
-        <div className="w-full md:w-1/4 px-5">
-          <SelfHeader
-            self={self}
-            balance={balance}
-            orgTokenBalance={userTokenBalance}
-            ethersWallet={ethersWallet}
-            refreshWalletBalance={(ethersWallet) =>
-              dispatch(fetchWalletBalance({ wallet: ethersWallet }))
-            }
-          />
-
-          {orgUsers && (
-            <ul className="mt-5 h-75vh flex flex-col items-start gap-y-3 overflow-auto">
-              {orgUsers.map((user) => (
-                <li
-                  className="flex justify-between items-center w-full gap-x-2"
-                  key={`${user.walletAddressC}`}
-                >
-                  <p>
-                    {user.first_name} {user.last_name}
-                  </p>
-                  {ethersWallet && (
-                    <SendTokensModal
-                      userJwt={userJwt}
-                      fromUsersWallet={ethersWallet}
-                      toUser={user}
-                    >
-                      <button className="bg-blue-500 disabled:bg-gray-400 hover:bg-blue-700 text-white py-1 px-2 rounded">
-                        Send
-                      </button>
-                    </SendTokensModal>
-                  )}
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-      </div>
-      <NavBar
-        activePage={AvailablePages.orgSend}
-        activeOrgId={'communion-test-org'}
-      />
     </>
   );
 };
