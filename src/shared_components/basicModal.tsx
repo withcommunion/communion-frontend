@@ -1,4 +1,4 @@
-import PrimaryBigButton from '@/shared_components/primaryButton/PrimaryBigButton';
+import PrimaryBigButton from '@/shared_components/primaryButton/primaryButton';
 
 import Image from 'next/image';
 import React from 'react';
@@ -37,7 +37,8 @@ const BasicModal = ({
       <div className="px-15px pb-5 flex justify-center items-center flex-col">
         <PrimaryBigButton
           text={primaryActionButtonText}
-          functionButton={onPrimaryActionButtonClick}
+          onClick={onPrimaryActionButtonClick}
+          size="big"
         />
       </div>
     </div>

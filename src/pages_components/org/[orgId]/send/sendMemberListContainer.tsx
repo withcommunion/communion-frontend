@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import OrgMemberCard from './sendMemberList/orgMemberCard';
-import ButtonsWrapper from '@/pages_components/org/[orgId]/send/buttonsWrapper/ButtonsWrapper';
+import ButtonsWrapper from '@/pages_components/org/[orgId]/send/bottomStickyButton/bottomStickyButtonContainer';
 import SendTokenTipsModal from '@/pages_components/org/[orgId]/send/sendTokensModal/sendTokensModal';
 
 const MemberListContainer = () => {
@@ -94,23 +94,28 @@ const MemberListContainer = () => {
           {members.map((communityMember, num: number) => (
             <OrgMemberCard
               key={num}
-              communityMember={communityMember}
+              userInOrg={communityMember}
               setIsChecked={setIsChecked}
             />
           ))}
         </ul>
       </div>
-      {isMemberSelected && (
-        <ButtonsWrapper
-          onCancelButton={onCancelButton}
-          onHideSendModal={() => setShowModal(!showModal)}
-        />
-      )}
+
       {/* TODO: Move to page container */}
       {showModal && (
         <SendTokenTipsModal
           onToggleModal={() => setShowModal(!showModal)}
           usersInOrg={members}
+        />
+      )}
+
+      {/* TODO: Move to page container */}
+      {isMemberSelected && (
+        <ButtonsWrapper
+          onCancelClick={onCancelButton}
+          onPrimaryClick={() => {
+            setShowModal(true);
+          }}
         />
       )}
     </>
