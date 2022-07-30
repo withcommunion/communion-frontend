@@ -1,8 +1,8 @@
 import { useState } from 'react';
 
-import OrgMemberCard from './sendMemberList/OrgMemberCard';
+import OrgMemberCard from './sendMemberList/orgMemberCard';
 import ButtonsWrapper from '@/pages_components/org/[orgId]/send/buttonsWrapper/ButtonsWrapper';
-import SendTokenTipsModal from '@/shared_components/sendTokensModal/sendTokenTipsModal/SendTokenTipsModal';
+import SendTokenTipsModal from '@/pages_components/org/[orgId]/send/sendTokensModal/sendTokensModal';
 
 const MemberListContainer = () => {
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -106,6 +106,7 @@ const MemberListContainer = () => {
           onHideSendModal={() => setShowModal(!showModal)}
         />
       )}
+      {/* TODO: Move to page container */}
       {showModal && (
         <SendTokenTipsModal
           onToggleModal={() => setShowModal(!showModal)}
