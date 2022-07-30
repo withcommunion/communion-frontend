@@ -15,7 +15,12 @@ const AssetAmountInput = () => {
           <span className="font-light text-17px mx-15px text-fourthGray">
             PPP
           </span>
-          <Image src="/images/send/asses/swap.svg" width="14px" height="16px" />
+          <Image
+            src="/images/send/asses/swap.svg"
+            width="14px"
+            height="16px"
+            alt="select different token arrows"
+          />
         </div>
       </div>
     </div>
