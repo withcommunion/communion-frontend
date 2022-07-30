@@ -1,23 +1,21 @@
 import Image from 'next/image';
-import { FC } from 'react';
-import { ICommunityMembers } from '@/pages_components/org/[orgId]/send/communityMembers/OrgMemberCardList';
-
-interface IOrgMemberCard {
-  communityMember: ICommunityMembers;
+export interface ICommunityMembers {
+  id: number;
+  avatar: string;
+  name: string;
+  isChecked?: boolean;
+}
+interface Props {
+  userInOrg: ICommunityMembers;
   setIsChecked: (id: number, isChecked: boolean) => void;
 }
 
-const OrgMemberCard: FC<IOrgMemberCard> = ({
-  communityMember,
-  setIsChecked,
-}) => {
-  const { isChecked, id } = communityMember;
+const OrgMemberCard = ({ userInOrg, setIsChecked }: Props) => {
+  const { isChecked, id, avatar, name } = userInOrg;
 
   const onSwitchChecked = () => {
     setIsChecked(id, !isChecked);
   };
-
-  const { avatar, name } = communityMember;
 
   return (
     <li
@@ -35,7 +33,7 @@ const OrgMemberCard: FC<IOrgMemberCard> = ({
               : 'mx-2.5 flex items-center'
           }
         >
-          <Image src={avatar} width="30px" height="30px" />
+          <Image src={avatar} width="30px" height="30px" alt="user avatar" />
         </span>
         <span className="text-primaryGray text-15px">{name}</span>
       </div>

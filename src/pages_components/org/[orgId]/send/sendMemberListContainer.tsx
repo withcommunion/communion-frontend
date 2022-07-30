@@ -1,14 +1,13 @@
 import { useState } from 'react';
-import OrgMemberCardList, {
-  ICommunityMembers,
-} from '@/pages_components/org/[orgId]/send/communityMembers/OrgMemberCardList';
-import ButtonsWrapper from '@/pages_components/org/[orgId]/send/buttonsWrapper/ButtonsWrapper';
-import SendTokenTipsModal from '@/shared_components/sendTokensModal/sendTokenTipsModal/SendTokenTipsModal';
 
-const CardsListWrapper = () => {
-  const [sendModalHide, setSendModalHide] = useState<boolean>(true);
+import OrgMemberCard from './sendMemberList/orgMemberCard';
+import ButtonsWrapper from '@/pages_components/org/[orgId]/send/bottomStickyButton/bottomStickyButtonContainer';
+import SendTokenTipsModal from '@/pages_components/org/[orgId]/send/sendTokensModal/sendTokensModal';
 
-  const [members, setMembers] = useState<ICommunityMembers[]>([
+const MemberListContainer = () => {
+  const [showModal, setShowModal] = useState<boolean>(false);
+
+  const [members, setMembers] = useState([
     {
       id: 1,
       avatar: '/images/send/avatar.svg',
@@ -79,10 +78,6 @@ const CardsListWrapper = () => {
     );
   };
 
-  const onHideSendModal = () => {
-    setSendModalHide(!sendModalHide);
-  };
-
   const onCancelButton = () => {
     setMembers(
       members.map((member) => {
@@ -91,34 +86,40 @@ const CardsListWrapper = () => {
     );
   };
 
+  const isMemberSelected = members.some((item) => item.isChecked === true);
   return (
     <>
-      <div
-        className={`${
-          members.some((item) => item.isChecked === true) ? 'pb-20' : ''
-        }`}
-      >
-        <OrgMemberCardList
-          communityMembers={members}
-          setIsChecked={setIsChecked}
-        />
+      <div className={`${isMemberSelected ? 'pb-20' : ''}`}>
+        <ul className="my-4">
+          {members.map((communityMember, num: number) => (
+            <OrgMemberCard
+              key={num}
+              userInOrg={communityMember}
+              setIsChecked={setIsChecked}
+            />
+          ))}
+        </ul>
       </div>
-      {members.some((item) => item.isChecked === true) && (
-        <ButtonsWrapper
-          onCancelButton={onCancelButton}
-          onHideSendModal={onHideSendModal}
+
+      {/* TODO: Move to page container */}
+      {showModal && (
+        <SendTokenTipsModal
+          onToggleModal={() => setShowModal(!showModal)}
+          usersInOrg={members}
         />
       )}
-      {sendModalHide ? (
-        <></>
-      ) : (
-        <SendTokenTipsModal
-          onHideSendModal={onHideSendModal}
-          communityMembers={members}
+
+      {/* TODO: Move to page container */}
+      {isMemberSelected && (
+        <ButtonsWrapper
+          onCancelClick={onCancelButton}
+          onPrimaryClick={() => {
+            setShowModal(true);
+          }}
         />
       )}
     </>
   );
 };
 
-export default CardsListWrapper;
+export default MemberListContainer;

@@ -1,21 +1,30 @@
 import Image from 'next/image';
-import { FC, memo } from 'react';
+import { memo } from 'react';
 
-const BackToButton: FC<{
-  text: string;
-  functionButton: () => void;
-}> = ({ text, functionButton }) => {
+interface Props {
+  backToDestinationText: string;
+  onClick: () => void;
+}
+const BackToButton = ({ backToDestinationText, onClick }: Props) => {
   return (
     <button
       onClick={() => {
-        functionButton();
+        onClick();
       }}
       className="my-11px"
     >
-      <Image src="/images/back.svg" width="17px" height="13px" />
-      <span className="text-4 text-primaryPurple mx-6px ">Back to {text}</span>
+      <Image
+        src="/images/back.svg"
+        width="17px"
+        height="13px"
+        alt="back arrow"
+      />
+      <span className="text-4 text-primaryPurple mx-6px ">
+        Back to {backToDestinationText}
+      </span>
     </button>
   );
 };
 
+// TODO Look into why we are doing this.  I am relatively unfamilar with React.memo
 export default memo(BackToButton);

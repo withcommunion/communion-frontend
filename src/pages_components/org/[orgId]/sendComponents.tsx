@@ -1,3 +1,3 @@
-export { default as CardsListWrapper } from './send/cardsListWrapper/CardsListWrapper';
-export { default as PageTitle } from './send/pageTitle/PageTitle';
-export { default as SearchPanel } from './send/searchPanel/searchPanel';
+export { default as SendMemberListContainer } from './send/sendMemberListContainer';
+export { default as SendPageHeader } from './send/sendPageHeader';
+export { default as SendPageMemberSearch } from './send/sendPageMemberSearch';

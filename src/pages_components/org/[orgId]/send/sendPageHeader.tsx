@@ -1,6 +1,6 @@
 import Image from 'next/image';
 
-const PageTitle = () => {
+const SendPageHeader = () => {
   return (
     <div className="flex py-5">
       <Image
@@ -16,4 +16,4 @@ const PageTitle = () => {
   );
 };
 
-export default PageTitle;
+export default SendPageHeader;

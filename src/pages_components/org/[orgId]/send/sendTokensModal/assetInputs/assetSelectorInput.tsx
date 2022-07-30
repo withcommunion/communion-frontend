@@ -18,10 +18,16 @@ const AssetSelectorInput = () => {
           <span className="font-light text-17px mx-15px text-fourthGray">
             PPP
           </span>
-          <Image src="/images/send/asses/arrow.svg" width="14px" height="8px" />
+          <Image
+            src="/images/send/asses/arrow.svg"
+            width="14px"
+            height="8px"
+            alt="select more down arrow"
+          />
         </div>
       </div>
     </div>
   );
 };
+
 export default AssetSelectorInput;
