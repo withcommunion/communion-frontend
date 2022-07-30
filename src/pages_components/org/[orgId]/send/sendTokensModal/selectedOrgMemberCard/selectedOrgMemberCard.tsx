@@ -1,21 +1,28 @@
+import { User } from '@/util/walletApiUtil';
 import Image from 'next/image';
-import { ICommunityMembers } from '../../sendMemberList/orgMemberCard';
 
 interface Props {
-  userInOrg: ICommunityMembers;
+  selectedUser: User;
+  removeSelectedUser: () => void;
 }
-const selectedMemberCard = ({ userInOrg }: Props) => {
-  const { avatar, name } = userInOrg;
+const selectedMemberCard = ({ selectedUser, removeSelectedUser }: Props) => {
+  const { first_name, last_name } = selectedUser;
 
   return (
     <li className="flex items-center justify-between my-6">
       <div className="flex items-center">
-        <Image src={avatar} width="30px" height="30px" alt="person icon" />
+        <Image
+          src={'/images/send/avatar.svg'}
+          width="30px"
+          height="30px"
+          alt="person icon"
+        />
         <span className="text-primaryGray text-5 font-semibold pl-2">
-          {name}
+          {first_name} {last_name}
         </span>
       </div>
       <Image
+        onClick={() => removeSelectedUser()}
         src="/images/delete.svg"
         width="30px"
         height="30px"

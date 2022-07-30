@@ -1,3 +1,4 @@
+import { User } from '@/util/walletApiUtil';
 import Image from 'next/image';
 export interface ICommunityMembers {
   id: number;
@@ -6,16 +7,13 @@ export interface ICommunityMembers {
   isChecked?: boolean;
 }
 interface Props {
-  userInOrg: ICommunityMembers;
-  setIsChecked: (id: number, isChecked: boolean) => void;
+  userInOrg: User;
+  toggleChecked: () => void;
+  isChecked: boolean;
 }
 
-const OrgMemberCard = ({ userInOrg, setIsChecked }: Props) => {
-  const { isChecked, id, avatar, name } = userInOrg;
-
-  const onSwitchChecked = () => {
-    setIsChecked(id, !isChecked);
-  };
+const OrgMemberCard = ({ userInOrg, toggleChecked, isChecked }: Props) => {
+  const { first_name, last_name } = userInOrg;
 
   return (
     <li
@@ -24,6 +22,7 @@ const OrgMemberCard = ({ userInOrg, setIsChecked }: Props) => {
           ? 'flex justify-between items-center h-16 bg-white rounded my-1 border-primaryBeige border-4'
           : 'flex justify-between items-center h-16 bg-white rounded my-1'
       }
+      onClick={toggleChecked}
     >
       <div className="flex items-center">
         <span
@@ -33,18 +32,23 @@ const OrgMemberCard = ({ userInOrg, setIsChecked }: Props) => {
               : 'mx-2.5 flex items-center'
           }
         >
-          <Image src={avatar} width="30px" height="30px" alt="user avatar" />
+          <Image
+            src={'/images/send/avatar.svg'}
+            width="30px"
+            height="30px"
+            alt="user avatar"
+          />
         </span>
-        <span className="text-primaryGray text-15px">{name}</span>
+        <span className="text-primaryGray text-15px">
+          {first_name} {last_name}
+        </span>
       </div>
       <input
         type="checkbox"
         className={isChecked ? 'mx-4' : 'mx-5'}
-        id={name}
-        name={name}
         checked={isChecked}
-        onChange={onSwitchChecked}
-      />
+        onChange={() => undefined}
+      ></input>
     </li>
   );
 };

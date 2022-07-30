@@ -9,9 +9,9 @@ const SendPageHeader = () => {
         width="19px"
         height="21px"
       />
-      <span className="mx-2 text-19px font-medium text-primaryPurple">
+      <h2 className="mx-2 text-19px font-medium text-primaryPurple">
         Send Token Tips
-      </span>
+      </h2>
     </div>
   );
 };

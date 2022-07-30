@@ -1,7 +1,7 @@
 import ShortcutAction from '@/pages_components/org/[orgId]/orgIdIndex/shortcutActions/shortcutAction/ShortcutActionItem';
 import { OrgAction } from '@/util/walletApiUtil';
 import { useAppDispatch } from '@/reduxHooks';
-import { setBaseAmount } from '@/features/multisend/multisendSlice';
+import { baseAmountUpdated } from '@/features/multisend/multisendSlice';
 
 interface Props {
   shortcutActions: OrgAction[];
@@ -27,7 +27,7 @@ const ShortcutActionsList = ({ shortcutActions, orgId }: Props) => {
           action={action}
           imageUrl={images[num]}
           onClick={() => {
-            dispatch(setBaseAmount(parseInt(action.amount)));
+            dispatch(baseAmountUpdated(parseInt(action.amount)));
           }}
         />
       ))}

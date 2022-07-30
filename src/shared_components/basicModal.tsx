@@ -7,6 +7,7 @@ interface Props {
   title: string;
   toggleModal: () => void;
   onPrimaryActionButtonClick: () => void;
+  onBackButtonClick?: () => void;
   primaryActionButtonText: string;
   children: React.ReactNode;
 }
@@ -14,6 +15,7 @@ interface Props {
 const BasicModal = ({
   title,
   toggleModal,
+  onBackButtonClick,
   onPrimaryActionButtonClick,
   primaryActionButtonText,
   children,
@@ -34,7 +36,14 @@ const BasicModal = ({
       <div className="px-15px">
         <div className="mb-3">{children}</div>
       </div>
-      <div className="px-15px pb-5 flex justify-center items-center flex-col">
+      <div className="px-15px pb-5 flex justify-center items-center flex-row">
+        {onBackButtonClick && (
+          <PrimaryBigButton
+            onClick={onBackButtonClick}
+            text="back"
+            size="small"
+          />
+        )}
         <PrimaryBigButton
           text={primaryActionButtonText}
           onClick={onPrimaryActionButtonClick}
