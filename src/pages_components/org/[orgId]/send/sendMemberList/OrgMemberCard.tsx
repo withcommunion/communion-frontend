@@ -1,7 +1,12 @@
 import Image from 'next/image';
 import { FC } from 'react';
-import { ICommunityMembers } from '@/pages_components/org/[orgId]/send/communityMembers/OrgMemberCardList';
 
+export interface ICommunityMembers {
+  id: number;
+  avatar: string;
+  name: string;
+  isChecked?: boolean;
+}
 interface IOrgMemberCard {
   communityMember: ICommunityMembers;
   setIsChecked: (id: number, isChecked: boolean) => void;
