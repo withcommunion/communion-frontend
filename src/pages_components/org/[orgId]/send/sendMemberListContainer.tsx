@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import OrgMemberCard from './sendMemberList/orgMemberCard';
+import OrgMemberCard from './sendMemberList/1orgMemberCard';
 import ButtonsWrapper from '@/pages_components/org/[orgId]/send/bottomStickyButton/bottomStickyButtonContainer';
 import SendTokenTipsModal from '@/pages_components/org/[orgId]/send/sendTokensModal/sendTokensModal';
 
