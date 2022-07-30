@@ -1,9 +1,8 @@
 import BackToButton from '@/shared_components/backToButton/BackToButton';
 import BasicModal from '@/shared_components/basicModal';
-import AssetSelectorInput from '@/pages_components/org/[orgId]/send/sendTokensModal/assetInputs/AssetSelectorInput';
-import AssetAmountInput from '@/pages_components/org/[orgId]/send/sendTokensModal/assetInputs/AssetAmountInput';
+import AssetAmountInput from '@/pages_components/org/[orgId]/send/sendTokensModal/assetInputs/assetAmountInput';
 import { ICommunityMembers } from '@/pages_components/org/[orgId]/send/sendMemberList/orgMemberCard';
-import MemberSendList from './membersSend/memberSendList';
+import SelectedOrgMemberCard from './selectedOrgMemberCard/selectedOrgMemberCard';
 
 interface Props {
   onToggleModal: () => void;
@@ -23,8 +22,13 @@ const SendTokenTipsModal = ({ onToggleModal, usersInOrg }: Props) => {
           }}
           primaryActionButtonText={'Next'}
         >
-          <MemberSendList usersInOrg={usersInOrg} />
-          <AssetSelectorInput />
+          <ul>
+            {usersInOrg.map(
+              (user) =>
+                user.isChecked && <SelectedOrgMemberCard userInOrg={user} />
+            )}
+          </ul>
+          {/* <AssetSelectorInput /> */}
           <AssetAmountInput />
         </BasicModal>
       </div>

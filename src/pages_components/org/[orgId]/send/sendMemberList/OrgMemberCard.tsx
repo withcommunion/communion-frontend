@@ -6,18 +6,16 @@ export interface ICommunityMembers {
   isChecked?: boolean;
 }
 interface Props {
-  communityMember: ICommunityMembers;
+  userInOrg: ICommunityMembers;
   setIsChecked: (id: number, isChecked: boolean) => void;
 }
 
-const OrgMemberCard = ({ communityMember, setIsChecked }: Props) => {
-  const { isChecked, id } = communityMember;
+const OrgMemberCard = ({ userInOrg, setIsChecked }: Props) => {
+  const { isChecked, id, avatar, name } = userInOrg;
 
   const onSwitchChecked = () => {
     setIsChecked(id, !isChecked);
   };
-
-  const { avatar, name } = communityMember;
 
   return (
     <li
