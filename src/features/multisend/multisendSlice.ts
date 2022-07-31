@@ -92,6 +92,9 @@ export const multisendSlice = createSlice({
         updatedUser.amount = action.payload.amount;
       }
     },
+    clearedLatestTxn(state: MultisendState) {
+      state.latestTxn = initialState.latestTxn;
+    },
   },
   extraReducers(builder) {
     builder
@@ -213,6 +216,7 @@ export const fetchMultisendFunds = createAsyncThunk(
 );
 
 export const {
+  clearedLatestTxn,
   baseAmountUpdated,
   userAdded,
   userRemoved,
