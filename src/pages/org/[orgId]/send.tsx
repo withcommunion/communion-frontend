@@ -74,7 +74,11 @@ const OrgIdIndex = ({ userJwt }: Props) => {
 
   return (
     <>
-      <div className="pb-6 h-full bg-secondaryLightGray">
+      <NavBar
+        activePage={AvailablePages.orgSend}
+        activeOrgId={(orgId || '').toString()}
+      />
+      <div className="pb-6 h-full min-h-100vh bg-secondaryLightGray">
         <div className="container w-full px-6 my-0 mx-auto mb-10 md:max-w-50vw">
           <SelfOrgHeader
             tokenAmount={userTokenBalance.valueString}
@@ -84,10 +88,6 @@ const OrgIdIndex = ({ userJwt }: Props) => {
           <SendPageHeader />
           {/* <SearchPanel /> */}
           <SendMemberListContainer userJwt={userJwt} />
-          <NavBar
-            activePage={AvailablePages.orgSend}
-            activeOrgId={(orgId || '').toString()}
-          />
         </div>
       </div>
     </>

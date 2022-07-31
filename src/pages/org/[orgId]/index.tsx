@@ -1,7 +1,6 @@
 import type { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import { Amplify } from 'aws-amplify';
-import { useAuthenticator } from '@aws-amplify/ui-react';
 import { useEffect } from 'react';
 
 import { AMPLIFY_CONFIG } from '@/util/cognitoAuthUtil';
@@ -24,8 +23,6 @@ import {
   selectOrgUserTokenBalance,
   fetchOrgTokenBalance,
 } from '@/features/organization/organizationSlice';
-
-import NavBarOld from '@/shared_components/navBarTmp';
 
 import NavBar, { AvailablePages } from '@/shared_components/navBar/NavBar';
 import SelfOrgHeader from '@/shared_components/selfHeader/selfOrgHeader';
@@ -61,8 +58,6 @@ const Home = ({ userJwt }: Props) => {
   const historicalTxnsStatus = useAppSelector((state) =>
     reSelectHistoricalTxnsStatus(state)
   );
-
-  const { signOut } = useAuthenticator((context) => [context.signOut]);
 
   useEffect(() => {
     if (userJwt && orgId && orgStatus === 'idle') {
@@ -102,7 +97,10 @@ const Home = ({ userJwt }: Props) => {
 
   return (
     <>
-      <NavBarOld signOut={signOut} active="home" />
+      <NavBar
+        activePage={AvailablePages.orgHome}
+        activeOrgId={(orgId || '').toString()}
+      />
       <>
         <div className="bg-secondaryLightGray pb-2 min-h-100vh ">
           <div className="container w-full px-6 my-0 mx-auto md:max-w-50vw">
@@ -133,10 +131,6 @@ const Home = ({ userJwt }: Props) => {
             </div>
           </div>
         </div>
-        <NavBar
-          activePage={AvailablePages.orgHome}
-          activeOrgId={(orgId || '').toString()}
-        />
       </>
     </>
   );
