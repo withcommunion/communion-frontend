@@ -1,5 +1,5 @@
 import PrimaryButton from '@/shared_components/buttons/primaryButton';
-import SecondaryButton from '@/shared_components/buttons/primaryButton';
+import SecondaryButton from '@/shared_components/buttons/secondaryButton';
 
 import Image from 'next/image';
 import React from 'react';
