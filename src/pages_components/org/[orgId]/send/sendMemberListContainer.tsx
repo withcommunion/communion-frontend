@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAppSelector, useAppDispatch } from '@/reduxHooks';
 
 import {
@@ -9,7 +9,7 @@ import {
   clearedUsers,
   selectTotalAmountSending,
   selectBaseAmount,
-  baseAmountUpdated,
+  clearedLatestTxn,
 } from '@/features/multisend/multisendSlice';
 import OrgMemberCard from './sendMemberList/orgMemberCard';
 import BottomStickyButton from '@/pages_components/org/[orgId]/send/bottomStickyButton/bottomStickyButtonContainer';
@@ -37,6 +37,13 @@ const SendMemberListContainer = ({ userJwt }: Props) => {
 
   const isMemberSelected = selectedUsersAndAmounts.length > 0;
   const showBottomStickyButton = isMemberSelected && !showModal;
+
+  useEffect(() => {
+    if (!showModal) {
+      dispatch(clearedLatestTxn());
+    }
+  }, [showModal, dispatch]);
+
   return (
     <>
       <div className={`${showBottomStickyButton ? 'pb-20' : ''}`}>
@@ -77,9 +84,6 @@ const SendMemberListContainer = ({ userJwt }: Props) => {
           baseAmountToSendPerUser={baseAmountToSend}
           totalAmountSending={totalAmountSending}
           tokenSymbol={org.avax_contract.token_symbol}
-          onAssetAmountChange={(value: number) => {
-            dispatch(baseAmountUpdated(value));
-          }}
           sendTokens={async () => {
             await dispatch(
               fetchMultisendFunds({
