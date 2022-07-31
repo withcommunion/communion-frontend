@@ -4,8 +4,8 @@ interface Props {
   onClick: () => void;
   text: string;
   size: 'small' | 'big';
-  disabled: boolean;
-  loading: boolean;
+  disabled?: boolean;
+  loading?: boolean;
 }
 
 const PrimaryButton = ({ text, onClick, size, disabled, loading }: Props) => {
