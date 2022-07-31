@@ -16,6 +16,8 @@ import {
   selectOrgUserTokenBalance,
 } from '@/features/organization/organizationSlice';
 
+import { fetchSelfHistoricalTxns } from '@/features/transactions/transactionsSlice';
+
 import { getUserJwtTokenOnServer } from '@/util/cognitoAuthUtil';
 
 import SelfOrgHeader from '@/shared_components/selfHeader/selfOrgHeader';
@@ -89,7 +91,7 @@ const OrgIdIndex = ({ userJwt }: Props) => {
           {/* <SearchPanel /> */}
           <SendMemberListContainer
             userJwt={userJwt}
-            refreshUserBalance={() => {
+            fetchRefreshUserBalance={() => {
               dispatch(
                 fetchOrgTokenBalance({
                   walletAddress: self?.walletAddressC || '',
@@ -97,6 +99,14 @@ const OrgIdIndex = ({ userJwt }: Props) => {
                 })
               );
             }}
+            fetchRefreshTxns={() =>
+              dispatch(
+                fetchSelfHistoricalTxns({
+                  orgId: (orgId || '').toString(),
+                  jwtToken: userJwt,
+                })
+              )
+            }
           />
         </div>
       </div>
