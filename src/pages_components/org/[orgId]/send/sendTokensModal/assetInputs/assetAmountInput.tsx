@@ -17,7 +17,7 @@ const AssetAmountInput = ({ amount, tokenSymbol, onChange }: Props) => {
       <div className="bg-white border-thirdLightGray border-1px pl-5 pr-4 py-6 flex justify-between items-center">
         <input
           className="text-primaryPurple bg-white w-full border-thirdLightGray border-1px pl-5 pr-4 py-2"
-          onChange={(event) => onChange(parseInt(event.target.value))}
+          onChange={(event) => onChange(parseInt(event.target.value || '0'))}
           value={amount}
         />
 
