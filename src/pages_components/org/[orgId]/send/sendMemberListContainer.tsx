@@ -80,8 +80,8 @@ const SendMemberListContainer = ({ userJwt }: Props) => {
           onAssetAmountChange={(value: number) => {
             dispatch(baseAmountUpdated(value));
           }}
-          onPrimaryButtonClick={() => {
-            dispatch(
+          sendTokens={async () => {
+            await dispatch(
               fetchMultisendFunds({
                 toUsersAndAmounts: selectedUsersAndAmounts,
                 orgId: org.id,

@@ -1,4 +1,5 @@
-import PrimaryBigButton from '@/shared_components/primaryButton/primaryButton';
+import PrimaryButton from '@/shared_components/buttons/primaryButton';
+import SecondaryButton from '@/shared_components/buttons/primaryButton';
 
 import Image from 'next/image';
 import React from 'react';
@@ -7,17 +8,19 @@ interface Props {
   title: string;
   toggleModal: () => void;
   onPrimaryActionButtonClick: () => void;
-  onBackButtonClick?: () => void;
   primaryActionButtonText: string;
+  onSecondaryActionButtonClick?: () => void;
+  secondaryActionButtonText?: string;
   children: React.ReactNode;
 }
 
 const BasicModal = ({
   title,
   toggleModal,
-  onBackButtonClick,
   onPrimaryActionButtonClick,
   primaryActionButtonText,
+  onSecondaryActionButtonClick,
+  secondaryActionButtonText,
   children,
 }: Props) => {
   return (
@@ -37,14 +40,14 @@ const BasicModal = ({
         <div className="mb-3">{children}</div>
       </div>
       <div className="px-15px pb-5 flex justify-center items-center flex-row">
-        {onBackButtonClick && (
-          <PrimaryBigButton
-            onClick={onBackButtonClick}
-            text="back"
+        {onSecondaryActionButtonClick && secondaryActionButtonText && (
+          <SecondaryButton
+            onClick={onSecondaryActionButtonClick}
+            text={secondaryActionButtonText}
             size="small"
           />
         )}
-        <PrimaryBigButton
+        <PrimaryButton
           text={primaryActionButtonText}
           onClick={onPrimaryActionButtonClick}
           size="big"

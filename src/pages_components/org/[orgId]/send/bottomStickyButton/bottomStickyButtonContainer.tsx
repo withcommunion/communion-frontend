@@ -1,5 +1,5 @@
-import CancelButton from './cancelButton/cancelButton';
-import PrimarySmallButton from '@/shared_components/primaryButton/primaryButton';
+import SecondaryButton from '@/shared_components/buttons/secondaryButton';
+import PrimarySmallButton from '@/shared_components/buttons/primaryButton';
 
 interface Props {
   onCancelClick: () => void;
@@ -12,7 +12,7 @@ const BottomStickyButtonContainer = ({
   return (
     <div className="fixed w-full left-0 bottom-14 ">
       <div className="flex justify-center items-center bg-white p-5">
-        <CancelButton onClick={onCancelClick} />
+        <SecondaryButton onClick={onCancelClick} text={'Cancel'} size="small" />
         <PrimarySmallButton
           size="small"
           text="Continue"
