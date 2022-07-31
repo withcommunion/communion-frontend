@@ -1,11 +1,16 @@
 // TODO: This will make this component real smoove https://reactjs.org/docs/animation.html
 import { useEffect, useState } from 'react';
+import { useAppSelector } from '@/reduxHooks';
 
 import BackToButton from '@/shared_components/backToButton/BackToButton';
 import BasicModal from '@/shared_components/basicModal';
 import AssetAmountInput from '@/pages_components/org/[orgId]/send/sendTokensModal/assetInputs/assetAmountInput';
 import SelectedOrgMemberCard from './selectedOrgMemberCard/selectedOrgMemberCard';
-import type { UserAndAmount } from '@/features/multisend/multisendSlice';
+import {
+  selectLatestTxnErrorMessage,
+  selectLatestTxnStatus,
+  UserAndAmount,
+} from '@/features/multisend/multisendSlice';
 
 interface Props {
   closeModal: () => void;
@@ -15,8 +20,9 @@ interface Props {
   totalAmountSending: number;
   onAssetAmountChange: (value: number) => void;
   tokenSymbol: string;
-  onPrimaryButtonClick: () => void;
+  sendTokens: () => Promise<void>;
 }
+
 const SendTokenTipsModal = ({
   closeModal,
   selectedUsersAndAmounts,
@@ -25,11 +31,19 @@ const SendTokenTipsModal = ({
   totalAmountSending,
   tokenSymbol,
   onAssetAmountChange,
-  onPrimaryButtonClick,
+  sendTokens,
 }: Props) => {
+  const latestTxnStatus = useAppSelector((state) =>
+    selectLatestTxnStatus(state)
+  );
+  const latestTxnErrorMessage = useAppSelector((state) =>
+    selectLatestTxnErrorMessage(state)
+  );
+
   const [currentStep, setCurrentStep] = useState<
     'input' | 'confirm' | 'completed'
   >('input');
+
   useEffect(() => {
     if (selectedUsersAndAmounts.length === 0) {
       closeModal();
@@ -70,11 +84,12 @@ const SendTokenTipsModal = ({
           <BasicModal
             title={'Send Token Tips to:'}
             toggleModal={closeModal}
-            onBackButtonClick={() => {
+            secondaryActionButtonText={'Back'}
+            onSecondaryActionButtonClick={() => {
               setCurrentStep('input');
             }}
-            onPrimaryActionButtonClick={() => {
-              onPrimaryButtonClick();
+            onPrimaryActionButtonClick={async () => {
+              await sendTokens();
               setCurrentStep('completed');
             }}
             primaryActionButtonText={'Submit'}
@@ -107,13 +122,10 @@ const SendTokenTipsModal = ({
           <BasicModal
             title={'Send Token Tips to:'}
             toggleModal={closeModal}
-            onBackButtonClick={() => {
-              setCurrentStep('input');
-            }}
             onPrimaryActionButtonClick={() => {
-              onPrimaryButtonClick();
+              closeModal();
             }}
-            primaryActionButtonText={'Submit'}
+            primaryActionButtonText={'Close'}
           >
             <div>
               <h2>Congratulations!</h2>
