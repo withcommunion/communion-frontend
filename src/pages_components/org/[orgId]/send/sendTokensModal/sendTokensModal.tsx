@@ -1,13 +1,15 @@
 // TODO: This will make this component real smoove https://reactjs.org/docs/animation.html
 import { useEffect, useState } from 'react';
-import { useAppSelector, useAppDispatch } from '@/reduxHooks';
+import cx from 'classNames';
 
+import { useAppSelector, useAppDispatch } from '@/reduxHooks';
 import BackToButton from '@/shared_components/backToButton/BackToButton';
 import BasicModal from '@/shared_components/basicModal';
 import AssetAmountInput from '@/pages_components/org/[orgId]/send/sendTokensModal/assetInputs/assetAmountInput';
 import SelectedOrgMemberCard from './selectedOrgMemberCard/selectedOrgMemberCard';
 import {
   baseAmountUpdated,
+  updatedUserAmount,
   clearedUsers,
   selectLatestTxnErrorMessage,
   selectLatestTxnStatus,
@@ -20,7 +22,6 @@ interface Props {
   removeSelectedUser: (userId: string) => void;
   baseAmountToSendPerUser: number;
   totalAmountSending: number;
-  onAssetAmountChange: (value: number) => void;
   tokenSymbol: string;
   sendTokens: () => Promise<void>;
 }
@@ -32,7 +33,6 @@ const SendTokenTipsModal = ({
   baseAmountToSendPerUser,
   totalAmountSending,
   tokenSymbol,
-  onAssetAmountChange,
   sendTokens,
 }: Props) => {
   const dispatch = useAppDispatch();
@@ -45,6 +45,7 @@ const SendTokenTipsModal = ({
     selectLatestTxnErrorMessage(state)
   );
 
+  const [isSendingSameAmount, setIsSendingSameAmount] = useState(true);
   const [currentStep, setCurrentStep] = useState<
     'input' | 'confirm' | 'completed'
   >('input');
@@ -68,22 +69,87 @@ const SendTokenTipsModal = ({
             }}
             primaryActionButtonText={'Next'}
           >
-            <ul>
-              {selectedUsersAndAmounts.map((userAndAmount) => (
-                <SelectedOrgMemberCard
-                  removeSelectedUser={() =>
-                    removeSelectedUser(userAndAmount.user.id)
-                  }
-                  key={userAndAmount.user.id}
-                  selectedUser={userAndAmount.user}
-                />
-              ))}
-            </ul>
-            <AssetAmountInput
-              amount={baseAmountToSendPerUser}
-              tokenSymbol={tokenSymbol}
-              onChange={(value: number) => onAssetAmountChange(value)}
-            />
+            <>
+              {/**TODO: Make this it's own component, make styling match designs */}
+              <div className="flex flex-row gap-x-2">
+                <span className="p-2">Sending: </span>
+                <button
+                  value="sameAmount"
+                  className={cx({
+                    'rounded-3px border-1px border-thirdOrange p-2 text-fourthOrange':
+                      isSendingSameAmount,
+                    'p-2 text-fourthGray': !isSendingSameAmount,
+                  })}
+                  onClick={() => {
+                    dispatch(baseAmountUpdated(baseAmountToSendPerUser));
+                    setIsSendingSameAmount(true);
+                  }}
+                >
+                  The Same Amount
+                </button>
+                <button
+                  className={cx({
+                    'rounded-3px border-1px border-thirdOrange p-2 text-fourthOrange':
+                      !isSendingSameAmount,
+                    'p-2 text-fourthGray': isSendingSameAmount,
+                  })}
+                  value="differentAmount"
+                  onClick={() => setIsSendingSameAmount(false)}
+                >
+                  Different Amount
+                </button>
+              </div>
+              {isSendingSameAmount && (
+                <div>
+                  <ul>
+                    {selectedUsersAndAmounts.map((userAndAmount) => (
+                      <SelectedOrgMemberCard
+                        removeSelectedUser={() =>
+                          removeSelectedUser(userAndAmount.user.id)
+                        }
+                        key={userAndAmount.user.id}
+                        selectedUser={userAndAmount.user}
+                      />
+                    ))}
+                  </ul>
+                  <AssetAmountInput
+                    amount={baseAmountToSendPerUser}
+                    tokenSymbol={tokenSymbol}
+                    onChange={(value: number) =>
+                      dispatch(baseAmountUpdated(value))
+                    }
+                  />
+                </div>
+              )}
+              {!isSendingSameAmount &&
+                selectedUsersAndAmounts.map((userAndAmount) => (
+                  <ul key={userAndAmount.user.id}>
+                    <SelectedOrgMemberCard
+                      removeSelectedUser={() =>
+                        removeSelectedUser(userAndAmount.user.id)
+                      }
+                      selectedUser={userAndAmount.user}
+                    />
+                    <AssetAmountInput
+                      amount={userAndAmount.amount}
+                      tokenSymbol={tokenSymbol}
+                      onChange={(value: number) =>
+                        dispatch(
+                          updatedUserAmount({
+                            user: userAndAmount.user,
+                            amount: value,
+                          })
+                        )
+                      }
+                    />
+                  </ul>
+                ))}
+
+              <div>
+                <span className="p-2">Total: </span>
+                <span>{totalAmountSending}</span>
+              </div>
+            </>
           </BasicModal>
         )}
         {currentStep === 'confirm' && (

@@ -9,7 +9,6 @@ import {
   clearedUsers,
   selectTotalAmountSending,
   selectBaseAmount,
-  baseAmountUpdated,
 } from '@/features/multisend/multisendSlice';
 import OrgMemberCard from './sendMemberList/orgMemberCard';
 import BottomStickyButton from '@/pages_components/org/[orgId]/send/bottomStickyButton/bottomStickyButtonContainer';
@@ -77,9 +76,6 @@ const SendMemberListContainer = ({ userJwt }: Props) => {
           baseAmountToSendPerUser={baseAmountToSend}
           totalAmountSending={totalAmountSending}
           tokenSymbol={org.avax_contract.token_symbol}
-          onAssetAmountChange={(value: number) => {
-            dispatch(baseAmountUpdated(value));
-          }}
           sendTokens={async () => {
             await dispatch(
               fetchMultisendFunds({
