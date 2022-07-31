@@ -33,9 +33,11 @@ const SendTokenTipsModal = ({
   onAssetAmountChange,
   sendTokens,
 }: Props) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const latestTxnStatus = useAppSelector((state) =>
     selectLatestTxnStatus(state)
   );
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const latestTxnErrorMessage = useAppSelector((state) =>
     selectLatestTxnErrorMessage(state)
   );
@@ -53,6 +55,7 @@ const SendTokenTipsModal = ({
     <div className="absolute top-0 left-0 mx-auto w-full z-50 bg-secondaryLightGray min-h-100vh">
       <div className="container w-full md:max-w-50vw px-6 pb-1 mx-auto bg-secondaryLightGray">
         <BackToButton backToDestinationText={'List'} onClick={closeModal} />
+
         {currentStep === 'input' && (
           <BasicModal
             title={'Send Token Tips to:'}
@@ -82,7 +85,7 @@ const SendTokenTipsModal = ({
         )}
         {currentStep === 'confirm' && (
           <BasicModal
-            title={'Send Token Tips to:'}
+            title={'Confirmation'}
             toggleModal={closeModal}
             secondaryActionButtonText={'Back'}
             onSecondaryActionButtonClick={() => {
@@ -95,26 +98,39 @@ const SendTokenTipsModal = ({
             primaryActionButtonText={'Submit'}
           >
             <div>
-              <h2>Confirmation</h2>
-              <p>You are about to: </p>
-              <ul>
-                {selectedUsersAndAmounts.map((userAndAmount) => (
-                  <li key={userAndAmount.user.id}>
-                    <div>
-                      <span>
-                        Send {baseAmountToSendPerUser} {tokenSymbol}{' '}
-                      </span>
-                      <span>
-                        To: {userAndAmount.user.first_name}{' '}
+              <p className="my-5 text-center text-secondaryGray">
+                You are about to send:
+              </p>
+              <table className="border">
+                <thead>
+                  <tr>
+                    <th className="text-start w-100vw">Name</th>
+                    <th className="text-start">Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {selectedUsersAndAmounts.map((userAndAmount) => (
+                    <tr
+                      key={userAndAmount.user.id}
+                      className="border border-spacing-2"
+                    >
+                      <td className="min-w=50vw">
+                        {userAndAmount.user.first_name}{' '}
                         {userAndAmount.user.last_name}
-                      </span>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-              <span>
-                For a total of: {totalAmountSending} {tokenSymbol}
-              </span>
+                      </td>
+                      <td className="text-center">
+                        {userAndAmount.amount} {tokenSymbol}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <div className="flex flex-row my-5">
+                <span className="mr-2">For a total of:</span>
+                <span className="font-semibold">
+                  {totalAmountSending} {tokenSymbol}
+                </span>
+              </div>
             </div>
           </BasicModal>
         )}
