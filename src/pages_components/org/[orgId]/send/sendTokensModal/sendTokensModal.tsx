@@ -1,6 +1,6 @@
 // TODO: This will make this component real smoove https://reactjs.org/docs/animation.html
 import { useEffect, useState } from 'react';
-import cx from 'classNames';
+import cx from 'classnames';
 
 import { useAppSelector, useAppDispatch } from '@/reduxHooks';
 import BackToButton from '@/shared_components/backToButton/BackToButton';
@@ -8,6 +8,7 @@ import BasicModal from '@/shared_components/basicModal';
 import AssetAmountInput from '@/pages_components/org/[orgId]/send/sendTokensModal/assetInputs/assetAmountInput';
 import SelectedOrgMemberCard from './selectedOrgMemberCard/selectedOrgMemberCard';
 import {
+  clearedLatestTxn,
   baseAmountUpdated,
   updatedUserAmount,
   clearedUsers,
@@ -50,7 +51,7 @@ const SendTokenTipsModal = ({
 
   const [isSendingSameAmount, setIsSendingSameAmount] = useState(true);
   const [currentStep, setCurrentStep] = useState<
-    'input' | 'confirm' | 'completed'
+    'input' | 'confirm' | 'success' | 'error'
   >('input');
 
   useEffect(() => {
@@ -58,6 +59,14 @@ const SendTokenTipsModal = ({
       closeModal();
     }
   }, [selectedUsersAndAmounts, closeModal]);
+
+  useEffect(() => {
+    if (latestTxnStatus === 'succeeded') {
+      setCurrentStep('success');
+    } else if (latestTxnStatus === 'failed') {
+      setCurrentStep('error');
+    }
+  }, [latestTxnStatus]);
   return (
     <div className="absolute top-0 left-0 mx-auto w-full z-50 bg-secondaryLightGray min-h-100vh">
       <div className="container w-full md:max-w-50vw px-6 pb-1 mx-auto bg-secondaryLightGray">
@@ -75,14 +84,16 @@ const SendTokenTipsModal = ({
             <>
               {/**TODO: Make this it's own component, make styling match designs */}
               <div className="flex flex-row gap-x-2">
-                <span className="p-2">Sending: </span>
                 <button
                   value="sameAmount"
-                  className={cx({
-                    'rounded-3px border-1px border-thirdOrange p-2 text-fourthOrange':
-                      isSendingSameAmount,
-                    'p-2 text-fourthGray': !isSendingSameAmount,
-                  })}
+                  className={cx(
+                    {
+                      'border-1px border-thirdOrange text-fourthOrange':
+                        isSendingSameAmount,
+                      'text-fourthGray': !isSendingSameAmount,
+                    },
+                    'rounded-3px p-2 text-sm'
+                  )}
                   onClick={() => {
                     dispatch(baseAmountUpdated(baseAmountToSendPerUser));
                     setIsSendingSameAmount(true);
@@ -91,11 +102,14 @@ const SendTokenTipsModal = ({
                   The Same Amount
                 </button>
                 <button
-                  className={cx({
-                    'rounded-3px border-1px border-thirdOrange p-2 text-fourthOrange':
-                      !isSendingSameAmount,
-                    'p-2 text-fourthGray': isSendingSameAmount,
-                  })}
+                  className={cx(
+                    {
+                      'border-1px border-thirdOrange text-fourthOrange':
+                        !isSendingSameAmount,
+                      'text-fourthGray': isSendingSameAmount,
+                    },
+                    'rounded-3px p-2 text-sm'
+                  )}
                   value="differentAmount"
                   onClick={() => setIsSendingSameAmount(false)}
                 >
@@ -167,7 +181,6 @@ const SendTokenTipsModal = ({
             }}
             onPrimaryActionButtonClick={async () => {
               await sendTokens();
-              setCurrentStep('completed');
             }}
             primaryActionButtonText={'Submit'}
             disablePrimaryActionButton={latestTxnStatus === 'loading'}
@@ -177,11 +190,11 @@ const SendTokenTipsModal = ({
               <p className="my-5 text-center text-secondaryGray">
                 You are about to send:
               </p>
-              <table className="border">
+              <table className="border w-full">
                 <thead>
                   <tr>
-                    <th className="text-start w-100vw">Name</th>
-                    <th className="text-start">Amount</th>
+                    <th className="text-start px-2">Name</th>
+                    <th className="text-end px-2 w-30vw">Amount</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -190,11 +203,11 @@ const SendTokenTipsModal = ({
                       key={userAndAmount.user.id}
                       className="border border-spacing-2"
                     >
-                      <td className="min-w=50vw">
+                      <td className="text-start px-2 py-4">
                         {userAndAmount.user.first_name}{' '}
                         {userAndAmount.user.last_name}
                       </td>
-                      <td className="text-center">
+                      <td className="text-end px-2 py-4">
                         {userAndAmount.amount} {tokenSymbol}
                       </td>
                     </tr>
@@ -210,7 +223,7 @@ const SendTokenTipsModal = ({
             </div>
           </BasicModal>
         )}
-        {currentStep === 'completed' && (
+        {currentStep === 'success' && (
           <BasicModal
             title={'Congratulations!'}
             toggleModal={closeModal}
@@ -242,12 +255,45 @@ const SendTokenTipsModal = ({
                 For a total of: {totalAmountSending} {tokenSymbol}
               </p>
 
-              {latestTxnErrorMessage && (
-                <>
-                  <p>Something went wrong - the txn did not go through</p>
-                  <p>{latestTxnErrorMessage}</p>
-                </>
+              {latestTxn && (
+                <div className="flex flex-col my-5">
+                  <p className="">View the transaction on the blockchain!</p>
+                  <a
+                    className="underline text-blue-600 hover:text-blue-800 visited:text-purple-600"
+                    href={`https://testnet.snowtrace.io/tx/${
+                      latestTxn.hash || ''
+                    }`}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    Here: {latestTxn.hash && formatTxnHash(latestTxn.hash)}
+                  </a>
+                </div>
               )}
+            </div>
+          </BasicModal>
+        )}
+
+        {currentStep === 'error' && (
+          <BasicModal
+            title={'Whoops, something went wrong!'}
+            toggleModal={closeModal}
+            primaryActionButtonText={'Try Again'}
+            onPrimaryActionButtonClick={() => {
+              dispatch(clearedLatestTxn());
+              setCurrentStep('confirm');
+            }}
+          >
+            <div className="px-5">
+              <p className="my-5">Something went wrong.</p>
+              <p className="my-5">
+                Your funds did not send, you can safely try again.
+              </p>
+              <p className="mt-5">
+                <p>Error:</p>
+              </p>
+              <p> {latestTxnErrorMessage && latestTxnErrorMessage}</p>
+
               {latestTxn && (
                 <div className="flex flex-col my-5">
                   <p className="">View the transaction on the blockchain!</p>
