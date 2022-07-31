@@ -96,7 +96,7 @@ const SendTokenTipsModal = ({
                   value="differentAmount"
                   onClick={() => setIsSendingSameAmount(false)}
                 >
-                  Different Amount
+                  Different Amounts
                 </button>
               </div>
               {isSendingSameAmount && (
@@ -147,7 +147,9 @@ const SendTokenTipsModal = ({
 
               <div>
                 <span className="p-2">Total: </span>
-                <span>{totalAmountSending}</span>
+                <span className="font-semibold">
+                  {totalAmountSending} {tokenSymbol}
+                </span>
               </div>
             </>
           </BasicModal>
