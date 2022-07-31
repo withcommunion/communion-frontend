@@ -10,9 +10,10 @@ const AssetAmountInput = ({ amount, tokenSymbol, onChange }: Props) => {
     <div className="rounded-4px bg-secondaryLightGray border-1px border-thirdLightGray p-15px my-15px">
       <div className="flex justify-between items-center pb-15px">
         <span className="text-15px text-primaryGray ">Amount</span>
-        <button className="rounded-3px border-1px border-thirdOrange w-12 h-7">
+        {/**TODO: Add "max" */}
+        {/* <button className="rounded-3px border-1px border-thirdOrange w-12 h-7">
           <span className="text-fourthOrange text-12px">Max</span>
-        </button>
+        </button> */}
       </div>
       <div className="bg-white border-thirdLightGray border-1px pl-5 pr-4 py-6 flex justify-between items-center">
         <input
