@@ -9,6 +9,8 @@ interface Props {
   toggleModal: () => void;
   onPrimaryActionButtonClick: () => void;
   primaryActionButtonText: string;
+  disablePrimaryActionButton?: boolean;
+  loadingPrimaryActionButton?: boolean;
   onSecondaryActionButtonClick?: () => void;
   secondaryActionButtonText?: string;
   children: React.ReactNode;
@@ -19,6 +21,8 @@ const BasicModal = ({
   toggleModal,
   onPrimaryActionButtonClick,
   primaryActionButtonText,
+  disablePrimaryActionButton,
+  loadingPrimaryActionButton,
   onSecondaryActionButtonClick,
   secondaryActionButtonText,
   children,
@@ -51,6 +55,8 @@ const BasicModal = ({
           text={primaryActionButtonText}
           onClick={onPrimaryActionButtonClick}
           size="big"
+          disabled={Boolean(disablePrimaryActionButton)}
+          loading={Boolean(loadingPrimaryActionButton)}
         />
       </div>
     </div>
