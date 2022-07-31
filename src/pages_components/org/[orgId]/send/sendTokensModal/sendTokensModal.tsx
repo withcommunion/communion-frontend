@@ -1,3 +1,4 @@
+// TODO: This will make this component real smoove https://reactjs.org/docs/animation.html
 import { useEffect, useState } from 'react';
 
 import BackToButton from '@/shared_components/backToButton/BackToButton';
