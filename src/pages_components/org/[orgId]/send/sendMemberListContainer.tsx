@@ -21,8 +21,10 @@ import {
 
 interface Props {
   userJwt: string;
+  refreshUserBalance: () => void;
 }
-const SendMemberListContainer = ({ userJwt }: Props) => {
+
+const SendMemberListContainer = ({ userJwt, refreshUserBalance }: Props) => {
   const dispatch = useAppDispatch();
   const org = useAppSelector((state) => selectOrg(state));
   const orgUsers = useAppSelector((state) => selectOrgUsers(state));
@@ -92,6 +94,7 @@ const SendMemberListContainer = ({ userJwt }: Props) => {
                 jwtToken: userJwt,
               })
             );
+            refreshUserBalance();
           }}
         />
       )}

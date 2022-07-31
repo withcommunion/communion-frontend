@@ -87,7 +87,17 @@ const OrgIdIndex = ({ userJwt }: Props) => {
           />
           <SendPageHeader />
           {/* <SearchPanel /> */}
-          <SendMemberListContainer userJwt={userJwt} />
+          <SendMemberListContainer
+            userJwt={userJwt}
+            refreshUserBalance={() => {
+              dispatch(
+                fetchOrgTokenBalance({
+                  walletAddress: self?.walletAddressC || '',
+                  contractAddress: org.avax_contract.address,
+                })
+              );
+            }}
+          />
         </div>
       </div>
     </>
