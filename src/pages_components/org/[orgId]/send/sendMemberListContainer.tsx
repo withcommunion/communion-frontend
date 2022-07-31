@@ -12,7 +12,7 @@ import {
   clearedLatestTxn,
 } from '@/features/multisend/multisendSlice';
 import OrgMemberCard from './sendMemberList/orgMemberCard';
-import BottomStickyButton from '@/pages_components/org/[orgId]/send/bottomStickyButton/bottomStickyButtonContainer';
+import BottomStickyButton from '@/pages_components/org/[orgId]/send/bottomStickyButton/1bottomStickyButtonContainer';
 import SendTokenTipsModal from '@/pages_components/org/[orgId]/send/sendTokensModal/sendTokensModal';
 import {
   selectOrg,
