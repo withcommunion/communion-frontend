@@ -1,12 +1,14 @@
 // TODO: This will make this component real smoove https://reactjs.org/docs/animation.html
 import { useEffect, useState } from 'react';
-import { useAppSelector } from '@/reduxHooks';
+import { useAppSelector, useAppDispatch } from '@/reduxHooks';
 
 import BackToButton from '@/shared_components/backToButton/BackToButton';
 import BasicModal from '@/shared_components/basicModal';
 import AssetAmountInput from '@/pages_components/org/[orgId]/send/sendTokensModal/assetInputs/assetAmountInput';
 import SelectedOrgMemberCard from './selectedOrgMemberCard/selectedOrgMemberCard';
 import {
+  baseAmountUpdated,
+  clearedUsers,
   selectLatestTxnErrorMessage,
   selectLatestTxnStatus,
   UserAndAmount,
@@ -33,6 +35,7 @@ const SendTokenTipsModal = ({
   onAssetAmountChange,
   sendTokens,
 }: Props) => {
+  const dispatch = useAppDispatch();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const latestTxnStatus = useAppSelector((state) =>
     selectLatestTxnStatus(state)
@@ -136,24 +139,23 @@ const SendTokenTipsModal = ({
         )}
         {currentStep === 'completed' && (
           <BasicModal
-            title={'Send Token Tips to:'}
+            title={'Congratulations!'}
             toggleModal={closeModal}
+            primaryActionButtonText={`Back to Member's List`}
             onPrimaryActionButtonClick={() => {
+              dispatch(clearedUsers());
+              dispatch(baseAmountUpdated(0));
               closeModal();
             }}
-            primaryActionButtonText={'Close'}
           >
-            <div>
-              <h2>Congratulations!</h2>
-              <p>
-                {totalAmountSending} {tokenSymbol} was sent to:
-              </p>
+            <div className="text-center">
+              <p className="my-5">You succesfully sent:</p>
               <ul>
                 {selectedUsersAndAmounts.map((userAndAmount) => (
                   <li key={userAndAmount.user.id}>
-                    <div>
-                      <span>
-                        Sent {baseAmountToSendPerUser} {tokenSymbol}{' '}
+                    <div className="my-2">
+                      <span className="font-semibold">
+                        {baseAmountToSendPerUser} {tokenSymbol}{' '}
                       </span>
                       <span>
                         to: {userAndAmount.user.first_name}{' '}
@@ -163,9 +165,9 @@ const SendTokenTipsModal = ({
                   </li>
                 ))}
               </ul>
-              <span>
+              <p className="my-5">
                 For a total of: {totalAmountSending} {tokenSymbol}
-              </span>
+              </p>
             </div>
           </BasicModal>
         )}
