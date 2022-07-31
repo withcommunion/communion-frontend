@@ -1,5 +1,5 @@
 import PrimaryButton from '@/shared_components/buttons/primaryButton';
-import SecondaryButton from './buttons/secondaryButton';
+import SecondaryButton from '@/shared_components/buttons/primaryButton';
 
 import Image from 'next/image';
 import React from 'react';
@@ -40,7 +40,7 @@ const BasicModal = ({
         <div className="mb-3">{children}</div>
       </div>
       <div className="px-15px pb-5 flex justify-center items-center flex-row">
-        {onSecondaryActionButtonClick && (
+        {onSecondaryActionButtonClick && secondaryActionButtonText && (
           <SecondaryButton
             onClick={onSecondaryActionButtonClick}
             text={secondaryActionButtonText}
