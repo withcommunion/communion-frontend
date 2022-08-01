@@ -18,8 +18,8 @@ const SelfOrgHeader = ({ tokenAmount, tokenSymbol, name, orgId }: Props) => {
           <div className="absolute right-0 top-0">
             <Image
               src="/images/orgLogos/jacksPizzaLogo.png"
-              height="100px"
-              width="100px"
+              height="65px"
+              width="65px"
               alt="jacks pizza logo"
             />
           </div>
