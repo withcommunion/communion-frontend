@@ -1,12 +1,15 @@
-import { User } from '@/util/walletApiUtil';
+import { OrgRedeemableInCart } from '@/features/cart/cartSlice';
 import Image from 'next/image';
 
 interface Props {
-  selectedUser: User;
-  removeSelectedUser: () => void;
+  selectedRedeemable: OrgRedeemableInCart;
+  removeSelectedRedeemable: () => void;
 }
-const selectedMemberCard = ({ selectedUser, removeSelectedUser }: Props) => {
-  const { first_name, last_name } = selectedUser;
+const selectedMemberCard = ({
+  selectedRedeemable,
+  removeSelectedRedeemable,
+}: Props) => {
+  const { name, amount } = selectedRedeemable;
 
   return (
     <li className="flex items-center justify-between my-6">
@@ -18,11 +21,11 @@ const selectedMemberCard = ({ selectedUser, removeSelectedUser }: Props) => {
           alt="person icon"
         />
         <span className="text-primaryGray text-5 font-semibold pl-2">
-          {first_name} {last_name}
+          {name} {amount}
         </span>
       </div>
       <Image
-        onClick={() => removeSelectedUser()}
+        onClick={() => removeSelectedRedeemable()}
         src="/images/delete.svg"
         width="30px"
         height="30px"

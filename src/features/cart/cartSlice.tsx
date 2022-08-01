@@ -41,6 +41,9 @@ const cartSlice = createSlice({
     reset: () => {
       return initialState;
     },
+    clearedLatestRedeemTxn(state: CartState) {
+      state.latestRedeemTxn = initialState.latestRedeemTxn;
+    },
     clearedRedeemables(state: CartState) {
       state.cart = initialState.cart;
     },
@@ -90,8 +93,12 @@ const cartSlice = createSlice({
 });
 
 export default cartSlice.reducer;
-export const { redeemableAdded, redeemableRemoved, clearedRedeemables } =
-  cartSlice.actions;
+export const {
+  redeemableAdded,
+  redeemableRemoved,
+  clearedRedeemables,
+  clearedLatestRedeemTxn,
+} = cartSlice.actions;
 
 export const selectCartFromStore = (state: RootState) => state.cart;
 export const selectCart = createSelector([selectCartFromStore], (cart) => {

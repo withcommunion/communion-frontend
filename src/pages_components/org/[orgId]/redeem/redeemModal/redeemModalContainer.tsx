@@ -1,64 +1,61 @@
 // TODO: This will make this component real smoove https://reactjs.org/docs/animation.html
 import { useEffect, useState } from 'react';
-import cx from 'classnames';
 
 import { useAppSelector, useAppDispatch } from '@/reduxHooks';
 import BackToButton from '@/shared_components/backToButton/BackToButton';
 import BasicModal from '@/shared_components/basicModal';
-import AssetAmountInput from '@/pages_components/org/[orgId]/send/sendTokensModal/assetInputs/assetAmountInput';
-import SelectedOrgMemberCard from './selectedOrgMemberCard/selectedOrgMemberCard';
+import SelectedRedeemableCard from './selectedRedeemableCard/selectedRedeemableCard';
+
 import {
-  clearedLatestTxn,
-  baseAmountUpdated,
-  updatedUserAmount,
-  clearedUsers,
-  selectLatestTxnErrorMessage,
-  selectLatestTxnStatus,
-  selectLatestTxn,
-  UserAndAmount,
-} from '@/features/multisend/multisendSlice';
-import { formatTxnHash } from '@/util/avaxEthersUtil';
+  clearedLatestRedeemTxn,
+  selectLatestRedeemTxnErrorMessage,
+  selectLatestRedeemTxnStatus,
+  selectLatestRedeemTxn,
+} from '@/features/cart/cartSlice';
+
+import { formatTxnHash, getSnowtraceExplorerUrl } from '@/util/avaxEthersUtil';
+import {
+  clearedRedeemables,
+  OrgRedeemableInCart,
+} from '@/features/cart/cartSlice';
 
 interface Props {
   closeModal: () => void;
-  selectedUsersAndAmounts: UserAndAmount[];
-  removeSelectedUser: (userId: string) => void;
-  baseAmountToSendPerUser: number;
-  totalAmountSending: number;
+  selectedRedeemables: OrgRedeemableInCart[];
+  removeSelectedRedeemable: (redeemable: OrgRedeemableInCart) => void;
+  totalAmountRedeeming: number;
   tokenSymbol: string;
-  sendTokens: () => Promise<void>;
+  fetchOrgRedeem: () => Promise<void>;
 }
 
-const SendTokenTipsModal = ({
+const RedeemModalContainer = ({
   closeModal,
-  selectedUsersAndAmounts,
-  removeSelectedUser,
-  baseAmountToSendPerUser,
-  totalAmountSending,
+  selectedRedeemables,
+  removeSelectedRedeemable,
+  totalAmountRedeeming,
   tokenSymbol,
-  sendTokens,
+  fetchOrgRedeem,
 }: Props) => {
   const dispatch = useAppDispatch();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const latestTxnStatus = useAppSelector((state) =>
-    selectLatestTxnStatus(state)
+    selectLatestRedeemTxnStatus(state)
   );
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const latestTxnErrorMessage = useAppSelector((state) =>
-    selectLatestTxnErrorMessage(state)
+    selectLatestRedeemTxnErrorMessage(state)
   );
-  const latestTxn = useAppSelector((state) => selectLatestTxn(state));
+  const latestTxn = useAppSelector((state) => selectLatestRedeemTxn(state));
 
-  const [isSendingSameAmount, setIsSendingSameAmount] = useState(true);
   const [currentStep, setCurrentStep] = useState<
     'input' | 'confirm' | 'success' | 'error'
   >('input');
 
   useEffect(() => {
-    if (selectedUsersAndAmounts.length === 0) {
+    if (selectedRedeemables.length === 0) {
       closeModal();
     }
-  }, [selectedUsersAndAmounts, closeModal]);
+  }, [selectedRedeemables, closeModal]);
 
   useEffect(() => {
     if (latestTxnStatus === 'succeeded') {
@@ -74,7 +71,7 @@ const SendTokenTipsModal = ({
 
         {currentStep === 'input' && (
           <BasicModal
-            title={'Send Token Tips to:'}
+            title={'Redeeming Rewards:'}
             toggleModal={closeModal}
             onPrimaryActionButtonClick={() => {
               setCurrentStep('confirm');
@@ -82,90 +79,24 @@ const SendTokenTipsModal = ({
             primaryActionButtonText={'Next'}
           >
             <>
-              {/**TODO: Make this it's own component, make styling match designs */}
-              <div className="flex flex-row gap-x-2">
-                <button
-                  value="sameAmount"
-                  className={cx(
-                    {
-                      'border-1px border-thirdOrange text-fourthOrange':
-                        isSendingSameAmount,
-                      'text-fourthGray': !isSendingSameAmount,
-                    },
-                    'rounded-3px p-2 text-sm'
-                  )}
-                  onClick={() => {
-                    dispatch(baseAmountUpdated(baseAmountToSendPerUser));
-                    setIsSendingSameAmount(true);
-                  }}
-                >
-                  The Same Amount
-                </button>
-                <button
-                  className={cx(
-                    {
-                      'border-1px border-thirdOrange text-fourthOrange':
-                        !isSendingSameAmount,
-                      'text-fourthGray': isSendingSameAmount,
-                    },
-                    'rounded-3px p-2 text-sm'
-                  )}
-                  value="differentAmount"
-                  onClick={() => setIsSendingSameAmount(false)}
-                >
-                  Different Amounts
-                </button>
+              <div>
+                <ul>
+                  {selectedRedeemables.map((redeemable) => (
+                    <SelectedRedeemableCard
+                      key={redeemable.id}
+                      removeSelectedRedeemable={() => {
+                        removeSelectedRedeemable(redeemable);
+                      }}
+                      selectedRedeemable={redeemable}
+                    />
+                  ))}
+                </ul>
               </div>
-              {isSendingSameAmount && (
-                <div>
-                  <ul>
-                    {selectedUsersAndAmounts.map((userAndAmount) => (
-                      <SelectedOrgMemberCard
-                        removeSelectedUser={() =>
-                          removeSelectedUser(userAndAmount.user.id)
-                        }
-                        key={userAndAmount.user.id}
-                        selectedUser={userAndAmount.user}
-                      />
-                    ))}
-                  </ul>
-                  <AssetAmountInput
-                    amount={baseAmountToSendPerUser}
-                    tokenSymbol={tokenSymbol}
-                    onChange={(value: number) =>
-                      dispatch(baseAmountUpdated(value))
-                    }
-                  />
-                </div>
-              )}
-              {!isSendingSameAmount &&
-                selectedUsersAndAmounts.map((userAndAmount) => (
-                  <ul key={userAndAmount.user.id}>
-                    <SelectedOrgMemberCard
-                      removeSelectedUser={() =>
-                        removeSelectedUser(userAndAmount.user.id)
-                      }
-                      selectedUser={userAndAmount.user}
-                    />
-                    <AssetAmountInput
-                      amount={userAndAmount.amount}
-                      tokenSymbol={tokenSymbol}
-                      onChange={(value: number) =>
-                        dispatch(
-                          updatedUserAmount({
-                            user: userAndAmount.user,
-                            amount: value,
-                          })
-                        )
-                      }
-                    />
-                  </ul>
-                ))}
 
               <div>
                 <span className="p-2">Total: </span>
                 <span className="font-semibold">
-                  {totalAmountSending} {tokenSymbol}
+                  {totalAmountRedeeming} {tokenSymbol}
                 </span>
               </div>
             </>
@@ -180,7 +111,7 @@ const SendTokenTipsModal = ({
               setCurrentStep('input');
             }}
             onPrimaryActionButtonClick={async () => {
-              await sendTokens();
+              await fetchOrgRedeem();
             }}
             primaryActionButtonText={'Submit'}
             disablePrimaryActionButton={latestTxnStatus === 'loading'}
@@ -188,7 +119,7 @@ const SendTokenTipsModal = ({
           >
             <div>
               <p className="my-5 text-center text-secondaryGray">
-                You are about to send:
+                You are about to redeem:
               </p>
               <table className="border w-full">
                 <thead>
@@ -198,17 +129,16 @@ const SendTokenTipsModal = ({
                   </tr>
                 </thead>
                 <tbody>
-                  {selectedUsersAndAmounts.map((userAndAmount) => (
+                  {selectedRedeemables.map((selectedRedeemable) => (
                     <tr
-                      key={userAndAmount.user.id}
+                      key={selectedRedeemable.id}
                       className="border border-spacing-2"
                     >
                       <td className="text-start px-2 py-4">
-                        {userAndAmount.user.first_name}{' '}
-                        {userAndAmount.user.last_name}
+                        {selectedRedeemable.name}
                       </td>
                       <td className="text-end px-2 py-4">
-                        {userAndAmount.amount} {tokenSymbol}
+                        {selectedRedeemable.amount} {tokenSymbol}
                       </td>
                     </tr>
                   ))}
@@ -217,7 +147,7 @@ const SendTokenTipsModal = ({
               <div className="flex flex-row my-5">
                 <span className="mr-2">For a total of:</span>
                 <span className="font-semibold">
-                  {totalAmountSending} {tokenSymbol}
+                  {totalAmountRedeeming} {tokenSymbol}
                 </span>
               </div>
             </div>
@@ -227,32 +157,28 @@ const SendTokenTipsModal = ({
           <BasicModal
             title={'Congratulations!'}
             toggleModal={closeModal}
-            primaryActionButtonText={`Back to Member's List`}
+            primaryActionButtonText={`Back to Redeem List`}
             onPrimaryActionButtonClick={() => {
-              dispatch(clearedUsers());
-              dispatch(baseAmountUpdated(0));
+              dispatch(clearedRedeemables());
               closeModal();
             }}
           >
             <div className="text-center">
-              <p className="my-5">You succesfully sent:</p>
+              <p className="my-5">You succesfully redeemed:</p>
               <ul>
-                {selectedUsersAndAmounts.map((userAndAmount) => (
-                  <li key={userAndAmount.user.id}>
+                {selectedRedeemables.map((userAndAmount) => (
+                  <li key={userAndAmount.id}>
                     <div className="my-2">
+                      <span>{userAndAmount.name} for: </span>
                       <span className="font-semibold">
-                        {baseAmountToSendPerUser} {tokenSymbol}{' '}
-                      </span>
-                      <span>
-                        to: {userAndAmount.user.first_name}{' '}
-                        {userAndAmount.user.last_name}
+                        {userAndAmount.amount} {tokenSymbol}{' '}
                       </span>
                     </div>
                   </li>
                 ))}
               </ul>
               <p className="my-5">
-                For a total of: {totalAmountSending} {tokenSymbol}
+                For a total of: {totalAmountRedeeming} {tokenSymbol}
               </p>
 
               {latestTxn && (
@@ -260,9 +186,7 @@ const SendTokenTipsModal = ({
                   <p className="">View the transaction on the blockchain!</p>
                   <a
                     className="underline text-blue-600 hover:text-blue-800 visited:text-purple-600"
-                    href={`https://testnet.snowtrace.io/tx/${
-                      latestTxn.hash || ''
-                    }`}
+                    href={getSnowtraceExplorerUrl(latestTxn.hash || '')}
                     target="_blank"
                     rel="noreferrer"
                   >
@@ -280,7 +204,7 @@ const SendTokenTipsModal = ({
             toggleModal={closeModal}
             primaryActionButtonText={'Try Again'}
             onPrimaryActionButtonClick={() => {
-              dispatch(clearedLatestTxn());
+              dispatch(clearedLatestRedeemTxn());
               setCurrentStep('confirm');
             }}
           >
@@ -317,4 +241,4 @@ const SendTokenTipsModal = ({
   );
 };
 
-export default SendTokenTipsModal;
+export default RedeemModalContainer;

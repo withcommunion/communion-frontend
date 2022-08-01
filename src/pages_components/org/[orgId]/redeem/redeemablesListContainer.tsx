@@ -2,24 +2,19 @@ import { useState, useEffect } from 'react';
 import { useAppSelector, useAppDispatch } from '@/reduxHooks';
 
 import {
-  selectUsersAndAmounts,
-  fetchMultisendFunds,
-  userRemoved,
-  selectTotalAmountSending,
-  selectBaseAmount,
-  clearedLatestTxn,
-} from '@/features/multisend/multisendSlice';
-
-import {
   selectCart,
+  selectTotalCost,
   redeemableAdded,
   redeemableRemoved,
   clearedRedeemables,
+  OrgRedeemableInCart,
+  fetchOrgRedeem,
+  clearedLatestRedeemTxn,
 } from '@/features/cart/cartSlice';
 
 import RedeemableCard from './redeemableCard/redeemableCard';
 import BottomStickyButton from '@/pages_components/org/[orgId]/redeem/bottomStickyButton/bottomStickyButtonContainer';
-import SendTokenTipsModal from '@/pages_components/org/[orgId]/redeem/sendTokensModal/sendTokensModal';
+import RedeemModalContainer from '@/pages_components/org/[orgId]/redeem/redeemModal/redeemModalContainer';
 import {
   selectOrg,
   selectOrgRedeemablesSortedByAmount,
@@ -41,14 +36,9 @@ const RedeemablesListContainer = ({
   const orgRedeemables = useAppSelector((state) =>
     selectOrgRedeemablesSortedByAmount(state)
   );
-  const selectedUsersAndAmounts = useAppSelector((state) =>
-    selectUsersAndAmounts(state)
+  const totalAmountRedeeming = useAppSelector((state) =>
+    selectTotalCost(state)
   );
-  const baseAmountToSend = useAppSelector((state) => selectBaseAmount(state));
-  const totalAmountSending = useAppSelector((state) =>
-    selectTotalAmountSending(state)
-  );
-
   const selectedRedeemables = useAppSelector((cart) => selectCart(cart));
 
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -58,7 +48,7 @@ const RedeemablesListContainer = ({
 
   useEffect(() => {
     if (!showModal) {
-      dispatch(clearedLatestTxn());
+      dispatch(clearedLatestRedeemTxn());
     }
   }, [showModal, dispatch]);
 
@@ -95,19 +85,18 @@ const RedeemablesListContainer = ({
 
       {/* TODO: Move to page container */}
       {showModal && (
-        <SendTokenTipsModal
+        <RedeemModalContainer
           closeModal={() => setShowModal(false)}
-          selectedUsersAndAmounts={selectedUsersAndAmounts}
-          removeSelectedUser={(userId: string) =>
-            dispatch(userRemoved({ userId }))
+          selectedRedeemables={selectedRedeemables}
+          removeSelectedRedeemable={(selectedRedeemable: OrgRedeemableInCart) =>
+            dispatch(redeemableRemoved(selectedRedeemable))
           }
-          baseAmountToSendPerUser={baseAmountToSend}
-          totalAmountSending={totalAmountSending}
+          totalAmountRedeeming={totalAmountRedeeming}
           tokenSymbol={org.avax_contract.token_symbol}
-          sendTokens={async () => {
+          fetchOrgRedeem={async () => {
             await dispatch(
-              fetchMultisendFunds({
-                toUsersAndAmounts: selectedUsersAndAmounts,
+              fetchOrgRedeem({
+                amount: totalAmountRedeeming,
                 orgId: org.id,
                 jwtToken: userJwt,
               })
