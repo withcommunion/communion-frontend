@@ -13,7 +13,7 @@ import { fetchOrgTokenBalance } from '@/features/organization/organizationSlice'
 import { OrgRedeemable, API_URL } from '@/util/walletApiUtil';
 import { HTTPSProvider } from '@/util/avaxEthersUtil';
 
-interface OrgRedeemableInCart extends OrgRedeemable {
+export interface OrgRedeemableInCart extends OrgRedeemable {
   id: string;
 }
 interface CartState {

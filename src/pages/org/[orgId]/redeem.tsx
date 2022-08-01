@@ -2,11 +2,11 @@ import { useEffect } from 'react';
 import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import { Amplify } from 'aws-amplify';
-import { useAuthenticator } from '@aws-amplify/ui-react';
 
 import { AMPLIFY_CONFIG } from '@/util/cognitoAuthUtil';
 
 import { useAppSelector, useAppDispatch } from '@/reduxHooks';
+import { fetchSelfHistoricalTxns } from '@/features/transactions/transactionsSlice';
 import {
   selectSelf,
   selectSelfStatus,
@@ -38,7 +38,13 @@ import {
 
 import { getUserJwtTokenOnServer } from '@/util/cognitoAuthUtil';
 
-import NavBar from '@/shared_components/navBarTmp';
+import NavBar, { AvailablePages } from '@/shared_components/navBar/NavBar';
+import SelfOrgHeader from '@/shared_components/selfHeader/selfOrgHeader';
+import {
+  RedeemPageHeader,
+  RedeemablesListContainer,
+} from '@/pages_components/org/[orgId]/redeemComponents';
+
 import SelfHeader from '@/shared_components/selfHeader';
 import Transaction from '@/shared_components/transaction';
 
@@ -80,8 +86,6 @@ const RedeemPage = ({ userJwt }: Props) => {
   const balance = wallet.balance;
   const ethersWallet = useAppSelector((state) => selectEthersWallet(state));
 
-  const { signOut } = useAuthenticator((context) => [context.signOut]);
-
   useEffect(() => {
     if (selfStatus === 'idle') {
       dispatch(fetchSelf(userJwt));
@@ -111,7 +115,42 @@ const RedeemPage = ({ userJwt }: Props) => {
 
   return (
     <>
-      <NavBar signOut={signOut} active="redeem" />
+      <>
+        <NavBar
+          activePage={AvailablePages.orgRedeem}
+          activeOrgId={(orgId || '').toString()}
+        />
+        <div className="pb-6 h-full min-h-100vh bg-secondaryLightGray">
+          <div className="container w-full px-6 my-0 mx-auto mb-10 md:max-w-50vw">
+            <SelfOrgHeader
+              tokenAmount={userTokenBalance.valueString}
+              tokenSymbol={userTokenBalance.tokenSymbol}
+              name={self?.first_name}
+            />
+            <RedeemPageHeader />
+            {/* <SearchPanel /> */}
+            <RedeemablesListContainer
+              userJwt={userJwt}
+              fetchRefreshUserBalance={() => {
+                dispatch(
+                  fetchOrgTokenBalance({
+                    walletAddress: self?.walletAddressC || '',
+                    contractAddress: org.avax_contract.address,
+                  })
+                );
+              }}
+              fetchRefreshTxns={() =>
+                dispatch(
+                  fetchSelfHistoricalTxns({
+                    orgId: (orgId || '').toString(),
+                    jwtToken: userJwt,
+                  })
+                )
+              }
+            />
+          </div>
+        </div>
+      </>
       <div className="py-4 flex flex-col items-center ">
         <div className="w-full md:w-1/4 px-5">
           <SelfHeader
