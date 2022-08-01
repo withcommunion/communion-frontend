@@ -7,7 +7,9 @@ import { AMPLIFY_CONFIG } from '../util/cognitoAuthUtil';
 import {
   AuthComponent,
   IndexHeader,
+  WelcomeHeader,
 } from '../pages_components/indexPageComponents';
+import Footer from '@/shared_components/footer/footer';
 
 // https://docs.amplify.aws/lib/client-configuration/configuring-amplify-categories/q/platform/js/#general-configuration
 Amplify.configure({ ...AMPLIFY_CONFIG, ssr: false });
@@ -30,7 +32,10 @@ const Index: NextPage = () => {
       </Head>
 
       <main className="min-h-screen py-4 flex flex-col justify-center items-center">
-        <IndexHeader userName={user?.attributes?.given_name} />
+        {!user && <WelcomeHeader />}
+        {user && user.attributes?.given_name && (
+          <IndexHeader userName={user?.attributes?.given_name} />
+        )}
         <div>
           {route === 'idle' || !route ? (
             <h1 className="my-36">loading</h1>
@@ -38,6 +43,7 @@ const Index: NextPage = () => {
             <AuthComponent />
           )}
         </div>
+        <Footer />
       </main>
     </div>
   );

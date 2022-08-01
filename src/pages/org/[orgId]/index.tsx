@@ -105,6 +105,7 @@ const Home = ({ userJwt }: Props) => {
         <div className="bg-secondaryLightGray pb-2 min-h-100vh ">
           <div className="container w-full px-6 my-0 mx-auto md:max-w-50vw">
             <SelfOrgHeader
+              orgId={(orgId || '').toString()}
               tokenAmount={userTokenBalance.valueString}
               tokenSymbol={userTokenBalance.tokenSymbol}
               name={self?.first_name}

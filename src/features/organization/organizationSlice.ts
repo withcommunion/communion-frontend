@@ -137,6 +137,15 @@ export const selectOrgUsers = createSelector([selectOrg], (org) => {
 export const selectOrgRedeemables = createSelector([selectOrg], (org) => {
   return org.redeemables;
 });
+export const selectOrgRedeemablesSortedByAmount = createSelector(
+  [selectOrgRedeemables],
+  (redeemables) => {
+    // Sort mutates the original array, so we need to make a copy
+    return [...redeemables].sort((a, b) =>
+      parseInt(a.amount) < parseInt(b.amount) ? -1 : 1
+    );
+  }
+);
 
 export const selectOrgContract = createSelector([selectOrg], (org) => {
   return new Contract(
