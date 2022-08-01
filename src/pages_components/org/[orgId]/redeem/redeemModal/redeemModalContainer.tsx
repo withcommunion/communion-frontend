@@ -215,22 +215,6 @@ const RedeemModalContainer = ({
                 <p>Error:</p>
               </p>
               <p> {latestTxnErrorMessage && latestTxnErrorMessage}</p>
-
-              {latestTxn && (
-                <div className="flex flex-col my-5">
-                  <p className="">View the transaction on the blockchain!</p>
-                  <a
-                    className="underline text-blue-600 hover:text-blue-800 visited:text-purple-600"
-                    href={`https://testnet.snowtrace.io/tx/${
-                      latestTxn.hash || ''
-                    }`}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    Here: {latestTxn.hash && formatTxnHash(latestTxn.hash)}
-                  </a>
-                </div>
-              )}
             </div>
           </BasicModal>
         )}
