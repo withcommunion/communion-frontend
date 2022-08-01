@@ -37,11 +37,9 @@ const RedeemModalContainer = ({
   fetchOrgRedeem,
 }: Props) => {
   const dispatch = useAppDispatch();
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const latestTxnStatus = useAppSelector((state) =>
     selectLatestRedeemTxnStatus(state)
   );
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const latestTxnErrorMessage = useAppSelector((state) =>
     selectLatestRedeemTxnErrorMessage(state)
   );
