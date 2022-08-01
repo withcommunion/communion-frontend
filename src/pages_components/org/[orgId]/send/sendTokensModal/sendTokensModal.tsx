@@ -17,7 +17,7 @@ import {
   selectLatestTxn,
   UserAndAmount,
 } from '@/features/multisend/multisendSlice';
-import { formatTxnHash } from '@/util/avaxEthersUtil';
+import { formatTxnHash, getSnowtraceExplorerUrl } from '@/util/avaxEthersUtil';
 
 interface Props {
   closeModal: () => void;
@@ -241,7 +241,7 @@ const SendTokenTipsModal = ({
                   <li key={userAndAmount.user.id}>
                     <div className="my-2">
                       <span className="font-semibold">
-                        {baseAmountToSendPerUser} {tokenSymbol}{' '}
+                        {userAndAmount.amount} {tokenSymbol}{' '}
                       </span>
                       <span>
                         to: {userAndAmount.user.first_name}{' '}
@@ -260,9 +260,7 @@ const SendTokenTipsModal = ({
                   <p className="">View the transaction on the blockchain!</p>
                   <a
                     className="underline text-blue-600 hover:text-blue-800 visited:text-purple-600"
-                    href={`https://testnet.snowtrace.io/tx/${
-                      latestTxn.hash || ''
-                    }`}
+                    href={getSnowtraceExplorerUrl(latestTxn.hash || '')}
                     target="_blank"
                     rel="noreferrer"
                   >
