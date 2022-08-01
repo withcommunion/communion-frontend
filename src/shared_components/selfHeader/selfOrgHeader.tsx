@@ -1,6 +1,18 @@
+import Image from 'next/image';
+import { useState } from 'react';
+import { useAppDispatch, useAppSelector } from '@/reduxHooks';
+import {
+  selectOrg,
+  fetchOrgTokenBalance,
+  selectOrgUserTokenStatus,
+} from '@/features/organization/organizationSlice';
+import { selectSelf } from '@/features/selfSlice';
 import Greeting from '@/shared_components/selfHeader/greeting/Greeting';
 import TokenBalance from '@/shared_components/selfHeader/tokenBalance/TokenBalance';
-import Image from 'next/image';
+import {
+  formatWalletAddress,
+  getBaseSnowtraceUrl,
+} from '@/util/avaxEthersUtil';
 
 interface Props {
   tokenAmount?: number | string | null;
@@ -10,6 +22,16 @@ interface Props {
 }
 
 const SelfOrgHeader = ({ tokenAmount, tokenSymbol, name, orgId }: Props) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const dispatch = useAppDispatch();
+  const org = useAppSelector((state) => selectOrg(state));
+  const self = useAppSelector((state) => selectSelf(state));
+  const tokenBalanceStatus = useAppSelector((state) =>
+    selectOrgUserTokenStatus(state)
+  );
+
+  const contractAddress = org.avax_contract.address;
+  const walletAddress = self?.walletAddressC;
   return (
     <>
       <div className="relative">
@@ -25,7 +47,46 @@ const SelfOrgHeader = ({ tokenAmount, tokenSymbol, name, orgId }: Props) => {
           </div>
         )}
       </div>
-      <TokenBalance tokenAmount={tokenAmount} tokenSymbol={tokenSymbol} />
+      <div
+        className="cursor-pointer"
+        onClick={() => setIsExpanded(!isExpanded)}
+      >
+        <TokenBalance
+          tokenAmount={tokenAmount}
+          tokenSymbol={tokenSymbol}
+          isBalanceLoading={tokenBalanceStatus === 'loading'}
+          isExpanded={isExpanded}
+        />
+      </div>
+      {isExpanded && contractAddress && walletAddress && (
+        <div className="flex align-middle justify-between">
+          <div>
+            <span className="text-12px">Your wallet address: </span>
+            <a
+              target="_blank"
+              rel="noreferrer"
+              className="text-12px underline text-blue-600 hover:text-blue-800 visited:text-purple-600"
+              href={`${getBaseSnowtraceUrl()}/address/${walletAddress}`}
+            >
+              {formatWalletAddress(walletAddress)}
+            </a>
+          </div>
+          <button
+            className="self-end text-sm border-2 border-primaryOrange text-primaryOrange py-1 px-1 rounded"
+            disabled={tokenBalanceStatus === 'loading'}
+            onClick={() =>
+              dispatch(
+                fetchOrgTokenBalance({
+                  contractAddress,
+                  walletAddress,
+                })
+              )
+            }
+          >
+            Refresh Balance
+          </button>
+        </div>
+      )}
     </>
   );
 };
