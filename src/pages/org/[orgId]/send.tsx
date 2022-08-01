@@ -83,6 +83,7 @@ const OrgIdIndex = ({ userJwt }: Props) => {
       <div className="pb-6 h-full min-h-100vh bg-secondaryLightGray">
         <div className="container w-full px-6 my-0 mx-auto mb-10 md:max-w-50vw">
           <SelfOrgHeader
+            orgId={(orgId || '').toString()}
             tokenAmount={userTokenBalance.valueString}
             tokenSymbol={userTokenBalance.tokenSymbol}
             name={self?.first_name}
