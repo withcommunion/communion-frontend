@@ -5,7 +5,6 @@ import {
   selectUsersAndAmounts,
   fetchMultisendFunds,
   userRemoved,
-  clearedUsers,
   selectTotalAmountSending,
   selectBaseAmount,
   clearedLatestTxn,
@@ -15,12 +14,16 @@ import {
   selectCart,
   redeemableAdded,
   redeemableRemoved,
+  clearedRedeemables,
 } from '@/features/cart/cartSlice';
 
 import RedeemableCard from './redeemableCard/redeemableCard';
-import BottomStickyButton from '@/pages_components/org/[orgId]/send/bottomStickyButton/bottomStickyButtonContainer';
-import SendTokenTipsModal from '@/pages_components/org/[orgId]/send/sendTokensModal/sendTokensModal';
-import { selectOrg } from '@/features/organization/organizationSlice';
+import BottomStickyButton from '@/pages_components/org/[orgId]/redeem/bottomStickyButton/bottomStickyButtonContainer';
+import SendTokenTipsModal from '@/pages_components/org/[orgId]/redeem/sendTokensModal/sendTokensModal';
+import {
+  selectOrg,
+  selectOrgRedeemablesSortedByAmount,
+} from '@/features/organization/organizationSlice';
 
 interface Props {
   userJwt: string;
@@ -35,6 +38,9 @@ const RedeemablesListContainer = ({
 }: Props) => {
   const dispatch = useAppDispatch();
   const org = useAppSelector((state) => selectOrg(state));
+  const orgRedeemables = useAppSelector((state) =>
+    selectOrgRedeemablesSortedByAmount(state)
+  );
   const selectedUsersAndAmounts = useAppSelector((state) =>
     selectUsersAndAmounts(state)
   );
@@ -61,7 +67,7 @@ const RedeemablesListContainer = ({
       <div className={`${showBottomStickyButton ? 'pb-20' : ''}`}>
         {!showModal && (
           <ul className="my-4">
-            {org.redeemables.map((redeemable, idx) => {
+            {orgRedeemables.map((redeemable, idx) => {
               // TODO: This is super inefficient, let's move to a map
               // TODO: This is also based on name - super janky.
               // TODO: Add a unique id to the redeemable when we fetch it from the API
@@ -116,7 +122,7 @@ const RedeemablesListContainer = ({
       {showBottomStickyButton && (
         <BottomStickyButton
           onCancelClick={() => {
-            dispatch(clearedUsers());
+            dispatch(clearedRedeemables());
           }}
           onPrimaryClick={() => {
             setShowModal(true);
