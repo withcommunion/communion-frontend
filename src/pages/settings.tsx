@@ -1,3 +1,8 @@
+/**
+ * TODO: This breaks if you navigate directly to it.
+ * This is because there is no "org" in the url or elsewhere.
+ * this will eventually lead us to the proper home page
+ */
 import { getUserJwtTokenOnServer } from '@/util/cognitoAuthUtil';
 import { useAuthenticator } from '@aws-amplify/ui-react';
 import { useRouter } from 'next/router';
@@ -15,9 +20,10 @@ const SettingsPage = () => {
   const org = useAppSelector((state) => selectOrg(state));
   return (
     <>
+      {/** TODO: This is a HACK.  The URL needs to go to the real home page */}
       <NavBar
         activePage={AvailablePages.settings}
-        activeOrgId={(org.id || '').toString()}
+        activeOrgId={(org.id || 'jacks-pizza-pittsfield').toString()}
       />
       <div className="bg-secondaryLightGray min-h-100vh ">
         <div className="container w-full px-6 my-0 mx-auto md:max-w-50vw text-center">
