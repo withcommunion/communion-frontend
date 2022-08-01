@@ -3,7 +3,7 @@ import cx from 'classnames';
 interface Props {
   onClick: () => void;
   text: string;
-  size: 'small' | 'big';
+  size: 'small' | 'middle' | 'big';
   disabled?: boolean;
   loading?: boolean;
 }
@@ -14,6 +14,7 @@ const PrimaryButton = ({ text, onClick, size, disabled, loading }: Props) => {
       disabled={disabled}
       className={cx(
         { 'w-155px': size === 'small' },
+        { 'w-275px': size === 'middle' },
         { 'w-295px': size === 'big' },
         { 'cursor-progress': loading },
         { 'bg-gray-200 text-black': disabled },

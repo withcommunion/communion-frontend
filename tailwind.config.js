@@ -61,14 +61,18 @@ module.exports = {
         '1px': '1px',
         '155px': '155px',
         '295px': '295px',
+        '275px':'275px'
       },
       colors: {
         primaryGray: '#606279',
+        sixthGray:"#8E8FA1",
         primaryPurple: '#6D6F8A',
         secondaryPurple: '#9094BB',
         thirdGray: '#B5B6C8',
         secondaryGray: '#A9ABB9',
         fourthGray: '#A3A4BA',
+        fifthGray:"#989BB2",
+        fourthLightGray:'#EAEBFA',
         primaryLightGray: '#EDEDF3',
         secondaryLightGray: '#F8F8F9',
         thirdLightGray: '#E5E5EA',
@@ -77,6 +81,7 @@ module.exports = {
         secondaryOrange: '#FFA740',
         thirdOrange: '#FFBE50',
         fourthOrange: '#EAA125',
+        fifthOrange: '#EB9128',
         primaryBeige: '#FFF1E1',
         secondaryBeige: '#FFF1E1',
       },
@@ -104,6 +109,9 @@ module.exports = {
       borderWidth: {
         '1px': '1px',
       },
+      fontFamily: {
+        "paytoneOne":['Paytone One', 'sans-serif']
+      }
     },
   },
   plugins: [],
