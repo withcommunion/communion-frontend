@@ -13,7 +13,7 @@ import { fetchOrgTokenBalance } from '@/features/organization/organizationSlice'
 import { OrgRedeemable, API_URL } from '@/util/walletApiUtil';
 import { HTTPSProvider } from '@/util/avaxEthersUtil';
 
-interface OrgRedeemableInCart extends OrgRedeemable {
+export interface OrgRedeemableInCart extends OrgRedeemable {
   id: string;
 }
 interface CartState {
@@ -40,6 +40,12 @@ const cartSlice = createSlice({
   reducers: {
     reset: () => {
       return initialState;
+    },
+    clearedLatestRedeemTxn(state: CartState) {
+      state.latestRedeemTxn = initialState.latestRedeemTxn;
+    },
+    clearedRedeemables(state: CartState) {
+      state.cart = initialState.cart;
     },
     redeemableAdded: {
       reducer(state: CartState, action: PayloadAction<OrgRedeemableInCart>) {
@@ -87,7 +93,12 @@ const cartSlice = createSlice({
 });
 
 export default cartSlice.reducer;
-export const { redeemableAdded, redeemableRemoved } = cartSlice.actions;
+export const {
+  redeemableAdded,
+  redeemableRemoved,
+  clearedRedeemables,
+  clearedLatestRedeemTxn,
+} = cartSlice.actions;
 
 export const selectCartFromStore = (state: RootState) => state.cart;
 export const selectCart = createSelector([selectCartFromStore], (cart) => {

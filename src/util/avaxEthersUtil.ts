@@ -179,3 +179,9 @@ export function formatWalletAddress(address: string) {
 export function formatTxnHash(txnHash: string) {
   return `${txnHash.substring(0, 6)}...${txnHash.substring(60)}`;
 }
+
+export function getSnowtraceExplorerUrl(txnHash: string) {
+  return isProd
+    ? `https://snowtrace.io/tx/${txnHash}`
+    : `https://testnet.snowtrace.io/tx/${txnHash}`;
+}
