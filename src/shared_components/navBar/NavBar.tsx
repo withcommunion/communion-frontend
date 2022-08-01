@@ -52,7 +52,7 @@ interface Props {
 export default function NavBar({ activePage, activeOrgId }: Props) {
   return (
     <nav className="fixed h-14 inset-x-0 bottom-0 bg-white shadow-menuShadow z-30">
-      <ul className="flex justify-around items-center mx-1 h-full mx-auto md:max-w-50vw ">
+      <ul className="flex justify-around items-center h-full mx-auto md:max-w-50vw ">
         {pages.map((link, num: number) => {
           const isActive = link.name === activePage;
           const navLink =
