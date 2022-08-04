@@ -1,5 +1,6 @@
 // TODO: This will make this component real smoove https://reactjs.org/docs/animation.html
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import Image from 'next/image';
 
 import { useAppSelector, useAppDispatch } from '@/reduxHooks';
 import BackToButton from '@/shared_components/backToButton/BackToButton';
@@ -18,6 +19,7 @@ import {
   clearedRedeemables,
   OrgRedeemableInCart,
 } from '@/features/cart/cartSlice';
+import PrimaryButton from '@/shared_components/buttons/primaryButton';
 
 interface Props {
   closeModal: () => void;
@@ -68,37 +70,50 @@ const RedeemModalContainer = ({
         <BackToButton backToDestinationText={'List'} onClick={closeModal} />
 
         {currentStep === 'input' && (
-          <BasicModal
-            title={'Redeeming Rewards:'}
-            toggleModal={closeModal}
-            onPrimaryActionButtonClick={() => {
-              setCurrentStep('confirm');
-            }}
-            primaryActionButtonText={'Next'}
-          >
-            <>
-              <div>
-                <ul>
-                  {selectedRedeemables.map((redeemable) => (
-                    <SelectedRedeemableCard
-                      key={redeemable.id}
-                      removeSelectedRedeemable={() => {
-                        removeSelectedRedeemable(redeemable);
-                      }}
-                      selectedRedeemable={redeemable}
-                    />
-                  ))}
-                </ul>
-              </div>
+          <div className="shadow-primaryModalShadow rounded-4px bg-white px-15px pb-10">
+            <div className="flex justify-center items-center py-4">
+              <Image
+                src="/images/redeem/Shopping-cart.svg"
+                width="25px"
+                height="25px"
+                alt="shopping cart"
+              />
+              <span className="mx-1 font-semibold text-21px text-seventhGray">
+                Cart
+              </span>
+            </div>
+            <ul>
+              {selectedRedeemables.map((redeemable) => (
+                <SelectedRedeemableCard
+                  key={redeemable.id}
+                  removeSelectedRedeemable={() => {
+                    removeSelectedRedeemable(redeemable);
+                  }}
+                  selectedRedeemable={redeemable}
+                  tokenSymbol={tokenSymbol}
+                />
+              ))}
+            </ul>
 
-              <div>
-                <span className="p-2">Total: </span>
-                <span className="font-semibold">
-                  {totalAmountRedeeming} {tokenSymbol}
-                </span>
-              </div>
-            </>
-          </BasicModal>
+            <div className="my-10 flex justify-between px-2">
+              <span className="text-fifthLightGray text-15px">Total: </span>
+              <span className="font-semibold text-primaryPurple text-15px">
+                {totalAmountRedeeming} {tokenSymbol}
+              </span>
+            </div>
+            <div className="flex justify-center">
+              <PrimaryButton
+                text={'Redeem'}
+                onClick={() => {
+                  setCurrentStep('confirm');
+                }}
+                size="big"
+              />
+            </div>
+            <div className="mt-5 text-sixthLightGray text-13px flex justify-center">
+              Note: This action can not be undone!
+            </div>
+          </div>
         )}
         {currentStep === 'confirm' && (
           <BasicModal
