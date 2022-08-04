@@ -70,88 +70,122 @@ const RedeemModalContainer = ({
         <BackToButton backToDestinationText={'List'} onClick={closeModal} />
 
         {currentStep === 'input' && (
-          <BasicModal
-            title={'Redeeming Rewards:'}
-            toggleModal={closeModal}
-            onPrimaryActionButtonClick={() => {
-              setCurrentStep('confirm');
-            }}
-            primaryActionButtonText={'Next'}
-          >
-            <>
-              <div>
-                <ul>
-                  {selectedRedeemables.map((redeemable) => (
-                    <SelectedRedeemableCard
-                      key={redeemable.id}
-                      removeSelectedRedeemable={() => {
-                        removeSelectedRedeemable(redeemable);
-                      }}
-                      selectedRedeemable={redeemable}
-                    />
-                  ))}
-                </ul>
-              </div>
+          <div className="shadow-primaryModalShadow rounded-4px bg-white px-15px pb-10">
+            <div className="flex justify-center items-center py-4">
+              <Image
+                src="/images/redeem/Shopping-cart.svg"
+                width="25px"
+                height="25px"
+                alt="shopping cart"
+              />
+              <span className="mx-1 font-semibold text-21px text-primaryDarkGray">
+                Cart
+              </span>
+            </div>
+            <ul>
+              {selectedRedeemables.map((redeemable) => (
+                <SelectedRedeemableCard
+                  key={redeemable.id}
+                  removeSelectedRedeemable={() => {
+                    removeSelectedRedeemable(redeemable);
+                  }}
+                  selectedRedeemable={redeemable}
+                  tokenSymbol={tokenSymbol}
+                />
+              ))}
+            </ul>
 
-              <div>
-                <span className="p-2">Total: </span>
-                <span className="font-semibold">
-                  {totalAmountRedeeming} {tokenSymbol}
-                </span>
-              </div>
-            </>
-          </BasicModal>
+            <div className="my-10 flex justify-between px-2">
+              <span className="text-fifthLightGray text-15px">Total: </span>
+              <span className="font-semibold text-primaryPurple text-15px">
+                {totalAmountRedeeming} {tokenSymbol}
+              </span>
+            </div>
+            <div className="flex justify-center">
+              <PrimaryButton
+                text={'Redeem'}
+                onClick={() => {
+                  setCurrentStep('confirm');
+                }}
+                size="big"
+              />
+            </div>
+            <div className="mt-5 text-sixthLightGray text-13px flex justify-center">
+              Note: This action can not be undone!
+            </div>
+          </div>
         )}
         {currentStep === 'confirm' && (
-          <BasicModal
-            title={'Confirmation'}
-            toggleModal={closeModal}
-            secondaryActionButtonText={'Back'}
-            onSecondaryActionButtonClick={() => {
-              setCurrentStep('input');
-            }}
-            onPrimaryActionButtonClick={async () => {
-              await fetchOrgRedeem();
-            }}
-            primaryActionButtonText={'Submit'}
-            disablePrimaryActionButton={latestTxnStatus === 'loading'}
-            loadingPrimaryActionButton={latestTxnStatus === 'loading'}
-          >
-            <div>
-              <p className="my-5 text-center text-secondaryGray">
-                You are about to redeem:
-              </p>
-              <table className="border w-full">
-                <thead>
+          <div className="shadow-primaryModalShadow rounded-4px bg-white pb-7">
+            <div className="relative p-15px flex justify-center items-center rounded-tl-4px rounded-tr-4px">
+              <span className="text-primaryDarkGray text-21px font-semibold">
+                Confirmation
+              </span>
+              <div className="absolute right-18px top-18px">
+                <button onClick={closeModal}>
+                  <Image
+                    src="/images/exit.svg"
+                    width="12px"
+                    height="12px"
+                    alt="x to close"
+                  />
+                </button>
+              </div>
+            </div>
+            <div className="px-15px">
+              <table className="w-full">
+                <thead className="bg-primaryDarkGray border-primaryDarkGray rounded-t">
                   <tr>
-                    <th className="text-start px-2">Name</th>
-                    <th className="text-end px-2 w-30vw">Amount</th>
+                    <th className="text-start p-4 text-14px text-white font-semibold rounded-tl">
+                      Name
+                    </th>
+                    <th className="text-end p-4 w-30vw text-14px text-white font-semibold rounded-tr">
+                      Tokens
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
                   {selectedRedeemables.map((selectedRedeemable) => (
                     <tr
                       key={selectedRedeemable.id}
-                      className="border border-spacing-2"
+                      className="border-l-2 border-r-2 border-b-2"
                     >
-                      <td className="text-start px-2 py-4">
+                      <td className="text-start text-primaryGray text-15px px-4 py-5">
                         {selectedRedeemable.name}
                       </td>
-                      <td className="text-end px-2 py-4">
-                        {selectedRedeemable.amount} {tokenSymbol}
+                      <td className="text-end text-primaryGray text-15px px-4 py-5">
+                        {selectedRedeemable.amount}
                       </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
-              <div className="flex flex-row my-5">
-                <span className="mr-2">For a total of:</span>
-                <span className="font-semibold">
-                  {totalAmountRedeeming} {tokenSymbol}
+              <div className="flex justify-center items-center flex-col my-6">
+                <span className="mr-2 text-eighthGray text-15px">
+                  You are about to redeem rewards for a total of
                 </span>
+                <div>
+                  <span className="text-primaryPurple text-15px">
+                    <span className="font-semibold">
+                      {totalAmountRedeeming}
+                    </span>{' '}
+                    tokens
+                  </span>
+                </div>
+              </div>
+              <div className="flex justify-center">
+                <PrimaryButton
+                  text={'Redeem'}
+                  onClick={async () => {
+                    await fetchOrgRedeem();
+                  }}
+                  size="big"
+                  disabled={Boolean(latestTxnStatus === 'loading')}
+                  loading={Boolean(latestTxnStatus === 'loading')}
+                />
               </div>
             </div>
-          </BasicModal>
+          </div>
         )}
         {currentStep === 'success' && (
           <div className="shadow-primaryModalShadow rounded-4px bg-white mb-16 flex flex-col justify-center items-center">

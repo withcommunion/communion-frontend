@@ -1,6 +1,7 @@
 // TODO: This will make this component real smoove https://reactjs.org/docs/animation.html
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import cx from 'classnames';
+import Image from 'next/image';
 
 import { useAppSelector, useAppDispatch } from '@/reduxHooks';
 import BackToButton from '@/shared_components/backToButton/BackToButton';
@@ -18,7 +19,6 @@ import {
   UserAndAmount,
 } from '@/features/multisend/multisendSlice';
 import { formatTxnHash, getSnowtraceExplorerUrl } from '@/util/avaxEthersUtil';
-import Image from 'next/image';
 import PrimaryButton from '@/shared_components/buttons/primaryButton';
 
 interface Props {
@@ -174,56 +174,75 @@ const SendTokenTipsModal = ({
           </BasicModal>
         )}
         {currentStep === 'confirm' && (
-          <BasicModal
-            title={'Confirmation'}
-            toggleModal={closeModal}
-            secondaryActionButtonText={'Back'}
-            onSecondaryActionButtonClick={() => {
-              setCurrentStep('input');
-            }}
-            onPrimaryActionButtonClick={async () => {
-              await sendTokens();
-            }}
-            primaryActionButtonText={'Submit'}
-            disablePrimaryActionButton={latestTxnStatus === 'loading'}
-            loadingPrimaryActionButton={latestTxnStatus === 'loading'}
-          >
-            <div>
-              <p className="my-5 text-center text-secondaryGray">
-                You are about to send:
-              </p>
-              <table className="border w-full">
-                <thead>
+          <div className="shadow-primaryModalShadow rounded-4px bg-white pb-7">
+            <div className="relative p-15px flex justify-center items-center rounded-tl-4px rounded-tr-4px">
+              <span className="text-primaryDarkGray text-21px font-semibold">
+                Confirmation
+              </span>
+              <div className="absolute right-18px top-18px">
+                <button onClick={closeModal}>
+                  <Image
+                    src="/images/exit.svg"
+                    width="12px"
+                    height="12px"
+                    alt="x to close"
+                  />
+                </button>
+              </div>
+            </div>
+            <div className="px-15px">
+              <table className="w-full">
+                <thead className="bg-primaryDarkGray border-primaryDarkGray rounded-t">
                   <tr>
-                    <th className="text-start px-2">Name</th>
-                    <th className="text-end px-2 w-30vw">Amount</th>
+                    <th className="text-start p-4 text-14px text-white font-semibold rounded-tl">
+                      Name
+                    </th>
+                    <th className="text-end p-4 w-30vw text-14px text-white font-semibold rounded-tr">
+                      Tokens
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
                   {selectedUsersAndAmounts.map((userAndAmount) => (
                     <tr
                       key={userAndAmount.user.id}
-                      className="border border-spacing-2"
+                      className="border-l-2 border-r-2 border-b-2"
                     >
-                      <td className="text-start px-2 py-4">
+                      <td className="text-start text-primaryGray text-15px px-4 py-5">
                         {userAndAmount.user.first_name}{' '}
                         {userAndAmount.user.last_name}
                       </td>
-                      <td className="text-end px-2 py-4">
-                        {userAndAmount.amount} {tokenSymbol}
+                      <td className="text-end text-primaryGray text-15px px-4 py-5">
+                        {userAndAmount.amount}
                       </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
-              <div className="flex flex-row my-5">
-                <span className="mr-2">For a total of:</span>
-                <span className="font-semibold">
-                  {totalAmountSending} {tokenSymbol}
+              <div className="flex justify-center items-center flex-col my-6">
+                <span className="mr-2 text-eighthGray text-15px">
+                  You are about to send a total of
                 </span>
+                <div>
+                  <span className="text-primaryPurple text-15px ">
+                    <span className="font-semibold">{totalAmountSending}</span>{' '}
+                    tokens
+                  </span>
+                </div>
+              </div>
+              <div className="flex justify-center">
+                <PrimaryButton
+                  text={'Send'}
+                  onClick={async () => {
+                    await sendTokens();
+                  }}
+                  size="big"
+                  disabled={Boolean(latestTxnStatus === 'loading')}
+                  loading={Boolean(latestTxnStatus === 'loading')}
+                />
               </div>
             </div>
-          </BasicModal>
+          </div>
         )}
         {currentStep === 'success' && (
           <div className="shadow-primaryModalShadow rounded-4px bg-white mb-16 flex flex-col justify-center items-center">
