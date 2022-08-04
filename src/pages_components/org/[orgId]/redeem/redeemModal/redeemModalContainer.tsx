@@ -1,5 +1,5 @@
 // TODO: This will make this component real smoove https://reactjs.org/docs/animation.html
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 
 import { useAppSelector, useAppDispatch } from '@/reduxHooks';
@@ -188,48 +188,53 @@ const RedeemModalContainer = ({
           </div>
         )}
         {currentStep === 'success' && (
-          <BasicModal
-            title={'Congratulations!'}
-            toggleModal={closeModal}
-            primaryActionButtonText={`Back to Redeem List`}
-            onPrimaryActionButtonClick={() => {
-              dispatch(clearedRedeemables());
-              closeModal();
-            }}
-          >
-            <div className="text-center">
-              <p className="my-5">You succesfully redeemed:</p>
-              <ul>
-                {selectedRedeemables.map((userAndAmount) => (
-                  <li key={userAndAmount.id}>
-                    <div className="my-2">
-                      <span>{userAndAmount.name} for: </span>
-                      <span className="font-semibold">
-                        {userAndAmount.amount} {tokenSymbol}{' '}
-                      </span>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-              <p className="my-5">
-                For a total of: {totalAmountRedeeming} {tokenSymbol}
-              </p>
-
-              {latestTxn && (
-                <div className="flex flex-col my-5">
-                  <p className="">View the transaction on the blockchain!</p>
-                  <a
-                    className="underline text-blue-600 hover:text-blue-800 visited:text-purple-600"
-                    href={getSnowtraceExplorerUrl(latestTxn.hash || '')}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    Here: {latestTxn.hash && formatTxnHash(latestTxn.hash)}
-                  </a>
-                </div>
-              )}
+          <div className="shadow-primaryModalShadow rounded-4px bg-white mb-16 flex flex-col justify-center items-center">
+            <div className="flex justify-center items-center pt-5">
+              <Image
+                src="/images/redeem/applePresent.png"
+                width="273px"
+                height="273px"
+                alt="A gift"
+              />
             </div>
-          </BasicModal>
+            <p className="mt-3 mb-2 flex justify-center items-center">
+              <span className="text-primaryDarkGray text-21px font-semibold">
+                Success!
+              </span>
+            </p>
+            <p className="text-eleventhGray text-4 flex flex-col justify-center items-center mb-7">
+              <div>
+                {totalAmountRedeeming} {tokenSymbol}
+              </div>
+              <span>were successfully redeemed</span>
+            </p>
+            {latestTxn && (
+              <div className="flex flex-col my-5">
+                <p className="">View the transaction on the blockchain!</p>
+                <a
+                  className="underline text-blue-600 hover:text-blue-800 visited:text-purple-600"
+                  href={getSnowtraceExplorerUrl(latestTxn.hash || '')}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Here: {latestTxn.hash && formatTxnHash(latestTxn.hash)}
+                </a>
+              </div>
+            )}
+            <PrimaryButton
+              text={'Back to Redeem’s List'}
+              onClick={() => {
+                dispatch(clearedRedeemables());
+                closeModal();
+              }}
+              size="big"
+            />
+            {/* <Link href={'#'}>
+              <a className="mt-6 mb-7 text-primaryOrange text-13px font-light">
+                Back to Dashboard
+              </a>
+            </Link> */}
+          </div>
         )}
 
         {currentStep === 'error' && (

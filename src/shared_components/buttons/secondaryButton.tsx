@@ -12,7 +12,7 @@ const SecondaryButton = ({ onClick, text, size }: Props) => (
     className={cx(
       { 'w-155px': size === 'small' },
       { 'w-295px': size === 'big' },
-      'rounded-28px h-46px bg-white text-primaryGray border-2 border-secondaryBeige mx-7.5px'
+      'rounded-28px h-46px bg-white text-primaryGray border-2 border-primaryBeige mx-7.5px'
     )}
     onClick={() => onClick()}
   >
