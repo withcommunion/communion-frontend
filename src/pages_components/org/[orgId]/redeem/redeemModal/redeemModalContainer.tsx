@@ -221,14 +221,16 @@ const RedeemModalContainer = ({
                 </a>
               </div>
             )}
-            <PrimaryButton
-              text={'Back to Redeem’s List'}
-              onClick={() => {
-                dispatch(clearedRedeemables());
-                closeModal();
-              }}
-              size="big"
-            />
+            <div className="my-5">
+              <PrimaryButton
+                text={'Back to Redeem List'}
+                onClick={() => {
+                  dispatch(clearedRedeemables());
+                  closeModal();
+                }}
+                size="big"
+              />
+            </div>
             {/* <Link href={'#'}>
               <a className="mt-6 mb-7 text-primaryOrange text-13px font-light">
                 Back to Dashboard

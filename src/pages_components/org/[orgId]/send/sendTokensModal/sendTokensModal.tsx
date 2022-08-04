@@ -295,15 +295,17 @@ const SendTokenTipsModal = ({
                 </a>
               </div>
             )}
-            <PrimaryButton
-              text={'Back to Members’s List'}
-              onClick={() => {
-                dispatch(clearedUsers());
-                dispatch(baseAmountUpdated(0));
-                closeModal();
-              }}
-              size="big"
-            />
+            <div className="my-6">
+              <PrimaryButton
+                text={'Back to Members’s List'}
+                onClick={() => {
+                  dispatch(clearedUsers());
+                  dispatch(baseAmountUpdated(0));
+                  closeModal();
+                }}
+                size="big"
+              />
+            </div>
             {/* <Link href={'#'}>
               <a className="mt-6 mb-7 text-primaryOrange text-13px font-light">
                 Back to Dashboard
