@@ -1,6 +1,6 @@
 import Image from 'next/image';
 
-const SendPageHeader = () => {
+const RedeemPageHeader = () => {
   return (
     <div className="flex py-5">
       <Image
@@ -14,4 +14,4 @@ const SendPageHeader = () => {
   );
 };
 
-export default SendPageHeader;
+export default RedeemPageHeader;
