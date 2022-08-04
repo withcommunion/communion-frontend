@@ -55,6 +55,7 @@ module.exports = {
         '46px': '46px',
         '7.5px': '7.5px',
         '11px': '11px',
+        '14px':'14px',
         '6px': '6px',
         '15px': '15px',
         '22px':'22px',
@@ -65,7 +66,9 @@ module.exports = {
         '5px':'5px',
         '155px': '155px',
         '295px': '295px',
-        '275px':'275px'
+        '275px':'275px',
+        '156px':'156px',
+        '30px':'30px'
       },
       colors: {
         primaryGray: '#606279',
@@ -75,12 +78,16 @@ module.exports = {
         thirdGray: '#B5B6C8',
         secondaryGray: '#A9ABB9',
         fourthGray: '#A3A4BA',
+        fifthLightGray:'#AAADC6',
+        sixthLightGray: '#CACCE1',
         fifthGray:"#989BB2",
+        primaryDarkGray:'#767892',
         fourthLightGray:'#EAEBFA',
         primaryLightGray: '#EDEDF3',
         secondaryLightGray: '#F8F8F9',
         thirdLightGray: '#E5E5EA',
         white: '#ffffff',
+        primaryYellow: '#FFD29C',
         primaryOrange: '#FF8A00',
         secondaryOrange: '#FFA740',
         thirdOrange: '#FFBE50',
@@ -98,6 +105,7 @@ module.exports = {
         '15px': '15px',
         '11px': '11px',
         '12px': '12px',
+        '21px':'21px'
       },
       boxShadow: {
         menuShadow: '0px 37px 75px 0px rgba(0,0,0,0.59)',
