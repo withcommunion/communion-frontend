@@ -157,10 +157,10 @@ const RedeemModalContainer = ({
           <div className="shadow-primaryModalShadow rounded-4px bg-white mb-16 flex flex-col justify-center items-center">
             <div className="flex justify-center items-center pt-5">
               <Image
-                src="/images/redeem/shutterstock.png"
+                src="/images/redeem/applePresent.png"
                 width="273px"
                 height="273px"
-                alt="shutterstock image"
+                alt="A gift"
               />
             </div>
             <p className="mt-3 mb-2 flex justify-center items-center">
