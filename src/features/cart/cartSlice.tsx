@@ -10,7 +10,11 @@ import {
 import type { RootState } from '@/reduxStore';
 import { fetchOrgTokenBalance } from '@/features/organization/organizationSlice';
 
-import { OrgRedeemable, API_URL } from '@/util/walletApiUtil';
+import {
+  OrgRedeemable,
+  API_URL,
+  postToLogTxnError,
+} from '@/util/walletApiUtil';
 import { HTTPSProvider } from '@/util/avaxEthersUtil';
 
 export interface OrgRedeemableInCart extends OrgRedeemable {
@@ -199,8 +203,12 @@ export const fetchOrgRedeem = createAsyncThunk(
         const errorFromBlockchain = error.response?.data?.error?.error
           ?.reason as string;
         if (errorFromBlockchain) {
+          postToLogTxnError('redeem', errorFromBlockchain, jwtToken);
           throw new Error(errorFromBlockchain);
         } else {
+          const errorMessage =
+            (error.response?.data as string) || 'Unknown error';
+          postToLogTxnError('redeem', errorMessage, jwtToken);
           throw error.response?.data;
         }
       }

@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { isProd } from '@/util/envUtil';
 
 const DEV_API_URL = 'https://p0rddetfk8.execute-api.us-east-1.amazonaws.com';
@@ -74,4 +75,26 @@ export interface OrgWithPublicData {
     token_name: string;
     token_symbol: string;
   };
+}
+
+export async function postToLogTxnError(
+  action: string,
+  message: string,
+  jwtToken: string
+) {
+  return axios.post<{
+    action: string;
+    message: string;
+  }>(
+    `${API_URL}/log`,
+    {
+      action,
+      message,
+    },
+    {
+      headers: {
+        Authorization: jwtToken,
+      },
+    }
+  );
 }

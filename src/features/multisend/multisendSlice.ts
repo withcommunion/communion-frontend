@@ -9,7 +9,7 @@ import type { RootState } from '@/reduxStore';
 import { Transaction } from 'ethers';
 import { HTTPSProvider } from '@/util/avaxEthersUtil';
 
-import { API_URL, User } from '@/util/walletApiUtil';
+import { API_URL, User, postToLogTxnError } from '@/util/walletApiUtil';
 
 export interface UserAndAmount {
   user: User;
@@ -205,9 +205,15 @@ export const fetchMultisendFunds = createAsyncThunk(
         // eslint-disable-next-line
         const errorFromBlockchain = error.response?.data?.error?.error
           ?.reason as string;
+
+        // const errorMessage = { errorFromBlockchain };
         if (errorFromBlockchain) {
+          postToLogTxnError('multisend', errorFromBlockchain, jwtToken);
           throw new Error(errorFromBlockchain);
         } else {
+          const errorMessage =
+            (error.response?.data as string) || 'Unknown error';
+          postToLogTxnError('multisend', errorMessage, jwtToken);
           throw error.response?.data;
         }
       }

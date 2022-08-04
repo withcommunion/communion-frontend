@@ -180,6 +180,10 @@ export function formatTxnHash(txnHash: string) {
   return `${txnHash.substring(0, 6)}...${txnHash.substring(60)}`;
 }
 
+export function getBaseSnowtraceUrl() {
+  return isProd ? `https://snowtrace.io` : `https://testnet.snowtrace.io`;
+}
+
 export function getSnowtraceExplorerUrl(txnHash: string) {
   return isProd
     ? `https://snowtrace.io/tx/${txnHash}`
