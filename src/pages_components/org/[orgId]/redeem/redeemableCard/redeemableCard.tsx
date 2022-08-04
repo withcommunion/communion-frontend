@@ -1,11 +1,4 @@
 import { OrgRedeemable } from '@/util/walletApiUtil';
-import Image from 'next/image';
-export interface ICommunityMembers {
-  id: number;
-  avatar: string;
-  name: string;
-  isChecked?: boolean;
-}
 interface Props {
   redeemable: OrgRedeemable;
   toggleChecked: () => void;
@@ -24,26 +17,29 @@ const RedeemableCard = ({ redeemable, toggleChecked, isChecked }: Props) => {
       }
       onClick={toggleChecked}
     >
-      <div className="flex grow items-center">
+      <div className="relative flex grow items-center">
+        <div
+          className={`absolute w-1 h-30px bg-primaryYellow ${
+            isChecked ? '-left-1' : 'left-0'
+          }`}
+        ></div>
         <span
-          className={
-            isChecked
-              ? 'ml-1.5 mr-2.5 flex items-center'
-              : 'mx-2.5 flex items-center'
-          }
+          className={`text-primaryGray text-15px ml-30px ${
+            isChecked ? 'ml-26px' : 'ml-30px'
+          }`}
         >
-          <Image
-            src={'/images/send/gift.svg'}
-            width="22px"
-            height="22px"
-            alt="gift"
-          />
+          {name}
         </span>
-        <span className="text-primaryGray text-15px">{name}</span>
       </div>
 
       <div className="flex items-center">
-        <span className="text-primaryGray text-15px">{amount}</span>
+        <span
+          className={`text-primaryPurple text-15px font-semibold ${
+            isChecked ? 'mr-1' : ''
+          }`}
+        >
+          {amount}
+        </span>
         <input
           type="checkbox"
           className={isChecked ? 'mx-4' : 'mx-5'}
