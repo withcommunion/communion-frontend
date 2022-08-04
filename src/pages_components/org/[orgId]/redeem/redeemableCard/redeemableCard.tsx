@@ -1,10 +1,4 @@
 import { OrgRedeemable } from '@/util/walletApiUtil';
-export interface ICommunityMembers {
-  id: number;
-  avatar: string;
-  name: string;
-  isChecked?: boolean;
-}
 interface Props {
   redeemable: OrgRedeemable;
   toggleChecked: () => void;

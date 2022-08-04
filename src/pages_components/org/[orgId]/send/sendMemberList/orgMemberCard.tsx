@@ -1,11 +1,6 @@
 import { User } from '@/util/walletApiUtil';
 import Image from 'next/image';
-export interface ICommunityMembers {
-  id: number;
-  avatar: string;
-  name: string;
-  isChecked?: boolean;
-}
+
 interface Props {
   userInOrg: User;
   toggleChecked: () => void;
