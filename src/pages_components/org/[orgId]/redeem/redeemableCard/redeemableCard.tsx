@@ -24,12 +24,28 @@ const RedeemableCard = ({ redeemable, toggleChecked, isChecked }: Props) => {
       onClick={toggleChecked}
     >
       <div className="relative flex grow items-center">
-        <div className={`absolute w-1 h-30px bg-primaryYellow ${isChecked?'-left-1':'left-0'}`}></div>
-        <span className={`text-primaryGray text-15px ml-30px ${isChecked?'ml-26px':'ml-30px'}`}>{name}</span>
+        <div
+          className={`absolute w-1 h-30px bg-primaryYellow ${
+            isChecked ? '-left-1' : 'left-0'
+          }`}
+        ></div>
+        <span
+          className={`text-primaryGray text-15px ml-30px ${
+            isChecked ? 'ml-26px' : 'ml-30px'
+          }`}
+        >
+          {name}
+        </span>
       </div>
 
       <div className="flex items-center">
-        <span className={`text-primaryPurple text-15px font-semibold ${isChecked?'mr-1':''}`}>{amount}</span>
+        <span
+          className={`text-primaryPurple text-15px font-semibold ${
+            isChecked ? 'mr-1' : ''
+          }`}
+        >
+          {amount}
+        </span>
         <input
           type="checkbox"
           className={isChecked ? 'mx-4' : 'mx-5'}
