@@ -18,6 +18,10 @@ import {
   UserAndAmount,
 } from '@/features/multisend/multisendSlice';
 import { formatTxnHash, getSnowtraceExplorerUrl } from '@/util/avaxEthersUtil';
+import Image from 'next/image';
+import PrimaryButton from '@/shared_components/buttons/primaryButton';
+import { clearedRedeemables } from '@/features/cart/cartSlice';
+import Link from 'next/link';
 
 interface Props {
   closeModal: () => void;
@@ -224,18 +228,24 @@ const SendTokenTipsModal = ({
           </BasicModal>
         )}
         {currentStep === 'success' && (
-          <BasicModal
-            title={'Congratulations!'}
-            toggleModal={closeModal}
-            primaryActionButtonText={`Back to Member's List`}
-            onPrimaryActionButtonClick={() => {
-              dispatch(clearedUsers());
-              dispatch(baseAmountUpdated(0));
-              closeModal();
-            }}
-          >
-            <div className="text-center">
-              <p className="my-5">You succesfully sent:</p>
+          <div className="shadow-primaryModalShadow rounded-4px bg-white mb-16 flex flex-col justify-center items-center">
+            <div className="flex justify-center items-center pt-10">
+              <Image
+                src="/images/send/donat.png"
+                width="192px"
+                height="199px"
+                alt="donat image"
+              />
+            </div>
+            <p className="my-3 flex justify-center items-center">
+              <span className="text-primaryDarkGray text-21px font-semibold">
+                Congratulations
+              </span>
+            </p>
+            <p className="text-eleventhGray text-4 flex flex-col justify-center items-center mb-7">
+              <div>
+                {totalAmountSending} {tokenSymbol} was successfully sent to:
+              </div>
               <ul>
                 {selectedUsersAndAmounts.map((userAndAmount) => (
                   <li key={userAndAmount.user.id}>
@@ -244,32 +254,45 @@ const SendTokenTipsModal = ({
                         {userAndAmount.amount} {tokenSymbol}{' '}
                       </span>
                       <span>
-                        to: {userAndAmount.user.first_name}{' '}
-                        {userAndAmount.user.last_name}
+                        to:{' '}
+                        <span className="font-semibold">
+                          {userAndAmount.user.first_name}{' '}
+                          {userAndAmount.user.last_name}
+                        </span>
                       </span>
                     </div>
                   </li>
                 ))}
               </ul>
-              <p className="my-5">
-                For a total of: {totalAmountSending} {tokenSymbol}
-              </p>
-
-              {latestTxn && (
-                <div className="flex flex-col my-5">
-                  <p className="">View the transaction on the blockchain!</p>
-                  <a
-                    className="underline text-blue-600 hover:text-blue-800 visited:text-purple-600"
-                    href={getSnowtraceExplorerUrl(latestTxn.hash || '')}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    Here: {latestTxn.hash && formatTxnHash(latestTxn.hash)}
-                  </a>
-                </div>
-              )}
-            </div>
-          </BasicModal>
+            </p>
+            {latestTxn && (
+              <div className="flex flex-col my-5">
+                <p className="">View the transaction on the blockchain!</p>
+                <a
+                  className="underline text-blue-600 hover:text-blue-800 visited:text-purple-600"
+                  href={getSnowtraceExplorerUrl(latestTxn.hash || '')}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Here: {latestTxn.hash && formatTxnHash(latestTxn.hash)}
+                </a>
+              </div>
+            )}
+            <PrimaryButton
+              text={'Back to Members’s List'}
+              onClick={() => {
+                dispatch(clearedUsers());
+                dispatch(baseAmountUpdated(0));
+                closeModal();
+              }}
+              size="big"
+            />
+            <Link href={'#'}>
+              <a className="mt-6 mb-7 text-primaryOrange text-13px font-light">
+                Back to Dashboard
+              </a>
+            </Link>
+          </div>
         )}
 
         {currentStep === 'error' && (
