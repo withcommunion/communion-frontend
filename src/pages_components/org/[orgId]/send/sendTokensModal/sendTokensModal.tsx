@@ -20,8 +20,6 @@ import {
 import { formatTxnHash, getSnowtraceExplorerUrl } from '@/util/avaxEthersUtil';
 import Image from 'next/image';
 import PrimaryButton from '@/shared_components/buttons/primaryButton';
-import { clearedRedeemables } from '@/features/cart/cartSlice';
-import Link from 'next/link';
 
 interface Props {
   closeModal: () => void;
@@ -287,11 +285,11 @@ const SendTokenTipsModal = ({
               }}
               size="big"
             />
-            <Link href={'#'}>
+            {/* <Link href={'#'}>
               <a className="mt-6 mb-7 text-primaryOrange text-13px font-light">
                 Back to Dashboard
               </a>
-            </Link>
+            </Link> */}
           </div>
         )}
 

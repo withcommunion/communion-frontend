@@ -1,7 +1,6 @@
 // TODO: This will make this component real smoove https://reactjs.org/docs/animation.html
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
 
 import { useAppSelector, useAppDispatch } from '@/reduxHooks';
 import BackToButton from '@/shared_components/backToButton/BackToButton';
@@ -196,11 +195,11 @@ const RedeemModalContainer = ({
               }}
               size="big"
             />
-            <Link href={'#'}>
+            {/* <Link href={'#'}>
               <a className="mt-6 mb-7 text-primaryOrange text-13px font-light">
                 Back to Dashboard
               </a>
-            </Link>
+            </Link> */}
           </div>
         )}
 
