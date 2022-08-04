@@ -78,7 +78,7 @@ const RedeemModalContainer = ({
                 height="25px"
                 alt="shopping cart"
               />
-              <span className="mx-1 font-semibold text-21px text-seventhGray">
+              <span className="mx-1 font-semibold text-21px text-primaryDarkGray">
                 Cart
               </span>
             </div>

@@ -77,7 +77,7 @@ module.exports = {
         fifthLightGray:'#AAADC6',
         sixthLightGray: '#CACCE1',
         fifthGray:"#989BB2",
-        seventhGray:'#767892',
+        primaryDarkGray:'#767892',
         fourthLightGray:'#EAEBFA',
         primaryLightGray: '#EDEDF3',
         secondaryLightGray: '#F8F8F9',
