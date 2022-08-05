@@ -133,13 +133,13 @@ const RedeemModalContainer = ({
               </div>
             </div>
             <div className="px-15px">
-              <table className="w-full">
-                <thead className="bg-primaryDarkGray border-primaryDarkGray rounded-t">
-                  <tr>
-                    <th className="text-start p-4 text-14px text-white font-semibold rounded-tl">
+              <table className="w-full border-collapse overflow-hidden rounded-md">
+                <thead>
+                  <tr className="bg-primaryDarkGray">
+                    <th className="text-start p-4 text-14px text-white font-semibold">
                       Name
                     </th>
-                    <th className="text-end p-4 w-30vw text-14px text-white font-semibold rounded-tr">
+                    <th className="text-end p-4 w-30vw text-14px text-white font-semibold">
                       Tokens
                     </th>
                   </tr>
@@ -148,7 +148,7 @@ const RedeemModalContainer = ({
                   {selectedRedeemables.map((selectedRedeemable) => (
                     <tr
                       key={selectedRedeemable.id}
-                      className="border-l-2 border-r-2 border-b-2"
+                      className="border-l-2 border-b-2 border-r-2 border-eighthLightGray"
                     >
                       <td className="text-start text-primaryGray text-15px px-4 py-5">
                         {selectedRedeemable.name}
