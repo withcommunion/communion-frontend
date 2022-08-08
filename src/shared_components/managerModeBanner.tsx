@@ -2,10 +2,10 @@ import { useEffect } from 'react';
 import { useAppSelector, useAppDispatch } from '@/reduxHooks';
 import {
   selectOrg,
-  // toggledManagerModeActive,
+  toggledManagerModeActive,
   calculatedIsManagerModeAvailable,
   selectIsManagerModeAvailable,
-  // selectIsManagerModeActive,
+  selectIsManagerModeActive,
 } from '@/features/organization/organizationSlice';
 import { selectSelf } from '@/features/selfSlice';
 
@@ -16,27 +16,26 @@ export default function ManagerModeBanner() {
   const isManagerModeAvailable = useAppSelector((state) =>
     selectIsManagerModeAvailable(state)
   );
-  // const isManagerModeActive = useAppSelector((state) =>
-  //   selectIsManagerModeActive(state)
-  // );
+  const isManagerModeActive = useAppSelector((state) =>
+    selectIsManagerModeActive(state)
+  );
 
   useEffect(() => {
+    console.log('fired');
     if (org && self) {
-      console.log('fired');
       dispatch(calculatedIsManagerModeAvailable(self));
     }
   }, [org, self, dispatch]);
 
   return isManagerModeAvailable ? (
     <>
-      {/* <p>Banner yay!</p>
       <p
         onClick={() => {
           dispatch(toggledManagerModeActive());
         }}
       >
-        Active: {isManagerModeActive.toString()}
-      </p> */}
+        Is manager mode active: {isManagerModeActive.toString()}
+      </p>
     </>
   ) : null;
 }
