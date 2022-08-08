@@ -69,6 +69,7 @@ module.exports = {
         '275px': '275px',
         '18px': '18px',
         '156px': '156px',
+        '10px':'10px'
       },
       colors: {
         primaryGray: '#606279',
@@ -93,7 +94,10 @@ module.exports = {
         thirdOrange: '#FFBE50',
         fourthOrange: '#EAA125',
         fifthOrange: '#EB9128',
+        sixthOrange: '#E99D1B',
         primaryBeige: '#FFF1E1',
+        secondaryBeige: '#FFDFBA',
+        thirdBeige: '#FFE4C5',
         eleventhGray: '#8688A8',
         eighthGray: '#B8BAD2',
         eighthLightGray: '#EEEEEE',
