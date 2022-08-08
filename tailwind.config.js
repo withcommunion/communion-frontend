@@ -69,7 +69,9 @@ module.exports = {
         '275px': '275px',
         '18px': '18px',
         '156px': '156px',
-        '10px':'10px'
+        13: '3.25rem',
+        18: '4.5rem',
+        '10px': '10px',
       },
       colors: {
         primaryGray: '#606279',
@@ -94,13 +96,19 @@ module.exports = {
         thirdOrange: '#FFBE50',
         fourthOrange: '#EAA125',
         fifthOrange: '#EB9128',
-        sixthOrange: '#E99D1B',
+        sixthOrange: '#F9BE49',
+        seventhOrange: '#FFEACA',
         primaryBeige: '#FFF1E1',
         secondaryBeige: '#FFDFBA',
         thirdBeige: '#FFE4C5',
         eleventhGray: '#8688A8',
         eighthGray: '#B8BAD2',
         eighthLightGray: '#EEEEEE',
+        thirdPurple: '#DEDEFF',
+        fourthPurple: '#E6E6FD',
+        fifthPurple: '#CAA9FF',
+        sixthPurple: '#D3BEFF',
+        ninethLightGray: 'rgba(199, 199, 204, 0.64)',
       },
       fontSize: {
         '19px': '19px',
@@ -126,6 +134,7 @@ module.exports = {
       },
       borderWidth: {
         '1px': '1px',
+        '3px': '3px',
       },
       fontFamily: {
         paytoneOne: ['Paytone One', 'sans-serif'],
