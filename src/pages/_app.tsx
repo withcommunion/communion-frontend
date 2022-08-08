@@ -7,6 +7,7 @@ import { Provider } from 'react-redux';
 
 import { AMPLIFY_CONFIG } from '../util/cognitoAuthUtil';
 import store from '@/reduxStore';
+import ManagerModeBanner from '@/shared_components/managerModeBanner';
 
 // https://docs.amplify.aws/lib/client-configuration/configuring-amplify-categories/q/platform/js/#general-configuration
 Amplify.configure({ ...AMPLIFY_CONFIG, ssr: true });
@@ -16,6 +17,7 @@ function App({ Component, pageProps }: AppProps) {
   return (
     <Provider store={store}>
       <Authenticator.Provider>
+        <ManagerModeBanner />
         <Component {...pageProps} />
       </Authenticator.Provider>
     </Provider>
