@@ -11,7 +11,7 @@ const UploadButton = ({ onClick }: Props) => {
       className="w-full border-2 rounded-xl border-secondaryBeige bg-thirdBeige flex items-center justify-center py-3"
     >
       <Image
-        src="/images/home/CSV/CSVUpload.png"
+        src="/images/home/csv/csvUploadIcon.png"
         alt="CSV Upload image"
         width="46px"
         height="39px"
