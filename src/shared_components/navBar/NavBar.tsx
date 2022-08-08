@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import cx from 'classnames';
+import { useAppSelector } from '@/reduxHooks';
+import { selectIsManagerModeActive } from '@/features/organization/organizationSlice';
 
 export enum AvailablePages {
   orgHome = 'orgHome',
@@ -50,11 +52,17 @@ interface Props {
 }
 
 export default function NavBar({ activePage, activeOrgId }: Props) {
+  const isManagerModeActive = useAppSelector((state) =>
+    selectIsManagerModeActive(state)
+  );
   return (
     <nav className="fixed h-14 inset-x-0 bottom-0 bg-white shadow-menuShadow z-30">
       <ul className="flex justify-around items-center h-full mx-auto md:max-w-50vw ">
         {pages.map((link, num: number) => {
           const isActive = link.name === activePage;
+          const isDisabledInManagerMode =
+            isManagerModeActive && link.name === AvailablePages.orgRedeem;
+
           const navLink =
             link.name === AvailablePages.settings
               ? '/settings'
@@ -67,7 +75,16 @@ export default function NavBar({ activePage, activeOrgId }: Props) {
                 })}
               ></div>
               <Link href={navLink}>
-                <a className="flex items-center justify-center h-full">
+                <a
+                  onClick={(event) => {
+                    if (isDisabledInManagerMode) {
+                      event.preventDefault();
+                    }
+                  }}
+                  className={cx('flex items-center justify-center h-full', {
+                    'opacity-20': isDisabledInManagerMode,
+                  })}
+                >
                   <Image
                     src={isActive ? link.activeImage : link.image}
                     alt={link.name}
