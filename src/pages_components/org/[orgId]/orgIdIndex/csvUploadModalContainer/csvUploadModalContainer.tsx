@@ -6,8 +6,8 @@ interface Props {
   closeModal: () => void;
 }
 
-const UploadModalContainer = ({ closeModal }: Props) => {
-  const [currentStep, setCurrentStep] = useState<'input' | 'error'>('error');
+const CsvUploadModalContainer = ({ closeModal }: Props) => {
+  const [currentStep, setCurrentStep] = useState<'input' | 'error'>('input');
 
   return (
     <div className="absolute top-0 left-0 mx-auto w-full z-50 bg-ninethLightGray min-h-100vh">
@@ -82,4 +82,4 @@ const UploadModalContainer = ({ closeModal }: Props) => {
   );
 };
 
-export default UploadModalContainer;
+export default CsvUploadModalContainer;
