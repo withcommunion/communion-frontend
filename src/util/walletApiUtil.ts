@@ -23,9 +23,14 @@ export interface Self extends User {
   walletPrivateKeyWithLeadingHex: string;
 }
 
+export interface UserInTxn {
+  first_name: string;
+  last_name: string;
+  id: string;
+}
 export interface HistoricalTxn {
-  fromUser: User;
-  toUser: User;
+  fromUser: UserInTxn;
+  toUser: UserInTxn;
   blockNumber: string;
   timeStamp: string;
   hash: string;
