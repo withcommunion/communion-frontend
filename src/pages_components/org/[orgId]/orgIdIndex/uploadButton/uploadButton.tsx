@@ -1,8 +1,15 @@
 import Image from 'next/image';
 
-const UploadButton = () => {
+interface Props {
+  onClick: () => void;
+}
+
+const UploadButton = ({ onClick }: Props) => {
   return (
-    <button className="w-full border-2 rounded-xl border-secondaryBeige bg-thirdBeige flex items-center justify-center py-3">
+    <button
+      onClick={() => onClick()}
+      className="w-full border-2 rounded-xl border-secondaryBeige bg-thirdBeige flex items-center justify-center py-3"
+    >
       <Image
         src="/images/home/CSV/CSVUpload.png"
         alt="CSV Upload image"
