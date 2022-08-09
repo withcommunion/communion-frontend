@@ -22,6 +22,7 @@ import {
   selectOrgStatus,
   selectOrgUserTokenBalance,
   fetchOrgTokenBalance,
+  selectIsManagerModeActive,
 } from '@/features/organization/organizationSlice';
 
 import NavBar, { AvailablePages } from '@/shared_components/navBar/NavBar';
@@ -49,6 +50,10 @@ const Home = ({ userJwt }: Props) => {
   const org = useAppSelector((state) => selectOrg(state));
   const userTokenBalance = useAppSelector((state) =>
     selectOrgUserTokenBalance(state)
+  );
+
+  const isManagerModeActive = useAppSelector((state) =>
+    selectIsManagerModeActive(state)
   );
 
   const historicalTxns = useAppSelector((state) => selectHistoricalTxns(state));
@@ -118,6 +123,7 @@ const Home = ({ userJwt }: Props) => {
             </div>
             <div className="my-8">
               <OrgTransactionHistoryList
+                isManagerModeActive={isManagerModeActive}
                 selfWalletAddress={self?.walletAddressC || ''}
                 transactions={historicalTxns}
                 fetchRefreshTxns={() =>
