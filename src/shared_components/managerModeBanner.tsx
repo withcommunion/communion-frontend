@@ -15,7 +15,7 @@ export default function ManagerModeBanner() {
   const org = useAppSelector((state) => selectOrg(state));
   const isManagerModeAvailable =
     // TODO: Remove && false to release
-    useAppSelector((state) => selectIsManagerModeAvailable(state)) && false;
+    useAppSelector((state) => selectIsManagerModeAvailable(state));
   const isManagerModeActive = useAppSelector((state) =>
     selectIsManagerModeActive(state)
   );
