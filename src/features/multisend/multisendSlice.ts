@@ -149,17 +149,26 @@ export const selectLatestTxnErrorMessage = createSelector(
 
 export const fetchMultisendFunds = createAsyncThunk(
   'transactions/fetchMultisendFunds',
-  async ({
-    toUsersAndAmounts,
-    orgId,
-    jwtToken,
-  }: {
-    toUsersAndAmounts: UserAndAmount[];
-    orgId: string;
-    jwtToken: string;
-  }) => {
+  async (
+    {
+      toUsersAndAmounts,
+      orgId,
+      jwtToken,
+    }: {
+      toUsersAndAmounts: UserAndAmount[];
+      orgId: string;
+      jwtToken: string;
+    },
+    { getState }
+  ) => {
     const waitXSeconds = (seconds: number) =>
       new Promise((resolve) => setTimeout(resolve, seconds * 1000));
+
+    const state = getState() as RootState;
+    const managerMode = state.organization.managerMode;
+
+    const isManagerModeAvailable = managerMode.isAvailable;
+    const isManagerModeActive = isManagerModeAvailable && managerMode.isActive;
 
     const toUserIdAndAmountObjs = toUsersAndAmounts.map((userAndAmount) => ({
       userId: userAndAmount.user.id,
@@ -174,6 +183,7 @@ export const fetchMultisendFunds = createAsyncThunk(
         {
           orgId,
           toUserIdAndAmountObjs,
+          isManagerMode: isManagerModeActive,
         },
         {
           headers: {
