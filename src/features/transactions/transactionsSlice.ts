@@ -170,12 +170,24 @@ export const fetchSelfTransferFunds = createAsyncThunk(
 
 export const fetchSelfHistoricalTxns = createAsyncThunk(
   'transactions/fetchSelfHistoricalTxns',
-  async ({ orgId, jwtToken }: { orgId: string; jwtToken: string }) => {
+  async (
+    { orgId, jwtToken }: { orgId: string; jwtToken: string },
+    { getState }
+  ) => {
+    const state = getState() as RootState;
+    const managerMode = state.organization.managerMode;
+
+    const isManagerModeAvailable = managerMode.isAvailable;
+    const isManagerModeActive = isManagerModeAvailable && managerMode.isActive;
+
     const rawWallet = await axios.get<{ txs: HistoricalTxn[] }>(
       `${API_URL}/org/${orgId}/txs/self`,
       {
         headers: {
           Authorization: jwtToken,
+        },
+        params: {
+          isManagerMode: isManagerModeActive,
         },
       }
     );

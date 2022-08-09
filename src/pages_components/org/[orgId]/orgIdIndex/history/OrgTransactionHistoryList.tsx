@@ -5,9 +5,11 @@ interface Props {
   fetchRefreshTxns: () => void;
   transactions: HistoricalTxn[];
   selfWalletAddress: string;
+  isManagerModeActive: boolean;
 }
 
 const HistoryOrg = ({
+  isManagerModeActive,
   transactions,
   fetchRefreshTxns,
   selfWalletAddress,
@@ -15,7 +17,9 @@ const HistoryOrg = ({
   return (
     <>
       <div className="my-4 flex justify-between text-center">
-        <span className="text-primaryGray font-semibold text-4">History</span>
+        <span className="text-primaryGray font-semibold text-4">
+          {isManagerModeActive ? 'Bank History' : 'Your History'}
+        </span>
         <button
           className="text-sm border-2 border-primaryOrange text-primaryOrange py-1 px-1 rounded"
           onClick={fetchRefreshTxns}
