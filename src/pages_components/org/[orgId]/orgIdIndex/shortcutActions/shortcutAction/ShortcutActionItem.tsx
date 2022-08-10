@@ -1,5 +1,9 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import cx from 'classnames';
+
+import { useAppSelector } from '@/reduxHooks';
+import { selectIsManagerModeActive } from '@/features/organization/organizationSlice';
 import { OrgAction } from '@/util/walletApiUtil';
 
 interface Props {
@@ -11,10 +15,18 @@ interface Props {
 
 const ShortcutAction = ({ action, imageUrl, orgId, onClick }: Props) => {
   const { name, amount } = action;
+  const isManagerModeActive = useAppSelector((state) =>
+    selectIsManagerModeActive(state)
+  );
   return (
     <li onClick={onClick}>
       <Link href={`/org/${orgId}/send`}>
-        <a className="text-primaryGray my-2.5 bg-white justify-between rounded-xl flex items-center px-4">
+        <a
+          className={cx(
+            'text-primaryGray my-2.5 bg-white justify-between rounded-xl flex items-center px-4',
+            { 'border border-primaryOrange': isManagerModeActive }
+          )}
+        >
           <div className="flex items-center">
             <span className="font-bold text-45px mr-3 py-4">{amount}</span>
             <div className="flex flex-col">

@@ -29,7 +29,7 @@ export default function ManagerModeBanner() {
 
   return isManagerModeAvailable ? (
     <div
-      className={cx('py-1 ', {
+      className={cx('py-2 relative top-0 z-100', {
         'bg-primaryOrange': isManagerModeActive,
         'bg-primaryLightGray': !isManagerModeActive,
       })}
@@ -64,13 +64,10 @@ export default function ManagerModeBanner() {
             )}
           >
             <span
-              className={cx(
-                'text-white text-sm transition-all selection:bg-none',
-                {
-                  'pl-2': isManagerModeActive,
-                  'pl-8 ': !isManagerModeActive,
-                }
-              )}
+              className={cx('text-white transition-all selection:bg-none', {
+                'pl-2': isManagerModeActive,
+                'pl-8 ': !isManagerModeActive,
+              })}
             >
               {isManagerModeActive ? 'On' : 'Off'}
             </span>
