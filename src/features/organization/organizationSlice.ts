@@ -1,5 +1,6 @@
 import {
   createSlice,
+  PayloadAction,
   createAsyncThunk,
   createSelector,
 } from '@reduxjs/toolkit';
@@ -8,7 +9,7 @@ import axios from 'axios';
 import type { RootState } from '@/reduxStore';
 import contractAbi from '../../contractAbi/jacksPizza/JacksPizzaGovernance.json';
 
-import { API_URL, OrgWithPublicData } from '@/util/walletApiUtil';
+import { API_URL, OrgWithPublicData, Self } from '@/util/walletApiUtil';
 import { HTTPSProvider } from '@/util/avaxEthersUtil';
 
 export interface OrganizationState {
@@ -23,6 +24,10 @@ export interface OrganizationState {
   };
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
   error: string | null | undefined;
+  managerMode: {
+    isActive: boolean;
+    isAvailable: boolean;
+  };
 }
 
 const initialState: OrganizationState = {
@@ -49,6 +54,10 @@ const initialState: OrganizationState = {
   },
   status: 'idle',
   error: null,
+  managerMode: {
+    isActive: false,
+    isAvailable: false,
+  },
 };
 
 const organizationSlice = createSlice({
@@ -57,6 +66,22 @@ const organizationSlice = createSlice({
   reducers: {
     reset: () => {
       return initialState;
+    },
+    toggledManagerModeActive: (state: OrganizationState) => {
+      state.managerMode.isActive = state.managerMode.isAvailable
+        ? !state.managerMode.isActive
+        : false;
+    },
+    calculatedIsManagerModeAvailable: (
+      state: OrganizationState,
+      action: PayloadAction<Self>
+    ) => {
+      const self = action.payload;
+      const userRoleInOrg = self.organizations.find(
+        (org) => org.orgId === state.org.id
+      );
+      const isUserManager = Boolean(userRoleInOrg?.role === 'manager');
+      state.managerMode.isAvailable = isUserManager;
     },
   },
   extraReducers(builder) {
@@ -88,7 +113,11 @@ const organizationSlice = createSlice({
   },
 });
 
-export const { reset } = organizationSlice.actions;
+export const {
+  reset,
+  toggledManagerModeActive,
+  calculatedIsManagerModeAvailable,
+} = organizationSlice.actions;
 
 export const fetchOrgById = createAsyncThunk(
   'organization/fetchOrgById',
@@ -164,4 +193,15 @@ export const selectOrgUserTokenStatus = (state: RootState) =>
 export const selectOrgUserTokenBalance = createSelector(
   [selectOrgUserToken],
   (token) => token.balance
+);
+
+export const selectManagerModeRoot = (state: RootState) =>
+  state.organization.managerMode;
+export const selectIsManagerModeAvailable = createSelector(
+  [selectManagerModeRoot],
+  (managerMode) => managerMode.isAvailable
+);
+export const selectIsManagerModeActive = createSelector(
+  [selectManagerModeRoot],
+  (managerMode) => managerMode.isActive
 );
