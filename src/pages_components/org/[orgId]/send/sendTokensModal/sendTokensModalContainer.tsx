@@ -21,6 +21,7 @@ import {
   selectUsersAndAmounts,
   selectTotalAmountSending,
 } from '@/features/multisend/multisendSlice';
+import { selectIsManagerModeActive } from '@/features/organization/organizationSlice';
 import { formatTxnHash, getSnowtraceExplorerUrl } from '@/util/avaxEthersUtil';
 import PrimaryButton from '@/shared_components/buttons/primaryButton';
 
@@ -35,32 +36,29 @@ const SendTokenTipsModalContainer = ({
   tokenSymbol,
   sendTokens,
 }: Props) => {
-  const dispatch = useAppDispatch();
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const latestTxnStatus = useAppSelector((state) =>
-    selectLatestTxnStatus(state)
-  );
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const latestTxnErrorMessage = useAppSelector((state) =>
-    selectLatestTxnErrorMessage(state)
-  );
-  const latestTxn = useAppSelector((state) => selectLatestTxn(state));
-
   const [isSendingSameAmount, setIsSendingSameAmount] = useState(true);
   const [currentStep, setCurrentStep] = useState<
     'input' | 'confirm' | 'success' | 'error'
   >('input');
-
+  const dispatch = useAppDispatch();
+  const latestTxnStatus = useAppSelector((state) =>
+    selectLatestTxnStatus(state)
+  );
+  const latestTxnErrorMessage = useAppSelector((state) =>
+    selectLatestTxnErrorMessage(state)
+  );
+  const latestTxn = useAppSelector((state) => selectLatestTxn(state));
   const baseAmountToSendPerUser = useAppSelector((state) =>
     selectBaseAmount(state)
   );
-
   const selectedUsersAndAmounts = useAppSelector((state) =>
     selectUsersAndAmounts(state)
   );
-
   const totalAmountSending = useAppSelector((state) =>
     selectTotalAmountSending(state)
+  );
+  const isManagerModeActive = useAppSelector((state) =>
+    selectIsManagerModeActive(state)
   );
 
   useEffect(() => {
@@ -83,6 +81,7 @@ const SendTokenTipsModalContainer = ({
         {currentStep === 'input' && (
           <BasicModal
             title={'Send Token Tips to:'}
+            isManagerModeActive={isManagerModeActive}
             toggleModal={closeModal}
             onPrimaryActionButtonClick={() => {
               setCurrentStep('confirm');
@@ -201,7 +200,12 @@ const SendTokenTipsModalContainer = ({
             <div className="px-15px">
               <table className="w-full border-collapse overflow-hidden rounded-md">
                 <thead>
-                  <tr className="bg-primaryDarkGray">
+                  <tr
+                    className={cx({
+                      'bg-primaryDarkGray': !isManagerModeActive,
+                      'bg-primaryOrange': isManagerModeActive,
+                    })}
+                  >
                     <th className="text-start p-4 text-14px text-white font-semibold">
                       Name
                     </th>
