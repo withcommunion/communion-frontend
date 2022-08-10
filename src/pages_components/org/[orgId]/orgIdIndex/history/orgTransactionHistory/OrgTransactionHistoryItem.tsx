@@ -1,8 +1,13 @@
-import { HistoricalTxn } from '@/util/walletApiUtil';
 import { useState } from 'react';
+import Image from 'next/image';
+import cx from 'classnames';
+
+import { HistoricalTxn } from '@/util/walletApiUtil';
 import { formatTxnHash } from '@/util/avaxEthersUtil';
 import { isProd } from '@/util/envUtil';
-import Image from 'next/image';
+
+import { useAppSelector } from '@/reduxHooks';
+import { selectIsManagerModeActive } from '@/features/organization/organizationSlice';
 
 interface Props {
   transaction: HistoricalTxn;
@@ -12,6 +17,11 @@ interface Props {
 const OrgTransactionHistory = ({ transaction, selfWalletAddress }: Props) => {
   const { toUser, fromUser, timeStamp, tokenSymbol, value, to } = transaction;
   const [isExpanded, setIsExpanded] = useState(false);
+
+  const isManagerModeActive = useAppSelector((state) =>
+    selectIsManagerModeActive(state)
+  );
+
   const status = 'succeeded';
   const date = new Date(parseInt(timeStamp) * 1000);
   const dateString = date.toLocaleDateString('en-US', {
@@ -25,7 +35,11 @@ const OrgTransactionHistory = ({ transaction, selfWalletAddress }: Props) => {
   const isSentTxn = !isRedemptionTxn && !isReceivedTxn;
 
   return (
-    <li className="bg-white my-1 rounded px-3 py-4 cursor-pointer">
+    <li
+      className={cx('bg-white my-1 rounded px-3 py-4 cursor-pointer', {
+        'border border-primaryOrange': isManagerModeActive,
+      })}
+    >
       <div
         className="flex items-center justify-between "
         onClick={() => {

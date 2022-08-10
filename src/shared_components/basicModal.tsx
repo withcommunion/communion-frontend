@@ -1,12 +1,14 @@
-import PrimaryButton from '@/shared_components/buttons/primaryButton';
-import SecondaryButton from '@/shared_components/buttons/secondaryButton';
-
 import Image from 'next/image';
 import React from 'react';
+import cx from 'classnames';
+
+import PrimaryButton from '@/shared_components/buttons/primaryButton';
+import SecondaryButton from '@/shared_components/buttons/secondaryButton';
 
 interface Props {
   title: string;
   toggleModal: () => void;
+  isManagerModeActive?: boolean;
   onPrimaryActionButtonClick: () => void;
   primaryActionButtonText: string;
   disablePrimaryActionButton?: boolean;
@@ -19,6 +21,7 @@ interface Props {
 const BasicModal = ({
   title,
   toggleModal,
+  isManagerModeActive,
   onPrimaryActionButtonClick,
   primaryActionButtonText,
   disablePrimaryActionButton,
@@ -29,7 +32,13 @@ const BasicModal = ({
 }: Props) => {
   return (
     <div className="shadow-primaryModalShadow rounded-4px bg-white mb-16">
-      <div className="bg-thirdGray p-15px flex justify-between items-center rounded-tl-4px rounded-tr-4px">
+      <div
+        className={cx(
+          'p-15px flex justify-between items-center rounded-tl-4px rounded-tr-4px',
+          { 'bg-primaryOrange': isManagerModeActive },
+          { 'bg-thirdGray ': !isManagerModeActive }
+        )}
+      >
         <span className="text-white font-medium text-17px">{title}</span>
         <button onClick={toggleModal}>
           <Image

@@ -12,49 +12,54 @@ import {
   clearedLatestTxn,
   baseAmountUpdated,
   updatedUserAmount,
+  userRemoved,
   clearedUsers,
+  selectBaseAmount,
   selectLatestTxnErrorMessage,
   selectLatestTxnStatus,
   selectLatestTxn,
-  UserAndAmount,
+  selectUsersAndAmounts,
+  selectTotalAmountSending,
 } from '@/features/multisend/multisendSlice';
+import { selectIsManagerModeActive } from '@/features/organization/organizationSlice';
 import { formatTxnHash, getSnowtraceExplorerUrl } from '@/util/avaxEthersUtil';
 import PrimaryButton from '@/shared_components/buttons/primaryButton';
 
 interface Props {
   closeModal: () => void;
-  selectedUsersAndAmounts: UserAndAmount[];
-  removeSelectedUser: (userId: string) => void;
-  baseAmountToSendPerUser: number;
-  totalAmountSending: number;
   tokenSymbol: string;
   sendTokens: () => Promise<void>;
 }
 
-const SendTokenTipsModal = ({
+const SendTokenTipsModalContainer = ({
   closeModal,
-  selectedUsersAndAmounts,
-  removeSelectedUser,
-  baseAmountToSendPerUser,
-  totalAmountSending,
   tokenSymbol,
   sendTokens,
 }: Props) => {
-  const dispatch = useAppDispatch();
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const latestTxnStatus = useAppSelector((state) =>
-    selectLatestTxnStatus(state)
-  );
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const latestTxnErrorMessage = useAppSelector((state) =>
-    selectLatestTxnErrorMessage(state)
-  );
-  const latestTxn = useAppSelector((state) => selectLatestTxn(state));
-
   const [isSendingSameAmount, setIsSendingSameAmount] = useState(true);
   const [currentStep, setCurrentStep] = useState<
     'input' | 'confirm' | 'success' | 'error'
   >('input');
+  const dispatch = useAppDispatch();
+  const latestTxnStatus = useAppSelector((state) =>
+    selectLatestTxnStatus(state)
+  );
+  const latestTxnErrorMessage = useAppSelector((state) =>
+    selectLatestTxnErrorMessage(state)
+  );
+  const latestTxn = useAppSelector((state) => selectLatestTxn(state));
+  const baseAmountToSendPerUser = useAppSelector((state) =>
+    selectBaseAmount(state)
+  );
+  const selectedUsersAndAmounts = useAppSelector((state) =>
+    selectUsersAndAmounts(state)
+  );
+  const totalAmountSending = useAppSelector((state) =>
+    selectTotalAmountSending(state)
+  );
+  const isManagerModeActive = useAppSelector((state) =>
+    selectIsManagerModeActive(state)
+  );
 
   useEffect(() => {
     if (selectedUsersAndAmounts.length === 0) {
@@ -70,13 +75,13 @@ const SendTokenTipsModal = ({
     }
   }, [latestTxnStatus]);
   return (
-    <div className="absolute top-0 left-0 mx-auto w-full z-50 bg-secondaryLightGray min-h-100vh">
-      <div className="container w-full md:max-w-50vw px-6 pb-1 mx-auto bg-secondaryLightGray">
+    <div className=" w-full bg-secondaryLightGray min-h-100vh">
+      <div className="w-full md:max-w-50vw pb-1 bg-secondaryLightGray">
         <BackToButton backToDestinationText={'List'} onClick={closeModal} />
-
         {currentStep === 'input' && (
           <BasicModal
             title={'Send Token Tips to:'}
+            isManagerModeActive={isManagerModeActive}
             toggleModal={closeModal}
             onPrimaryActionButtonClick={() => {
               setCurrentStep('confirm');
@@ -124,7 +129,9 @@ const SendTokenTipsModal = ({
                     {selectedUsersAndAmounts.map((userAndAmount) => (
                       <SelectedOrgMemberCard
                         removeSelectedUser={() =>
-                          removeSelectedUser(userAndAmount.user.id)
+                          dispatch(
+                            userRemoved({ userId: userAndAmount.user.id })
+                          )
                         }
                         key={userAndAmount.user.id}
                         selectedUser={userAndAmount.user}
@@ -145,7 +152,7 @@ const SendTokenTipsModal = ({
                   <ul key={userAndAmount.user.id}>
                     <SelectedOrgMemberCard
                       removeSelectedUser={() =>
-                        removeSelectedUser(userAndAmount.user.id)
+                        dispatch(userRemoved({ userId: userAndAmount.user.id }))
                       }
                       selectedUser={userAndAmount.user}
                     />
@@ -193,7 +200,12 @@ const SendTokenTipsModal = ({
             <div className="px-15px">
               <table className="w-full border-collapse overflow-hidden rounded-md">
                 <thead>
-                  <tr className="bg-primaryDarkGray">
+                  <tr
+                    className={cx({
+                      'bg-primaryDarkGray': !isManagerModeActive,
+                      'bg-primaryOrange': isManagerModeActive,
+                    })}
+                  >
                     <th className="text-start p-4 text-14px text-white font-semibold">
                       Name
                     </th>
@@ -259,9 +271,12 @@ const SendTokenTipsModal = ({
                 Congratulations
               </span>
             </p>
-            <p className="text-eleventhGray text-4 flex flex-col justify-center items-center mb-7">
+            <div className="text-eleventhGray text-4 flex flex-col justify-center items-center mb-7">
               <div>
-                {totalAmountSending} {tokenSymbol} was successfully sent to:
+                <span className="font-semibold">
+                  {totalAmountSending} {tokenSymbol}
+                </span>{' '}
+                was successfully sent!
               </div>
               <ul>
                 {selectedUsersAndAmounts.map((userAndAmount) => (
@@ -281,7 +296,7 @@ const SendTokenTipsModal = ({
                   </li>
                 ))}
               </ul>
-            </p>
+            </div>
             {latestTxn && (
               <div className="flex flex-col my-5">
                 <p className="">View the transaction on the blockchain!</p>
@@ -341,4 +356,4 @@ const SendTokenTipsModal = ({
   );
 };
 
-export default SendTokenTipsModal;
+export default SendTokenTipsModalContainer;

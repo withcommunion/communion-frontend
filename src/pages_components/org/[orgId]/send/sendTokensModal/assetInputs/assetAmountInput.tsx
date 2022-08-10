@@ -1,4 +1,7 @@
 import Image from 'next/image';
+import cx from 'classnames';
+import { useAppSelector } from '@/reduxHooks';
+import { selectIsManagerModeActive } from '@/features/organization/organizationSlice';
 
 interface Props {
   amount: number;
@@ -6,8 +9,17 @@ interface Props {
   onChange: (value: number) => void;
 }
 const AssetAmountInput = ({ amount, tokenSymbol, onChange }: Props) => {
+  const isManagerModeActive = useAppSelector((state) =>
+    selectIsManagerModeActive(state)
+  );
   return (
-    <div className="rounded-4px bg-secondaryLightGray border-1px border-thirdLightGray p-15px my-15px">
+    <div
+      className={cx(
+        'rounded-4px bg-secondaryLightGray  p-15px my-15px',
+        { 'border-1px border-thirdLightGray': !isManagerModeActive },
+        { 'border-1px border-primaryOrange': isManagerModeActive }
+      )}
+    >
       <div className="flex justify-between items-center pb-15px">
         <span className="text-15px text-primaryGray ">Amount</span>
         {/**TODO: Add "max" */}
