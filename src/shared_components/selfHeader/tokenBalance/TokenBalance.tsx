@@ -25,7 +25,9 @@ const TokenBalance = ({
         { 'border border-primaryOrange': isManagerModeActive }
       )}
     >
-      <span className="text-4 text-secondaryGray">Your Balance</span>
+      <span className="text-4 text-secondaryGray">
+        {isManagerModeActive ? 'Bank Balance' : 'Your Balance'}
+      </span>
       <div className="flex rounded-lg bg-white px-4 py-3 w-44">
         <div className={isExpanded ? 'rotate-90' : 'rotate-0'}>
           <Image
@@ -37,7 +39,7 @@ const TokenBalance = ({
         </div>
         {isBalanceLoading && <span>♻️</span>}
         <span className="text-17px text-primaryPurple px-3">
-          {tokenAmount} {tokenSymbol}
+          {isManagerModeActive ? '--' : tokenAmount} {tokenSymbol}
         </span>
       </div>
     </div>
