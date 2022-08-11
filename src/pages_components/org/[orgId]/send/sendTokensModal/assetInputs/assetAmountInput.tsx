@@ -32,6 +32,7 @@ const AssetAmountInput = ({ amount, tokenSymbol, onChange }: Props) => {
           className="text-primaryPurple bg-white w-full border-thirdLightGray border-1px pl-5 pr-4 py-2"
           type="number"
           min="0"
+          max={1000}
           step="1"
           onFocus={() => {
             if (amount === 0) {
@@ -40,7 +41,10 @@ const AssetAmountInput = ({ amount, tokenSymbol, onChange }: Props) => {
             }
           }}
           onChange={(event) => {
-            onChange(parseInt(event.target.value || '0'));
+            const value = parseInt(event.target.value || '0');
+            if (value <= 1000) {
+              onChange(value);
+            }
           }}
           value={amount}
         />
