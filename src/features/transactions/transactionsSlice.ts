@@ -42,6 +42,7 @@ export const transactionsSlice = createSlice({
     builder
       .addCase(fetchSelfHistoricalTxns.pending, (state) => {
         state.historicalTxns.status = 'loading';
+        state.historicalTxns.txns = [];
       })
       .addCase(fetchSelfHistoricalTxns.fulfilled, (state, action) => {
         state.historicalTxns.status = 'succeeded';
