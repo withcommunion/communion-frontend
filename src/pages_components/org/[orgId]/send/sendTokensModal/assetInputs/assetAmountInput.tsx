@@ -42,9 +42,7 @@ const AssetAmountInput = ({ amount, tokenSymbol, onChange }: Props) => {
           }}
           onChange={(event) => {
             const value = parseInt(event.target.value || '0');
-            if (value <= 1000) {
-              onChange(value);
-            }
+            onChange(value);
           }}
           value={amount}
         />
