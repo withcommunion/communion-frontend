@@ -240,6 +240,9 @@ const SendTokenTipsModalContainer = ({
                     <span className="font-semibold">{totalAmountSending}</span>{' '}
                     tokens
                   </span>
+                  {isManagerModeActive && (
+                    <strong className="font-semibold"> from the bank</strong>
+                  )}
                 </div>
               </div>
               <div className="flex justify-center">
