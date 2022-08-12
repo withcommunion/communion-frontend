@@ -95,5 +95,9 @@ export const selectLatestJoinedOrgStatus = createSelector(
   [selectRoot],
   (root) => root.status
 );
+export const selectLatestJoinedOrgErrorMsg = createSelector(
+  [selectRoot],
+  (root) => root.error
+);
 
 export default joinOrgSlice.reducer;
