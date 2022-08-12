@@ -94,7 +94,7 @@ const HomePage = ({ userJwt }: { userJwt: string }) => {
 
   return (
     <div className="bg-secondaryLightGray pb-2 min-h-100vh ">
-      <div className="container flex w-full px-6 my-0 mx-auto my-auto md:max-w-50vw">
+      <div className="container flex w-full px-6 my-0 mx-auto md:max-w-50vw justify-center">
         <div className="mt-5">
           <IndexHeader userName={self?.first_name} />
           {(selfStatus === 'idle' || selfStatus === 'loading') && (
