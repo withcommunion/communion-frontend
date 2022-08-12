@@ -44,7 +44,7 @@ const Index: NextPage = () => {
       self?.organizations.length === 1 &&
       !queryOrgId;
 
-    const shouldRouteUserToHome = queryOrgId && selfStatus === 'succeeded';
+    const shouldRouteUserToHome = selfStatus === 'succeeded';
 
     if (shouldRouteUserToOnlyOrg) {
       router.push({
