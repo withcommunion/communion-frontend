@@ -17,6 +17,7 @@ import {
 } from '@/features/transactions/transactionsSlice';
 
 import {
+  reset as resetOrg,
   fetchOrgById,
   selectOrg,
   selectOrgStatus,
@@ -71,10 +72,11 @@ const Home = ({ userJwt }: Props) => {
   }, [orgId, orgStatus, userJwt, dispatch]);
 
   useEffect(() => {
-    if (router.query.joinCode) {
-      console.log('we are here');
+    if (orgStatus === 'failed') {
+      dispatch(resetOrg());
+      router.push('/');
     }
-  });
+  }, [orgStatus, router, dispatch]);
 
   useEffect(() => {
     if (
