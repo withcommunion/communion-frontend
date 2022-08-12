@@ -6,13 +6,14 @@ import transactionsReducer from '@/features/transactions/transactionsSlice';
 import organizationReducer from '@/features/organization/organizationSlice';
 import cartReducer from '@/features/cart/cartSlice';
 import multisendReducer from '@/features/multisend/multisendSlice';
+import joinOrgReducer from '@/features/joinOrg/joinOrgSlice';
 
 const store = configureStore({
   reducer: {
     // These are just an example
     counter: counterReducer,
     posts: postsReducer,
-
+    joinOrg: joinOrgReducer,
     self: selfReducer,
     transactions: transactionsReducer,
     organization: organizationReducer,
