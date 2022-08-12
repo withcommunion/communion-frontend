@@ -1,42 +1,105 @@
-import { getUserJwtTokenOnServer } from '@/util/cognitoAuthUtil';
+import { useEffect } from 'react';
 import { GetServerSideProps } from 'next';
-import { Transaction } from 'ethers';
-import axios from 'axios';
-import { API_URL } from '@/util/walletApiUtil';
+import { useRouter } from 'next/router';
+
+import { getUserJwtTokenOnServer } from '@/util/cognitoAuthUtil';
+
+import { useAppSelector, useAppDispatch } from '@/reduxHooks';
+import { selectSelf, selectSelfStatus, fetchSelf } from '@/features/selfSlice';
+import {
+  fetchJoinOrgById,
+  selectLatestJoinedOrgStatus,
+} from '@/features/joinOrg/joinOrgSlice';
+import { IndexHeader } from '@/pages_components/indexPageComponents';
 
 const HomePage = ({ userJwt }: { userJwt: string }) => {
-  const joinCommunionTestOrg = async () => {
-    const joinGroupResp = await axios.post<{
-      userAddedInDb: boolean;
-      userAddedInSmartContract: boolean;
-      userAddContractTxn: Transaction;
-    }>(
-      `${API_URL}/org/communion-test-org/join`,
-      {
-        role: 'owner',
-      },
-      {
-        headers: {
-          Authorization: userJwt,
-        },
-      }
+  const router = useRouter();
+  const dispatch = useAppDispatch();
+
+  const { joinCode, orgId } = router.query;
+  const queryJoinCode = (joinCode as string) || '';
+  const queryOrgId = (orgId as string) || '';
+
+  const self = useAppSelector((state) => selectSelf(state));
+  const selfStatus = useAppSelector((state) => selectSelfStatus(state));
+
+  const latestJoinedOrgStatus = useAppSelector((state) =>
+    selectLatestJoinedOrgStatus(state)
+  );
+
+  useEffect(() => {
+    const shouldFetchSelf = selfStatus === 'idle';
+    const shouldRouteUserToOnlyOrg =
+      selfStatus === 'succeeded' &&
+      self?.organizations.length === 1 &&
+      !queryOrgId;
+
+    if (shouldFetchSelf) {
+      dispatch(fetchSelf(userJwt));
+    } else if (shouldRouteUserToOnlyOrg) {
+      router.push(`/org/${self.organizations[0].orgId}`);
+    }
+  }, [dispatch, selfStatus, self, queryOrgId, userJwt, router]);
+
+  useEffect(() => {
+    const joinOrgHelper = async () => {
+      await dispatch(
+        fetchJoinOrgById({
+          orgId: queryOrgId,
+          joinCode: queryJoinCode,
+          jwtToken: userJwt,
+        })
+      );
+
+      // Will handle routing to the org page if the user succesfully joins
+      await dispatch(fetchSelf(userJwt));
+    };
+
+    const isUserAlreadyInOrg = Boolean(
+      self?.organizations.find((org) => org.orgId === queryOrgId)
     );
-    console.log(joinGroupResp);
-  };
+
+    const shouldJoinOrg =
+      !isUserAlreadyInOrg &&
+      queryOrgId &&
+      self &&
+      latestJoinedOrgStatus === 'idle';
+
+    if (isUserAlreadyInOrg) {
+      router.push(`/org/${queryOrgId}`);
+    }
+
+    if (shouldJoinOrg) {
+      joinOrgHelper();
+    }
+  }, [
+    self,
+    latestJoinedOrgStatus,
+    queryOrgId,
+    queryJoinCode,
+    userJwt,
+    dispatch,
+    router,
+  ]);
 
   return (
     <div className="py-4 flex flex-col items-center ">
-      <h2 className="text-xl">Available groups</h2>
-      <button
-        className="my-10 text-sm border-2 border-primaryOrange text-primaryOrange py-1 px-1 rounded"
-        onClick={() => {
-          joinCommunionTestOrg();
-        }}
-      >
-        Join Communion test org
-      </button>
-      <p>Have fun 😊</p>
-      <p>Thank you 🙏</p>
+      {self && (
+        <div>
+          <IndexHeader userName={self?.first_name} />
+          <h2 className="text-xl">Available groups</h2>
+          <ul>
+            {self?.organizations.map((org) => (
+              <li key={org.orgId}>{org.orgId}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+      {selfStatus === 'idle' && (
+        <div>
+          <span>Fetching you from the database!...</span>
+        </div>
+      )}
     </div>
   );
 };

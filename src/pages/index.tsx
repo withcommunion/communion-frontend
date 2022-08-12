@@ -6,7 +6,6 @@ import { useAuthenticator } from '@aws-amplify/ui-react';
 import { AMPLIFY_CONFIG } from '../util/cognitoAuthUtil';
 import {
   AuthComponent,
-  IndexHeader,
   WelcomeHeader,
 } from '../pages_components/indexPageComponents';
 import Footer from '@/shared_components/footer/footer';
@@ -18,7 +17,7 @@ const Index: NextPage = () => {
   const router = useRouter();
   const { route, user } = useAuthenticator(({ authStatus, route, user }) => {
     if (authStatus === 'authenticated') {
-      router.push('/org/jacks-pizza-pittsfield');
+      router.push({ pathname: '/home', query: router.query });
     }
     return [route, user];
   });
@@ -33,9 +32,6 @@ const Index: NextPage = () => {
 
       <main className="min-h-screen py-4 flex flex-col justify-center items-center">
         {!user && <WelcomeHeader />}
-        {user && user.attributes?.given_name && (
-          <IndexHeader userName={user?.attributes?.given_name} />
-        )}
         <div>
           {route === 'idle' || !route ? (
             <h1 className="my-36">loading</h1>
