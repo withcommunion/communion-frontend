@@ -3,24 +3,55 @@ import Head from 'next/head';
 import { Amplify } from 'aws-amplify';
 import { useRouter } from 'next/router';
 import { useAuthenticator } from '@aws-amplify/ui-react';
+import { useAppSelector, useAppDispatch } from '@/reduxHooks';
+import { selectSelf, selectSelfStatus, fetchSelf } from '@/features/selfSlice';
 import { AMPLIFY_CONFIG } from '../util/cognitoAuthUtil';
 import {
   AuthComponent,
   WelcomeHeader,
 } from '../pages_components/indexPageComponents';
 import Footer from '@/shared_components/footer/footer';
+import { useEffect } from 'react';
 
 // https://docs.amplify.aws/lib/client-configuration/configuring-amplify-categories/q/platform/js/#general-configuration
 Amplify.configure({ ...AMPLIFY_CONFIG, ssr: false });
 
 const Index: NextPage = () => {
   const router = useRouter();
-  const { route, user } = useAuthenticator(({ authStatus, route, user }) => {
-    if (authStatus === 'authenticated') {
-      router.push({ pathname: '/home', query: router.query });
-    }
+  const dispatch = useAppDispatch();
+  const { orgId } = router.query;
+  const queryOrgId = (orgId as string) || '';
+
+  const { user } = useAuthenticator(({ route, user }) => {
     return [route, user];
   });
+
+  const self = useAppSelector((state) => selectSelf(state));
+  const selfStatus = useAppSelector((state) => selectSelfStatus(state));
+
+  useEffect(() => {
+    const userJwt =
+      user && user.getSignInUserSession()?.getIdToken().getJwtToken();
+    const shouldFetchSelf = selfStatus === 'idle';
+    if (shouldFetchSelf && userJwt) {
+      dispatch(fetchSelf(userJwt));
+    }
+  }, [user, selfStatus, dispatch]);
+
+  useEffect(() => {
+    const shouldRouteUserToOnlyOrg =
+      selfStatus === 'succeeded' &&
+      self?.organizations.length === 1 &&
+      !queryOrgId;
+
+    const shouldRouteUserToHome = queryOrgId || selfStatus === 'succeeded';
+
+    if (shouldRouteUserToOnlyOrg) {
+      router.push(`/org/${self.organizations[0].orgId}`);
+    } else if (shouldRouteUserToHome) {
+      router.push('/home');
+    }
+  }, [dispatch, selfStatus, self, queryOrgId, router, user]);
 
   return (
     <div className="h-screen">
@@ -33,11 +64,7 @@ const Index: NextPage = () => {
       <main className="min-h-screen py-4 flex flex-col justify-center items-center">
         {!user && <WelcomeHeader />}
         <div>
-          {route === 'idle' || !route ? (
-            <h1 className="my-36">loading</h1>
-          ) : (
-            <AuthComponent />
-          )}
+          <AuthComponent />
         </div>
         <Footer />
       </main>
