@@ -73,6 +73,7 @@ const Home = ({ userJwt }: Props) => {
 
   useEffect(() => {
     if (orgStatus === 'failed') {
+      // TODO: This causes an ugly infinite loop.  Fix it.
       dispatch(resetOrg());
       router.push('/');
     }
