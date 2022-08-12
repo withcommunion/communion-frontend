@@ -8,14 +8,22 @@ import { useAuthenticator } from '@aws-amplify/ui-react';
 import { useRouter } from 'next/router';
 import { GetServerSideProps } from 'next';
 
-import { useAppSelector } from '@/reduxHooks';
+import { useAppSelector, useAppDispatch } from '@/reduxHooks';
 
-import { selectOrg } from '@/features/organization/organizationSlice';
+import {
+  selectOrg,
+  reset as resetOrganization,
+} from '@/features/organization/organizationSlice';
+import { reset as resetSelf } from '@/features/selfSlice';
+import { reset as resetJoinOrg } from '@/features/joinOrg/joinOrgSlice';
+import { reset as resetMultisend } from '@/features/multisend/multisendSlice';
+import { reset as resetCart } from '@/features/cart/cartSlice';
 import NavBar, { AvailablePages } from '@/shared_components/navBar/NavBar';
 import PrimaryButton from '@/shared_components/buttons/primaryButton';
 
 const SettingsPage = () => {
   const router = useRouter();
+  const dispatch = useAppDispatch();
   const { signOut } = useAuthenticator((context) => [context.signOut]);
   const org = useAppSelector((state) => selectOrg(state));
   return (
@@ -33,6 +41,11 @@ const SettingsPage = () => {
               text="Sign Out"
               size="big"
               onClick={() => {
+                dispatch(resetSelf());
+                dispatch(resetOrganization());
+                dispatch(resetJoinOrg());
+                dispatch(resetMultisend());
+                dispatch(resetCart());
                 signOut();
                 // TODO: This is hacky af
                 setTimeout(() => {
