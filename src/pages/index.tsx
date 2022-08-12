@@ -44,12 +44,15 @@ const Index: NextPage = () => {
       self?.organizations.length === 1 &&
       !queryOrgId;
 
-    const shouldRouteUserToHome = queryOrgId || selfStatus === 'succeeded';
+    const shouldRouteUserToHome = queryOrgId && selfStatus === 'succeeded';
 
     if (shouldRouteUserToOnlyOrg) {
-      router.push(`/org/${self.organizations[0].orgId}`);
+      router.push({
+        pathname: `/org/${self.organizations[0].orgId}`,
+        query: router.query,
+      });
     } else if (shouldRouteUserToHome) {
-      router.push('/home');
+      router.push({ pathname: '/home', query: router.query });
     }
   }, [dispatch, selfStatus, self, queryOrgId, router, user]);
 
