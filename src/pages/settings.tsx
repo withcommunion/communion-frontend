@@ -50,7 +50,7 @@ const SettingsPage = () => {
                 // TODO: This is hacky af
                 setTimeout(() => {
                   router.push('/');
-                }, 500);
+                }, 800);
               }}
             />
           </div>
