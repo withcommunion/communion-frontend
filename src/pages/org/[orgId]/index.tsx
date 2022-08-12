@@ -71,6 +71,12 @@ const Home = ({ userJwt }: Props) => {
   }, [orgId, orgStatus, userJwt, dispatch]);
 
   useEffect(() => {
+    if (router.query.joinCode) {
+      console.log('we are here');
+    }
+  });
+
+  useEffect(() => {
     if (
       userTokenBalance.status === 'idle' &&
       org.avax_contract.address &&
