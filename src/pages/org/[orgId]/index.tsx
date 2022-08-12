@@ -17,6 +17,7 @@ import {
 } from '@/features/transactions/transactionsSlice';
 
 import {
+  reset as resetOrg,
   fetchOrgById,
   selectOrg,
   selectOrgStatus,
@@ -69,6 +70,13 @@ const Home = ({ userJwt }: Props) => {
       dispatch(fetchOrgById({ orgId: id, jwtToken: userJwt }));
     }
   }, [orgId, orgStatus, userJwt, dispatch]);
+
+  useEffect(() => {
+    if (orgStatus === 'failed') {
+      dispatch(resetOrg());
+      router.push('/');
+    }
+  }, [orgStatus, router, dispatch]);
 
   useEffect(() => {
     if (
