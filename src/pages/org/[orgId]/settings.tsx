@@ -34,6 +34,7 @@ const SettingsPage = ({ userJwt }: Props) => {
   const org = useAppSelector((state) => selectOrg(state));
   const orgStatus = useAppSelector((state) => selectOrgStatus(state));
   const [orgUrlWithJoinCode, setOrgUrlWithJoinCode] = useState('');
+  const [copyMessage, setCopyMessage] = useState('Copy');
 
   useEffect(() => {
     if (userJwt && orgId && orgStatus === 'idle') {
@@ -87,9 +88,13 @@ const SettingsPage = ({ userJwt }: Props) => {
                       className="text-sm w-2/6 border-2 border-primaryOrange text-primaryOrange py-1 px-1 rounded"
                       onClick={() => {
                         copy(orgUrlWithJoinCode);
+                        setCopyMessage('✅ Copied!');
+                        setTimeout(() => {
+                          setCopyMessage('Copy');
+                        }, 1000);
                       }}
                     >
-                      Copy
+                      {copyMessage}
                     </button>
                   )}
                 </div>
