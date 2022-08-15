@@ -24,26 +24,29 @@ const Index: NextPage = () => {
   });
 
   return (
-    <div className="h-screen">
+    <div>
       <Head>
         <title>Communion</title>
         <meta name="description" content="Communion" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-
-      <main className="min-h-screen py-4 flex flex-col justify-center items-center">
-        {!user && <WelcomeHeader />}
-        {user && user.attributes?.given_name && (
-          <IndexHeader userName={user?.attributes?.given_name} />
-        )}
-        <div>
-          {route === 'idle' || !route ? (
-            <h1 className="my-36">loading</h1>
-          ) : (
-            <AuthComponent />
-          )}
+      <main className="min-h-100vh ">
+        <div className="container w-full px-6 my-0 mx-auto md:max-w-50vw">
+          <div className="flex flex-col justify-center items-center">
+            {!user && <WelcomeHeader />}
+            {user && user.attributes?.given_name && (
+              <IndexHeader userName={user?.attributes?.given_name} />
+            )}
+            <div>
+              {route === 'idle' || !route ? (
+                <h1 className="my-36">loading</h1>
+              ) : (
+                <AuthComponent />
+              )}
+            </div>
+            <Footer />
+          </div>
         </div>
-        <Footer />
       </main>
     </div>
   );
