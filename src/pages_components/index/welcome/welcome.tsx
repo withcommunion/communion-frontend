@@ -17,7 +17,7 @@ const Welcome = () => {
           Please sign in or create an account
         </span>
 
-        <div className="absolute -right-16 top-9">
+        <div className="absolute -right-10 top-9">
           <Image
             src="/images/signUp/firstBackDecoration.svg"
             alt="background decoration image"

@@ -57,7 +57,7 @@ const Index: NextPage = () => {
   }, [dispatch, selfStatus, self, queryOrgId, router, user]);
 
   return (
-    <div className="h-screen">
+    <div>
       <Head>
         <title>Communion</title>
         <meta name="description" content="Communion" />
