@@ -14,6 +14,7 @@ import {
 } from '@/features/joinOrg/joinOrgSlice';
 import { IndexHeader } from '@/pages_components/indexPageComponents';
 import Footer from '@/shared_components/footer/footer';
+import { reset as resetOrg } from '@/features/organization/organizationSlice';
 
 const HomePage = ({ userJwt }: { userJwt: string }) => {
   const router = useRouter();
@@ -32,6 +33,11 @@ const HomePage = ({ userJwt }: { userJwt: string }) => {
   const latestJoinedOrgErrorMsg = useAppSelector((state) =>
     selectLatestJoinedOrgErrorMsg(state)
   );
+
+  useEffect(() => {
+    dispatch(resetOrg());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     const shouldFetchSelf = selfStatus === 'idle';
