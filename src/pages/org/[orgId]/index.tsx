@@ -149,7 +149,14 @@ const Home = ({ userJwt }: Props) => {
                 isManagerModeActive={isManagerModeActive}
                 selfWalletAddress={self?.walletAddressC || ''}
                 transactions={historicalTxns}
-                fetchRefreshTxns={() => memoizedFetchRefreshTxns}
+                fetchRefreshTxns={() => {
+                  dispatch(
+                    fetchSelfHistoricalTxns({
+                      orgId: (orgId || '').toString(),
+                      jwtToken: userJwt,
+                    })
+                  );
+                }}
               />
             </div>
           </div>
