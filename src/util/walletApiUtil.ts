@@ -75,6 +75,7 @@ export interface OrgWithPublicData {
   redeemables: OrgRedeemable[];
   member_ids: string[];
   members: User[];
+  join_code?: string;
   avax_contract: {
     address: string;
     token_name: string;
