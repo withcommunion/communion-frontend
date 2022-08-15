@@ -64,12 +64,16 @@ const Index: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="min-h-screen py-4 flex flex-col justify-center items-center">
-        {!user && <WelcomeHeader />}
-        <div>
-          <AuthComponent />
+      <main className="min-h-100vh ">
+        <div className="container w-full px-6 my-0 mx-auto md:max-w-50vw">
+          <div className="flex flex-col justify-center items-center">
+            {!user && <WelcomeHeader />}
+            <div>
+              <AuthComponent />
+            </div>
+            <Footer />
+          </div>
         </div>
-        <Footer />
       </main>
     </div>
   );
