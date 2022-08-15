@@ -40,7 +40,7 @@ const pages = [
     name: AvailablePages.settings,
     image: '/images/menu/Settings.svg',
     activeImage: '/images/menu/SettingsActive.svg',
-    linkHref: '/settings',
+    linkHref: 'settings',
     width: '21px',
     height: '21px',
   },
@@ -63,10 +63,7 @@ export default function NavBar({ activePage, activeOrgId }: Props) {
           const isDisabledInManagerMode =
             isManagerModeActive && link.name === AvailablePages.orgRedeem;
 
-          const navLink =
-            link.name === AvailablePages.settings
-              ? '/settings'
-              : `/org/${activeOrgId}/${link.linkHref}`;
+          const navLink = `/org/${activeOrgId}/${link.linkHref}`;
           return (
             <li key={num} className="w-12 h-full">
               <div

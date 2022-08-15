@@ -98,6 +98,7 @@ const cartSlice = createSlice({
 
 export default cartSlice.reducer;
 export const {
+  reset,
   redeemableAdded,
   redeemableRemoved,
   clearedRedeemables,

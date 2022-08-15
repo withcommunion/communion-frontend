@@ -42,6 +42,9 @@ export const multisendSlice = createSlice({
   // `createSlice` will infer the state type from the `initialState` argument
   initialState,
   reducers: {
+    reset: () => {
+      return initialState;
+    },
     baseAmountUpdated: (
       state: MultisendState,
       action: PayloadAction<number>
@@ -232,6 +235,7 @@ export const fetchMultisendFunds = createAsyncThunk(
 );
 
 export const {
+  reset,
   clearedLatestTxn,
   baseAmountUpdated,
   userAdded,
