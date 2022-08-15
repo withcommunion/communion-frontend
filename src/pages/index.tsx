@@ -71,7 +71,13 @@ const Index: NextPage = () => {
             <div>
               <AuthComponent />
             </div>
-            <Footer />
+            {user ? (
+              <div className="h-90vh flex items-center">
+                <Footer />
+              </div>
+            ) : (
+              <Footer />
+            )}
           </div>
         </div>
       </main>
