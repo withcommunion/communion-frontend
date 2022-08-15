@@ -1,17 +1,17 @@
-/**
- * TODO: This breaks if you navigate directly to it.
- * This is because there is no "org" in the url or elsewhere.
- * this will eventually lead us to the proper home page
- */
-import { getUserJwtTokenOnServer } from '@/util/cognitoAuthUtil';
+import { useEffect, useState } from 'react';
 import { useAuthenticator } from '@aws-amplify/ui-react';
 import { useRouter } from 'next/router';
 import { GetServerSideProps } from 'next';
+import copy from 'copy-to-clipboard';
 
+import { isProd, isDev, isLocal } from '@/util/envUtil';
 import { useAppSelector, useAppDispatch } from '@/reduxHooks';
+import { getUserJwtTokenOnServer } from '@/util/cognitoAuthUtil';
 
 import {
+  fetchOrgById,
   selectOrg,
+  selectOrgStatus,
   reset as resetOrganization,
 } from '@/features/organization/organizationSlice';
 import { reset as resetSelf } from '@/features/selfSlice';
@@ -20,12 +20,45 @@ import { reset as resetMultisend } from '@/features/multisend/multisendSlice';
 import { reset as resetCart } from '@/features/cart/cartSlice';
 import NavBar, { AvailablePages } from '@/shared_components/navBar/NavBar';
 import PrimaryButton from '@/shared_components/buttons/primaryButton';
+import SecondaryButton from '@/shared_components/buttons/secondaryButton';
 
-const SettingsPage = () => {
+interface Props {
+  userJwt: string;
+}
+const SettingsPage = ({ userJwt }: Props) => {
   const router = useRouter();
+  const { orgId } = router.query;
+
   const dispatch = useAppDispatch();
   const { signOut } = useAuthenticator((context) => [context.signOut]);
   const org = useAppSelector((state) => selectOrg(state));
+  const orgStatus = useAppSelector((state) => selectOrgStatus(state));
+  const [orgUrlWithJoinCode, setOrgUrlWithJoinCode] = useState('');
+
+  useEffect(() => {
+    if (userJwt && orgId && orgStatus === 'idle') {
+      const id = orgId.toString();
+      dispatch(fetchOrgById({ orgId: id, jwtToken: userJwt }));
+    }
+  }, [orgId, orgStatus, userJwt, dispatch]);
+
+  useEffect(() => {
+    if (org && org.join_code && !orgUrlWithJoinCode) {
+      const prodUrl = 'https://withcommunion.com';
+      const devUrl = 'https://dev.withcommunion.com';
+      const localUrl = 'http://localhost:3000';
+      const urlQueryParams = `?orgId=${org.id}&joinCode=${org.join_code}`;
+
+      if (isProd) {
+        setOrgUrlWithJoinCode(`${prodUrl}${urlQueryParams}`);
+      } else if (isDev) {
+        setOrgUrlWithJoinCode(`${devUrl}${urlQueryParams}`);
+      } else if (isLocal) {
+        setOrgUrlWithJoinCode(`${localUrl}${urlQueryParams}`);
+      }
+    }
+  }, [org, orgUrlWithJoinCode]);
+
   return (
     <>
       {/** TODO: This is a HACK.  The URL needs to go to the real home page */}
@@ -33,10 +66,53 @@ const SettingsPage = () => {
         activePage={AvailablePages.settings}
         activeOrgId={(org.id || 'jacks-pizza-pittsfield').toString()}
       />
-      <div className="bg-secondaryLightGray min-h-100vh ">
-        <div className="container w-full px-6 my-0 mx-auto md:max-w-50vw text-center">
-          <div className="flex flex-col items-center space-around my-5">
+
+      <div className="bg-secondaryLightGray  min-h-100vh ">
+        <div className="container w-full px-6 my-0 mx-auto md:max-w-50vw">
+          <div className="flex flex-col items-center space-around pt-5">
             <h2 className="text-xl mb-5">Settings</h2>
+            {org?.join_code && (
+              <div className="text-start w-full my-8 flex flex-col">
+                <label>
+                  <span className="text-xl">Invite code</span>
+                </label>
+                <div className="flex flex-row">
+                  <input
+                    readOnly
+                    className="text-primaryPurple focus:outline-0 bg-white w-full border-thirdLightGray border-1px pl-5 pr-4 py-2"
+                    value={orgUrlWithJoinCode}
+                  />
+                  {org?.join_code && (
+                    <button
+                      className="text-sm w-2/6 border-2 border-primaryOrange text-primaryOrange py-1 px-1 rounded"
+                      onClick={() => {
+                        copy(orgUrlWithJoinCode);
+                      }}
+                    >
+                      Copy
+                    </button>
+                  )}
+                </div>
+                {navigator.share && (
+                  <SecondaryButton
+                    text="Share"
+                    size="big"
+                    onClick={async () => {
+                      try {
+                        console.log(navigator.canShare());
+                        await navigator.share({
+                          title: `Join Communion Org ${org.id}`,
+                          url: orgUrlWithJoinCode,
+                        });
+                      } catch (err) {
+                        // @ts-expect-error it's okay
+                        console.error('Share failed:', err.message);
+                      }
+                    }}
+                  />
+                )}
+              </div>
+            )}
             <PrimaryButton
               text="Sign Out"
               size="big"

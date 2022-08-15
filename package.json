@@ -21,6 +21,7 @@
     "aws-amplify": "^4.3.22",
     "axios": "^0.27.2",
     "classnames": "^2.3.1",
+    "copy-to-clipboard": "^3.3.2",
     "ethers": "^5.6.5",
     "next": "12.2.2",
     "postcss": "^8.4.13",
