@@ -7,7 +7,7 @@ import { AMPLIFY_CONFIG } from '@/util/cognitoAuthUtil';
 import { getUserJwtTokenOnServer } from '@/util/cognitoAuthUtil';
 
 import { useAppSelector, useAppDispatch } from '@/reduxHooks';
-import { selectSelf, selectSelfStatus, fetchSelf } from '@/features/selfSlice';
+import { selectSelf } from '@/features/selfSlice';
 
 import {
   fetchSelfHistoricalTxns,
@@ -17,13 +17,9 @@ import {
 } from '@/features/transactions/transactionsSlice';
 
 import {
-  reset as resetOrg,
-  fetchOrgById,
   selectOrg,
-  selectOrgStatus,
-  selectOrgUserTokenBalance,
-  fetchOrgTokenBalance,
   selectIsManagerModeActive,
+  selectOrgUserTokenBalance,
 } from '@/features/organization/organizationSlice';
 
 import NavBar, { AvailablePages } from '@/shared_components/navBar/NavBar';
@@ -33,6 +29,10 @@ import {
   OrgTransactionHistoryList,
   ShortcutActionsList,
 } from '@/pages_components/org/[orgId]/orgIdIndexComponents';
+
+import useFetchSelf from '@/shared_hooks/useFetchSelfHook';
+import useFetchOrg from '@/shared_hooks/useFetchOrgHook';
+import useFetchOrgTokenBalance from '@/shared_hooks/useFetchOrgTokenBalanceHook';
 
 // https://docs.amplify.aws/lib/client-configuration/configuring-amplify-categories/q/platform/js/#general-configuration
 Amplify.configure({ ...AMPLIFY_CONFIG, ssr: true });
@@ -45,13 +45,16 @@ const Home = ({ userJwt }: Props) => {
   const router = useRouter();
   const { orgId } = router.query;
   const self = useAppSelector((state) => selectSelf(state));
-  const selfStatus = useAppSelector((state) => selectSelfStatus(state));
-
-  const orgStatus = useAppSelector((state) => selectOrgStatus(state));
-  const org = useAppSelector((state) => selectOrg(state));
   const userTokenBalance = useAppSelector((state) =>
     selectOrgUserTokenBalance(state)
   );
+
+  useFetchSelf(userJwt);
+  useFetchOrg(userJwt);
+  useFetchOrgTokenBalance();
+
+  const org = useAppSelector((state) => selectOrg(state));
+
   const isManagerModeActive = useAppSelector((state) =>
     selectIsManagerModeActive(state)
   );
@@ -63,42 +66,6 @@ const Home = ({ userJwt }: Props) => {
   const historicalTxnsStatus = useAppSelector((state) =>
     reSelectHistoricalTxnsStatus(state)
   );
-
-  useEffect(() => {
-    if (userJwt && orgId && orgStatus === 'idle') {
-      const id = orgId.toString();
-      dispatch(fetchOrgById({ orgId: id, jwtToken: userJwt }));
-    }
-  }, [orgId, orgStatus, userJwt, dispatch]);
-
-  useEffect(() => {
-    if (orgStatus === 'failed') {
-      // TODO: This causes an ugly infinite loop.  Fix it.
-      dispatch(resetOrg());
-      router.push('/');
-    }
-  }, [orgStatus, router, dispatch]);
-
-  useEffect(() => {
-    if (
-      userTokenBalance.status === 'idle' &&
-      org.avax_contract.address &&
-      self
-    ) {
-      dispatch(
-        fetchOrgTokenBalance({
-          walletAddress: self.walletAddressC,
-          contractAddress: org.avax_contract.address,
-        })
-      );
-    }
-  }, [userTokenBalance, org, self, dispatch]);
-
-  useEffect(() => {
-    if (selfStatus === 'idle') {
-      dispatch(fetchSelf(userJwt));
-    }
-  }, [userJwt, dispatch, self, selfStatus]);
 
   useEffect(() => {
     if (userJwt && orgId && historicalTxnsStatus === 'idle') {
