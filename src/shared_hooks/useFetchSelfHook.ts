@@ -9,7 +9,7 @@ function useFetchSelf(userJwt: string) {
   const selfStatus = useAppSelector((state) => selectSelfStatus(state));
 
   useEffect(() => {
-    if (selfStatus === 'idle') {
+    if (selfStatus === 'idle' && userJwt) {
       dispatch(fetchSelf(userJwt));
     }
   }, [userJwt, dispatch, self, selfStatus]);
