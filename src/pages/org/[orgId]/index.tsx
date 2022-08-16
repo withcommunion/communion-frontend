@@ -1,23 +1,14 @@
 import type { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import { Amplify } from 'aws-amplify';
-import { useEffect, useCallback } from 'react';
 
 import { AMPLIFY_CONFIG } from '@/util/cognitoAuthUtil';
 import { getUserJwtTokenOnServer } from '@/util/cognitoAuthUtil';
 
-import { useAppSelector, useAppDispatch } from '@/reduxHooks';
-import { selectSelf } from '@/features/selfSlice';
-import {
-  fetchSelfHistoricalTxns,
-  selectHistoricalTxns,
-  // selectHistoricalTxnsStatus,
-  reSelectHistoricalTxnsStatus,
-} from '@/features/transactions/transactionsSlice';
-import {
-  selectOrg,
-  selectIsManagerModeActive,
-} from '@/features/organization/organizationSlice';
+import { useAppSelector } from '@/reduxHooks';
+import // selectHistoricalTxnsStatus,
+'@/features/transactions/transactionsSlice';
+import { selectOrg } from '@/features/organization/organizationSlice';
 
 import { useFetchSelf, useFetchOrg } from '@/shared_hooks/sharedHooks';
 
@@ -35,47 +26,13 @@ interface Props {
   userJwt: string;
 }
 const Home = ({ userJwt }: Props) => {
-  const dispatch = useAppDispatch();
   const router = useRouter();
   const { orgId } = router.query;
 
-  const self = useAppSelector((state) => selectSelf(state));
   const org = useAppSelector((state) => selectOrg(state));
-
-  const isManagerModeActive = useAppSelector((state) =>
-    selectIsManagerModeActive(state)
-  );
-
-  const historicalTxns = useAppSelector((state) => selectHistoricalTxns(state));
-  const historicalTxnsStatus = useAppSelector((state) =>
-    reSelectHistoricalTxnsStatus(state)
-  );
 
   useFetchSelf(userJwt);
   useFetchOrg(userJwt);
-
-  useEffect(() => {
-    if (userJwt && orgId && historicalTxnsStatus === 'idle') {
-      dispatch(
-        fetchSelfHistoricalTxns({ orgId: orgId.toString(), jwtToken: userJwt })
-      );
-    }
-  }, [userJwt, orgId, historicalTxnsStatus, dispatch]);
-
-  const memoizedFetchRefreshTxns = useCallback(
-    () =>
-      dispatch(
-        fetchSelfHistoricalTxns({
-          orgId: (orgId || '').toString(),
-          jwtToken: userJwt,
-        })
-      ),
-    [orgId, userJwt, dispatch]
-  );
-
-  useEffect(() => {
-    memoizedFetchRefreshTxns();
-  }, [isManagerModeActive, memoizedFetchRefreshTxns]);
 
   return (
     <>
@@ -94,19 +51,7 @@ const Home = ({ userJwt }: Props) => {
               />
             </div>
             <div className="my-8">
-              <OrgTransactionHistoryList
-                isManagerModeActive={isManagerModeActive}
-                selfWalletAddress={self?.walletAddressC || ''}
-                transactions={historicalTxns}
-                fetchRefreshTxns={() => {
-                  dispatch(
-                    fetchSelfHistoricalTxns({
-                      orgId: (orgId || '').toString(),
-                      jwtToken: userJwt,
-                    })
-                  );
-                }}
-              />
+              <OrgTransactionHistoryList userJwt={userJwt} />
             </div>
           </div>
         </div>
