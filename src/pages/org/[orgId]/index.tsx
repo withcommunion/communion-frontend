@@ -44,28 +44,26 @@ const Home = ({ userJwt }: Props) => {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const { orgId } = router.query;
+
   const self = useAppSelector((state) => selectSelf(state));
+  const org = useAppSelector((state) => selectOrg(state));
+
   const userTokenBalance = useAppSelector((state) =>
     selectOrgUserTokenBalance(state)
   );
-
-  useFetchSelf(userJwt);
-  useFetchOrg(userJwt);
-  useFetchOrgTokenBalance();
-
-  const org = useAppSelector((state) => selectOrg(state));
 
   const isManagerModeActive = useAppSelector((state) =>
     selectIsManagerModeActive(state)
   );
 
   const historicalTxns = useAppSelector((state) => selectHistoricalTxns(state));
-  // const historicalTxnsStatus = useAppSelector((state) =>
-  //   selectHistoricalTxnsStatus(state)
-  // );
   const historicalTxnsStatus = useAppSelector((state) =>
     reSelectHistoricalTxnsStatus(state)
   );
+
+  useFetchSelf(userJwt);
+  useFetchOrg(userJwt);
+  useFetchOrgTokenBalance();
 
   useEffect(() => {
     if (userJwt && orgId && historicalTxnsStatus === 'idle') {
