@@ -1,15 +1,15 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import { Amplify } from 'aws-amplify';
 import { useRouter } from 'next/router';
+import { useAuthenticator } from '@aws-amplify/ui-react';
 
 import { AMPLIFY_CONFIG } from '../util/cognitoAuthUtil';
 
 import { useAppSelector, useAppDispatch } from '@/reduxHooks';
 import { selectSelf, selectSelfStatus } from '@/features/selfSlice';
 
-import useFetchUserJwt from '@/shared_hooks/useFetchUserJwtHook';
 import { useFetchSelf } from '@/shared_hooks/sharedHooks';
 
 import {
@@ -25,14 +25,27 @@ const Index: NextPage = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
 
+  const [userJwt, setUserJwt] = useState('');
+
   const { orgId } = router.query;
   const queryOrgId = (orgId as string) || '';
+
+  const { user } = useAuthenticator(({ route, user }) => {
+    return [route, user];
+  });
 
   const self = useAppSelector((state) => selectSelf(state));
   const selfStatus = useAppSelector((state) => selectSelfStatus(state));
 
-  const [userJwt] = useFetchUserJwt();
   useFetchSelf(userJwt);
+
+  useEffect(() => {
+    const jwt = user && user.getSignInUserSession()?.getIdToken().getJwtToken();
+
+    if (!userJwt && jwt) {
+      setUserJwt(jwt);
+    }
+  }, [user, userJwt]);
 
   useEffect(() => {
     const shouldRouteUserToOnlyOrg =
@@ -50,7 +63,7 @@ const Index: NextPage = () => {
     } else if (shouldRouteUserToHome) {
       router.push({ pathname: '/home', query: router.query });
     }
-  }, [dispatch, selfStatus, self, queryOrgId, router]);
+  }, [dispatch, selfStatus, self, queryOrgId, router, user]);
 
   return (
     <div>
@@ -63,11 +76,11 @@ const Index: NextPage = () => {
       <main className="min-h-100vh ">
         <div className="container my-0 mx-auto w-full px-6 md:max-w-50vw">
           <div className="flex flex-col items-center justify-center">
-            {!self && <WelcomeHeader />}
+            {!user && <WelcomeHeader />}
             <div>
               <AuthComponent />
             </div>
-            {self ? (
+            {user ? (
               <div className="flex h-90vh items-center">
                 <Footer />
               </div>

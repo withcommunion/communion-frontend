@@ -1,8 +1,10 @@
+import type { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import { Amplify } from 'aws-amplify';
 import { useEffect, useCallback } from 'react';
 
 import { AMPLIFY_CONFIG } from '@/util/cognitoAuthUtil';
+import { getUserJwtTokenOnServer } from '@/util/cognitoAuthUtil';
 
 import { useAppSelector, useAppDispatch } from '@/reduxHooks';
 import { selectSelf } from '@/features/selfSlice';
@@ -25,15 +27,14 @@ import {
   OrgTransactionHistoryList,
   ShortcutActionsList,
 } from '@/pages_components/org/[orgId]/orgIdIndexComponents';
-import useFetchUserJwt from '@/shared_hooks/useFetchUserJwtHook';
 
 // https://docs.amplify.aws/lib/client-configuration/configuring-amplify-categories/q/platform/js/#general-configuration
-Amplify.configure({ ...AMPLIFY_CONFIG, ssr: false });
+Amplify.configure({ ...AMPLIFY_CONFIG, ssr: true });
 
-// interface Props {
-//   userJwt: string;
-// }
-const Home = () => {
+interface Props {
+  userJwt: string;
+}
+const Home = ({ userJwt }: Props) => {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const { orgId } = router.query;
@@ -50,7 +51,6 @@ const Home = () => {
     reSelectHistoricalTxnsStatus(state)
   );
 
-  const [userJwt] = useFetchUserJwt();
   useFetchSelf(userJwt);
   useFetchOrg(userJwt);
 
@@ -74,10 +74,8 @@ const Home = () => {
   );
 
   useEffect(() => {
-    if (userJwt && orgId) {
-      memoizedFetchRefreshTxns();
-    }
-  }, [isManagerModeActive, orgId, memoizedFetchRefreshTxns, userJwt]);
+    memoizedFetchRefreshTxns();
+  }, [isManagerModeActive, memoizedFetchRefreshTxns]);
 
   return (
     <>
@@ -115,6 +113,23 @@ const Home = () => {
       </>
     </>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  try {
+    const userJwt = await getUserJwtTokenOnServer(context);
+    return {
+      props: { userJwt },
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      props: {},
+      redirect: {
+        destination: '/',
+      },
+    };
+  }
 };
 
 export default Home;
