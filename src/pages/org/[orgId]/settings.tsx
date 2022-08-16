@@ -13,8 +13,7 @@ import {
   reset as resetOrganization,
 } from '@/features/organization/organizationSlice';
 
-import useFetchSelf from '@/shared_hooks/useFetchSelfHook';
-import useFetchOrg from '@/shared_hooks/useFetchOrgHook';
+import { useFetchSelf, useFetchOrg } from '@/shared_hooks/sharedHooks';
 
 import { reset as resetSelf } from '@/features/selfSlice';
 import { reset as resetJoinOrg } from '@/features/joinOrg/joinOrgSlice';

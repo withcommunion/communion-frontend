@@ -15,7 +15,7 @@ import {
 import { IndexHeader } from '@/pages_components/indexPageComponents';
 import Footer from '@/shared_components/footer/footer';
 import { reset as resetOrg } from '@/features/organization/organizationSlice';
-import useFetchSelf from '@/shared_hooks/useFetchSelfHook';
+import { useFetchSelf } from '@/shared_hooks/sharedHooks';
 
 const HomePage = ({ userJwt }: { userJwt: string }) => {
   const router = useRouter();

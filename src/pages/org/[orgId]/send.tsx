@@ -16,9 +16,11 @@ import {
 
 import { fetchSelfHistoricalTxns } from '@/features/transactions/transactionsSlice';
 
-import useFetchSelf from '@/shared_hooks/useFetchSelfHook';
-import useFetchOrg from '@/shared_hooks/useFetchOrgHook';
-import useFetchOrgTokenBalance from '@/shared_hooks/useFetchOrgTokenBalanceHook';
+import {
+  useFetchSelf,
+  useFetchOrg,
+  useFetchOrgTokenBalance,
+} from '@/shared_hooks/sharedHooks';
 
 import { getUserJwtTokenOnServer } from '@/util/cognitoAuthUtil';
 import {

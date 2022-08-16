@@ -30,9 +30,11 @@ import {
   ShortcutActionsList,
 } from '@/pages_components/org/[orgId]/orgIdIndexComponents';
 
-import useFetchSelf from '@/shared_hooks/useFetchSelfHook';
-import useFetchOrg from '@/shared_hooks/useFetchOrgHook';
-import useFetchOrgTokenBalance from '@/shared_hooks/useFetchOrgTokenBalanceHook';
+import {
+  useFetchSelf,
+  useFetchOrg,
+  useFetchOrgTokenBalance,
+} from '@/shared_hooks/sharedHooks';
 
 // https://docs.amplify.aws/lib/client-configuration/configuring-amplify-categories/q/platform/js/#general-configuration
 Amplify.configure({ ...AMPLIFY_CONFIG, ssr: true });

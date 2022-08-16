@@ -18,9 +18,11 @@ import {
 
 import { getUserJwtTokenOnServer } from '@/util/cognitoAuthUtil';
 
-import useFetchSelf from '@/shared_hooks/useFetchSelfHook';
-import useFetchOrg from '@/shared_hooks/useFetchOrgHook';
-import useFetchOrgTokenBalance from '@/shared_hooks/useFetchOrgTokenBalanceHook';
+import {
+  useFetchSelf,
+  useFetchOrg,
+  useFetchOrgTokenBalance,
+} from '@/shared_hooks/sharedHooks';
 
 import NavBar, { AvailablePages } from '@/shared_components/navBar/NavBar';
 import SelfOrgHeader from '@/shared_components/selfHeader/selfOrgHeader';
