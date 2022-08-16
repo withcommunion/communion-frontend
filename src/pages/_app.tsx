@@ -5,22 +5,25 @@ import { Amplify } from 'aws-amplify';
 import { Authenticator } from '@aws-amplify/ui-react';
 import { Provider } from 'react-redux';
 
+import dynamic from 'next/dynamic';
 import { AMPLIFY_CONFIG } from '../util/cognitoAuthUtil';
 import store from '@/reduxStore';
-import ManagerModeBanner from '@/shared_components/managerModeBanner';
+const ManagerModeBanner = dynamic(
+  () => import('../shared_components/managerModeBanner'),
+  { ssr: false }
+);
 
 // https://docs.amplify.aws/lib/client-configuration/configuring-amplify-categories/q/platform/js/#general-configuration
-Amplify.configure({ ...AMPLIFY_CONFIG, ssr: true });
+Amplify.configure({ ...AMPLIFY_CONFIG, ssr: false });
 
 function App({ Component, pageProps }: AppProps) {
-  // TODO: This may cause continual re-renders.  Look here https://ui.docs.amplify.aws/react/components/authenticator#prevent-re-renders=
   return (
-    <Provider store={store}>
-      <Authenticator.Provider>
+    <Authenticator.Provider>
+      <Provider store={store}>
         <ManagerModeBanner />
         <Component {...pageProps} />
-      </Authenticator.Provider>
-    </Provider>
+      </Provider>
+    </Authenticator.Provider>
   );
 }
 
