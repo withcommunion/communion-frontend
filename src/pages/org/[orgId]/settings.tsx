@@ -5,20 +5,20 @@ import { GetServerSideProps } from 'next';
 import copy from 'copy-to-clipboard';
 
 import { isProd, isDev, isLocal } from '@/util/envUtil';
-import { useAppSelector, useAppDispatch } from '@/reduxHooks';
 import { getUserJwtTokenOnServer } from '@/util/cognitoAuthUtil';
 
+import { useAppSelector, useAppDispatch } from '@/reduxHooks';
 import {
   selectOrg,
   reset as resetOrganization,
 } from '@/features/organization/organizationSlice';
-
-import { useFetchSelf, useFetchOrg } from '@/shared_hooks/sharedHooks';
-
 import { reset as resetSelf } from '@/features/selfSlice';
 import { reset as resetJoinOrg } from '@/features/joinOrg/joinOrgSlice';
 import { reset as resetMultisend } from '@/features/multisend/multisendSlice';
 import { reset as resetCart } from '@/features/cart/cartSlice';
+
+import { useFetchSelf, useFetchOrg } from '@/shared_hooks/sharedHooks';
+
 import NavBar, { AvailablePages } from '@/shared_components/navBar/NavBar';
 import PrimaryButton from '@/shared_components/buttons/primaryButton';
 import SecondaryButton from '@/shared_components/buttons/secondaryButton';

@@ -8,28 +8,25 @@ import { getUserJwtTokenOnServer } from '@/util/cognitoAuthUtil';
 
 import { useAppSelector, useAppDispatch } from '@/reduxHooks';
 import { selectSelf } from '@/features/selfSlice';
-
 import {
   fetchSelfHistoricalTxns,
   selectHistoricalTxns,
   // selectHistoricalTxnsStatus,
   reSelectHistoricalTxnsStatus,
 } from '@/features/transactions/transactionsSlice';
-
 import {
   selectOrg,
   selectIsManagerModeActive,
 } from '@/features/organization/organizationSlice';
 
+import { useFetchSelf, useFetchOrg } from '@/shared_hooks/sharedHooks';
+
 import NavBar, { AvailablePages } from '@/shared_components/navBar/NavBar';
 import OrgTokenBalanceContainer from '@/shared_components/orgTokenBalance/orgTokenBalanceContainer';
-
 import {
   OrgTransactionHistoryList,
   ShortcutActionsList,
 } from '@/pages_components/org/[orgId]/orgIdIndexComponents';
-
-import { useFetchSelf, useFetchOrg } from '@/shared_hooks/sharedHooks';
 
 // https://docs.amplify.aws/lib/client-configuration/configuring-amplify-categories/q/platform/js/#general-configuration
 Amplify.configure({ ...AMPLIFY_CONFIG, ssr: true });

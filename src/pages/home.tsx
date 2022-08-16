@@ -12,10 +12,12 @@ import {
   selectLatestJoinedOrgStatus,
   selectLatestJoinedOrgErrorMsg,
 } from '@/features/joinOrg/joinOrgSlice';
+
+import { useFetchSelf } from '@/shared_hooks/sharedHooks';
+
 import { IndexHeader } from '@/pages_components/indexPageComponents';
 import Footer from '@/shared_components/footer/footer';
 import { reset as resetOrg } from '@/features/organization/organizationSlice';
-import { useFetchSelf } from '@/shared_hooks/sharedHooks';
 
 const HomePage = ({ userJwt }: { userJwt: string }) => {
   const router = useRouter();

@@ -1,12 +1,15 @@
+import { useEffect, useState } from 'react';
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import { Amplify } from 'aws-amplify';
 import { useRouter } from 'next/router';
 import { useAuthenticator } from '@aws-amplify/ui-react';
 
+import { AMPLIFY_CONFIG } from '../util/cognitoAuthUtil';
+
 import { useAppSelector, useAppDispatch } from '@/reduxHooks';
 import { selectSelf, selectSelfStatus } from '@/features/selfSlice';
-import { AMPLIFY_CONFIG } from '../util/cognitoAuthUtil';
+
 import { useFetchSelf } from '@/shared_hooks/sharedHooks';
 
 import {
@@ -14,7 +17,6 @@ import {
   WelcomeHeader,
 } from '../pages_components/indexPageComponents';
 import Footer from '@/shared_components/footer/footer';
-import { useEffect, useState } from 'react';
 
 // https://docs.amplify.aws/lib/client-configuration/configuring-amplify-categories/q/platform/js/#general-configuration
 Amplify.configure({ ...AMPLIFY_CONFIG, ssr: false });

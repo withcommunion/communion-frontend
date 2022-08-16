@@ -4,26 +4,23 @@ import { useRouter } from 'next/router';
 import { Amplify } from 'aws-amplify';
 
 import { AMPLIFY_CONFIG } from '@/util/cognitoAuthUtil';
+import { getUserJwtTokenOnServer } from '@/util/cognitoAuthUtil';
 
 import { useAppSelector, useAppDispatch } from '@/reduxHooks';
 import { selectSelf } from '@/features/selfSlice';
-
 import {
   fetchOrgTokenBalance,
   selectOrg,
 } from '@/features/organization/organizationSlice';
-
 import { fetchSelfHistoricalTxns } from '@/features/transactions/transactionsSlice';
-
-import { useFetchSelf, useFetchOrg } from '@/shared_hooks/sharedHooks';
-
-import { getUserJwtTokenOnServer } from '@/util/cognitoAuthUtil';
 import {
   selectUsersAndAmounts,
   fetchMultisendFunds,
   clearedUsers,
   clearedLatestTxn,
 } from '@/features/multisend/multisendSlice';
+
+import { useFetchSelf, useFetchOrg } from '@/shared_hooks/sharedHooks';
 
 import OrgTokenBalanceContainer from '@/shared_components/orgTokenBalance/orgTokenBalanceContainer';
 import NavBar, { AvailablePages } from '@/shared_components/navBar/NavBar';
