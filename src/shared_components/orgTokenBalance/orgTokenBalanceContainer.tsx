@@ -11,8 +11,8 @@ import { selectSelf } from '@/features/selfSlice';
 
 import { useFetchOrgTokenBalance } from '@/shared_hooks/sharedHooks';
 
-import Greeting from '@/shared_components/selfHeader/greeting/greeting';
-import TokenBalance from '@/shared_components/selfHeader/tokenBalance/tokenBalance';
+import Greeting from '@/shared_components/orgTokenBalance/greeting/greeting';
+import TokenBalance from '@/shared_components/orgTokenBalance/tokenBalance/tokenBalance';
 import {
   formatWalletAddress,
   getBaseSnowtraceUrl,
