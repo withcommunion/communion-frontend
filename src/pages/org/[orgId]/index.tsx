@@ -1,6 +1,7 @@
 import type { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import { Amplify } from 'aws-amplify';
+import cx from 'classnames';
 
 import { AMPLIFY_CONFIG } from '@/util/cognitoAuthUtil';
 import { getUserJwtTokenOnServer } from '@/util/cognitoAuthUtil';
@@ -44,7 +45,7 @@ const Home = ({ userJwt }: Props) => {
         <div className="min-h-100vh bg-secondaryLightGray pb-2 ">
           <div className="container my-0 mx-auto w-full px-6 md:max-w-50vw">
             <OrgTokenBalanceContainer />
-            <div className="my-6">
+            <div className={cx('my-6', { 'h-35vh': !org.actions.length })}>
               <ShortcutActionsList
                 shortcutActions={org.actions}
                 orgId={(orgId || '').toString()}
