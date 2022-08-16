@@ -11,16 +11,11 @@ import { selectSelf } from '@/features/selfSlice';
 import {
   fetchOrgTokenBalance,
   selectOrg,
-  selectOrgUserTokenBalance,
 } from '@/features/organization/organizationSlice';
 
 import { fetchSelfHistoricalTxns } from '@/features/transactions/transactionsSlice';
 
-import {
-  useFetchSelf,
-  useFetchOrg,
-  useFetchOrgTokenBalance,
-} from '@/shared_hooks/sharedHooks';
+import { useFetchSelf, useFetchOrg } from '@/shared_hooks/sharedHooks';
 
 import { getUserJwtTokenOnServer } from '@/util/cognitoAuthUtil';
 import {
@@ -30,7 +25,7 @@ import {
   clearedLatestTxn,
 } from '@/features/multisend/multisendSlice';
 
-import SelfOrgHeader from '@/shared_components/selfHeader/selfOrgHeader';
+import OrgTokenBalanceContainer from '@/shared_components/orgTokenBalance/orgTokenBalanceContainer';
 import NavBar, { AvailablePages } from '@/shared_components/navBar/NavBar';
 import {
   SendPageHeader,
@@ -53,9 +48,6 @@ const OrgIdIndex = ({ userJwt }: Props) => {
   const self = useAppSelector((state) => selectSelf(state));
 
   const org = useAppSelector((state) => selectOrg(state));
-  const userTokenBalance = useAppSelector((state) =>
-    selectOrgUserTokenBalance(state)
-  );
 
   const selectedUsersAndAmounts = useAppSelector((state) =>
     selectUsersAndAmounts(state)
@@ -67,7 +59,6 @@ const OrgIdIndex = ({ userJwt }: Props) => {
 
   useFetchSelf(userJwt);
   useFetchOrg(userJwt);
-  useFetchOrgTokenBalance();
 
   useEffect(() => {
     if (!showModal) {
@@ -85,12 +76,7 @@ const OrgIdIndex = ({ userJwt }: Props) => {
         <div className="container my-0 mx-auto mb-10 w-full px-6 md:max-w-50vw">
           {!showModal && (
             <>
-              <SelfOrgHeader
-                orgId={(orgId || '').toString()}
-                tokenAmount={userTokenBalance.valueString}
-                tokenSymbol={userTokenBalance.tokenSymbol}
-                name={self?.first_name}
-              />
+              <OrgTokenBalanceContainer />
               <SendPageHeader />
               <SendMemberListContainer />
             </>

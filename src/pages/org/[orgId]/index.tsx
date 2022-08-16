@@ -19,22 +19,17 @@ import {
 import {
   selectOrg,
   selectIsManagerModeActive,
-  selectOrgUserTokenBalance,
 } from '@/features/organization/organizationSlice';
 
 import NavBar, { AvailablePages } from '@/shared_components/navBar/NavBar';
-import SelfOrgHeader from '@/shared_components/selfHeader/selfOrgHeader';
+import OrgTokenBalanceContainer from '@/shared_components/orgTokenBalance/orgTokenBalanceContainer';
 
 import {
   OrgTransactionHistoryList,
   ShortcutActionsList,
 } from '@/pages_components/org/[orgId]/orgIdIndexComponents';
 
-import {
-  useFetchSelf,
-  useFetchOrg,
-  useFetchOrgTokenBalance,
-} from '@/shared_hooks/sharedHooks';
+import { useFetchSelf, useFetchOrg } from '@/shared_hooks/sharedHooks';
 
 // https://docs.amplify.aws/lib/client-configuration/configuring-amplify-categories/q/platform/js/#general-configuration
 Amplify.configure({ ...AMPLIFY_CONFIG, ssr: true });
@@ -50,10 +45,6 @@ const Home = ({ userJwt }: Props) => {
   const self = useAppSelector((state) => selectSelf(state));
   const org = useAppSelector((state) => selectOrg(state));
 
-  const userTokenBalance = useAppSelector((state) =>
-    selectOrgUserTokenBalance(state)
-  );
-
   const isManagerModeActive = useAppSelector((state) =>
     selectIsManagerModeActive(state)
   );
@@ -65,7 +56,6 @@ const Home = ({ userJwt }: Props) => {
 
   useFetchSelf(userJwt);
   useFetchOrg(userJwt);
-  useFetchOrgTokenBalance();
 
   useEffect(() => {
     if (userJwt && orgId && historicalTxnsStatus === 'idle') {
@@ -99,12 +89,7 @@ const Home = ({ userJwt }: Props) => {
       <>
         <div className="min-h-100vh bg-secondaryLightGray pb-2 ">
           <div className="container my-0 mx-auto w-full px-6 md:max-w-50vw">
-            <SelfOrgHeader
-              orgId={(orgId || '').toString()}
-              tokenAmount={userTokenBalance.valueString}
-              tokenSymbol={userTokenBalance.tokenSymbol}
-              name={self?.first_name}
-            />
+            <OrgTokenBalanceContainer />
             <div className="my-6">
               <ShortcutActionsList
                 shortcutActions={org.actions}

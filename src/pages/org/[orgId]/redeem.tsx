@@ -12,20 +12,15 @@ import { selectSelf } from '@/features/selfSlice';
 import {
   fetchOrgTokenBalance,
   selectOrg,
-  selectOrgUserTokenBalance,
   selectIsManagerModeActive,
 } from '@/features/organization/organizationSlice';
 
 import { getUserJwtTokenOnServer } from '@/util/cognitoAuthUtil';
 
-import {
-  useFetchSelf,
-  useFetchOrg,
-  useFetchOrgTokenBalance,
-} from '@/shared_hooks/sharedHooks';
+import { useFetchSelf, useFetchOrg } from '@/shared_hooks/sharedHooks';
 
 import NavBar, { AvailablePages } from '@/shared_components/navBar/NavBar';
-import SelfOrgHeader from '@/shared_components/selfHeader/selfOrgHeader';
+import OrgTokenBalanceContainer from '@/shared_components/orgTokenBalance/orgTokenBalanceContainer';
 import {
   RedeemPageHeader,
   RedeemablesListContainer,
@@ -46,9 +41,6 @@ const RedeemPage = ({ userJwt }: Props) => {
   const self = useAppSelector((state) => selectSelf(state));
 
   const org = useAppSelector((state) => selectOrg(state));
-  const userTokenBalance = useAppSelector((state) =>
-    selectOrgUserTokenBalance(state)
-  );
 
   const isManagerModeActive = useAppSelector((state) =>
     selectIsManagerModeActive(state)
@@ -56,7 +48,6 @@ const RedeemPage = ({ userJwt }: Props) => {
 
   useFetchSelf(userJwt);
   useFetchOrg(userJwt);
-  useFetchOrgTokenBalance();
 
   return (
     <>
@@ -68,12 +59,7 @@ const RedeemPage = ({ userJwt }: Props) => {
         <div className="container my-0 mx-auto mb-10 w-full px-6 md:max-w-50vw">
           {!isManagerModeActive && (
             <>
-              <SelfOrgHeader
-                orgId={(orgId || '').toString()}
-                tokenAmount={userTokenBalance.valueString}
-                tokenSymbol={userTokenBalance.tokenSymbol}
-                name={self?.first_name}
-              />
+              <OrgTokenBalanceContainer />
               <RedeemPageHeader />
               <RedeemablesListContainer
                 userJwt={userJwt}
