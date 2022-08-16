@@ -4,9 +4,13 @@ import { useAppDispatch, useAppSelector } from '@/reduxHooks';
 import {
   selectOrg,
   fetchOrgTokenBalance,
+  selectOrgUserTokenBalance,
   selectOrgUserTokenStatus,
 } from '@/features/organization/organizationSlice';
 import { selectSelf } from '@/features/selfSlice';
+
+import { useFetchOrgTokenBalance } from '@/shared_hooks/sharedHooks';
+
 import Greeting from '@/shared_components/selfHeader/greeting/Greeting';
 import TokenBalance from '@/shared_components/selfHeader/tokenBalance/TokenBalance';
 import {
@@ -14,29 +18,30 @@ import {
   getBaseSnowtraceUrl,
 } from '@/util/avaxEthersUtil';
 
-interface Props {
-  tokenAmount?: number | string | null;
-  tokenSymbol?: string;
-  name?: string;
-  orgId?: string;
-}
-
-const SelfOrgHeader = ({ tokenAmount, tokenSymbol, name, orgId }: Props) => {
+const SelfOrgHeader = () => {
   const [isExpanded, setIsExpanded] = useState(false);
   const dispatch = useAppDispatch();
+
   const org = useAppSelector((state) => selectOrg(state));
   const self = useAppSelector((state) => selectSelf(state));
   const tokenBalanceStatus = useAppSelector((state) =>
     selectOrgUserTokenStatus(state)
   );
 
+  const { valueString, tokenSymbol } = useAppSelector((state) =>
+    selectOrgUserTokenBalance(state)
+  );
+
   const contractAddress = org.avax_contract.address;
   const walletAddress = self?.walletAddressC;
+
+  useFetchOrgTokenBalance();
+
   return (
     <>
       <div className="relative">
-        <Greeting name={name} />
-        {orgId === 'jacks-pizza-pittsfield' && (
+        <Greeting name={self?.first_name} />
+        {org.id === 'jacks-pizza-pittsfield' && (
           <div className="absolute right-0 top-0">
             <Image
               src="/images/orgLogos/jacksPizzaLogo.png"
@@ -52,7 +57,7 @@ const SelfOrgHeader = ({ tokenAmount, tokenSymbol, name, orgId }: Props) => {
         onClick={() => setIsExpanded(!isExpanded)}
       >
         <TokenBalance
-          tokenAmount={tokenAmount}
+          tokenAmount={valueString}
           tokenSymbol={tokenSymbol}
           isBalanceLoading={tokenBalanceStatus === 'loading'}
           isExpanded={isExpanded}
