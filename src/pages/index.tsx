@@ -3,15 +3,18 @@ import Head from 'next/head';
 import { Amplify } from 'aws-amplify';
 import { useRouter } from 'next/router';
 import { useAuthenticator } from '@aws-amplify/ui-react';
+
 import { useAppSelector, useAppDispatch } from '@/reduxHooks';
-import { selectSelf, selectSelfStatus, fetchSelf } from '@/features/selfSlice';
+import { selectSelf, selectSelfStatus } from '@/features/selfSlice';
 import { AMPLIFY_CONFIG } from '../util/cognitoAuthUtil';
+import { useFetchSelf } from '@/shared_hooks/sharedHooks';
+
 import {
   AuthComponent,
   WelcomeHeader,
 } from '../pages_components/indexPageComponents';
 import Footer from '@/shared_components/footer/footer';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 // https://docs.amplify.aws/lib/client-configuration/configuring-amplify-categories/q/platform/js/#general-configuration
 Amplify.configure({ ...AMPLIFY_CONFIG, ssr: false });
@@ -19,6 +22,9 @@ Amplify.configure({ ...AMPLIFY_CONFIG, ssr: false });
 const Index: NextPage = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
+
+  const [userJwt, setUserJwt] = useState('');
+
   const { orgId } = router.query;
   const queryOrgId = (orgId as string) || '';
 
@@ -29,14 +35,15 @@ const Index: NextPage = () => {
   const self = useAppSelector((state) => selectSelf(state));
   const selfStatus = useAppSelector((state) => selectSelfStatus(state));
 
+  useFetchSelf(userJwt);
+
   useEffect(() => {
-    const userJwt =
-      user && user.getSignInUserSession()?.getIdToken().getJwtToken();
-    const shouldFetchSelf = selfStatus === 'idle';
-    if (shouldFetchSelf && userJwt) {
-      dispatch(fetchSelf(userJwt));
+    const jwt = user && user.getSignInUserSession()?.getIdToken().getJwtToken();
+
+    if (!userJwt && jwt) {
+      setUserJwt(jwt);
     }
-  }, [user, selfStatus, dispatch]);
+  }, [user, userJwt]);
 
   useEffect(() => {
     const shouldRouteUserToOnlyOrg =

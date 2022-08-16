@@ -15,6 +15,7 @@ import {
 import { IndexHeader } from '@/pages_components/indexPageComponents';
 import Footer from '@/shared_components/footer/footer';
 import { reset as resetOrg } from '@/features/organization/organizationSlice';
+import { useFetchSelf } from '@/shared_hooks/sharedHooks';
 
 const HomePage = ({ userJwt }: { userJwt: string }) => {
   const router = useRouter();
@@ -34,17 +35,12 @@ const HomePage = ({ userJwt }: { userJwt: string }) => {
     selectLatestJoinedOrgErrorMsg(state)
   );
 
+  useFetchSelf(userJwt);
+
   useEffect(() => {
     dispatch(resetOrg());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  useEffect(() => {
-    const shouldFetchSelf = selfStatus === 'idle';
-    if (shouldFetchSelf && userJwt) {
-      dispatch(fetchSelf(userJwt));
-    }
-  }, [userJwt, selfStatus, dispatch]);
 
   useEffect(() => {
     const shouldRouteUserToOnlyOrg =

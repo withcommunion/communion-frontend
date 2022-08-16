@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
@@ -8,18 +7,22 @@ import { AMPLIFY_CONFIG } from '@/util/cognitoAuthUtil';
 
 import { useAppSelector, useAppDispatch } from '@/reduxHooks';
 import { fetchSelfHistoricalTxns } from '@/features/transactions/transactionsSlice';
-import { selectSelf, selectSelfStatus, fetchSelf } from '@/features/selfSlice';
+import { selectSelf } from '@/features/selfSlice';
 
 import {
-  fetchOrgById,
   fetchOrgTokenBalance,
   selectOrg,
-  selectOrgStatus,
   selectOrgUserTokenBalance,
   selectIsManagerModeActive,
 } from '@/features/organization/organizationSlice';
 
 import { getUserJwtTokenOnServer } from '@/util/cognitoAuthUtil';
+
+import {
+  useFetchSelf,
+  useFetchOrg,
+  useFetchOrgTokenBalance,
+} from '@/shared_hooks/sharedHooks';
 
 import NavBar, { AvailablePages } from '@/shared_components/navBar/NavBar';
 import SelfOrgHeader from '@/shared_components/selfHeader/selfOrgHeader';
@@ -41,10 +44,8 @@ const RedeemPage = ({ userJwt }: Props) => {
   const { orgId } = router.query;
 
   const self = useAppSelector((state) => selectSelf(state));
-  const selfStatus = useAppSelector((state) => selectSelfStatus(state));
 
   const org = useAppSelector((state) => selectOrg(state));
-  const orgStatus = useAppSelector((state) => selectOrgStatus(state));
   const userTokenBalance = useAppSelector((state) =>
     selectOrgUserTokenBalance(state)
   );
@@ -53,32 +54,9 @@ const RedeemPage = ({ userJwt }: Props) => {
     selectIsManagerModeActive(state)
   );
 
-  useEffect(() => {
-    if (selfStatus === 'idle') {
-      dispatch(fetchSelf(userJwt));
-    }
-  }, [userJwt, dispatch, self, selfStatus]);
-
-  useEffect(() => {
-    if (self && orgId && orgStatus === 'idle') {
-      dispatch(fetchOrgById({ orgId: orgId.toString(), jwtToken: userJwt }));
-    }
-  }, [self, userJwt, orgId, orgStatus, dispatch]);
-
-  useEffect(() => {
-    if (
-      userTokenBalance.status === 'idle' &&
-      org.avax_contract.address &&
-      self
-    ) {
-      dispatch(
-        fetchOrgTokenBalance({
-          walletAddress: self.walletAddressC,
-          contractAddress: org.avax_contract.address,
-        })
-      );
-    }
-  }, [userTokenBalance, org, self, dispatch]);
+  useFetchSelf(userJwt);
+  useFetchOrg(userJwt);
+  useFetchOrgTokenBalance();
 
   return (
     <>

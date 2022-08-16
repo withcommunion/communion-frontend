@@ -6,17 +6,21 @@ import { Amplify } from 'aws-amplify';
 import { AMPLIFY_CONFIG } from '@/util/cognitoAuthUtil';
 
 import { useAppSelector, useAppDispatch } from '@/reduxHooks';
-import { selectSelf, selectSelfStatus, fetchSelf } from '@/features/selfSlice';
+import { selectSelf } from '@/features/selfSlice';
 
 import {
-  fetchOrgById,
   fetchOrgTokenBalance,
   selectOrg,
-  selectOrgStatus,
   selectOrgUserTokenBalance,
 } from '@/features/organization/organizationSlice';
 
 import { fetchSelfHistoricalTxns } from '@/features/transactions/transactionsSlice';
+
+import {
+  useFetchSelf,
+  useFetchOrg,
+  useFetchOrgTokenBalance,
+} from '@/shared_hooks/sharedHooks';
 
 import { getUserJwtTokenOnServer } from '@/util/cognitoAuthUtil';
 import {
@@ -47,10 +51,8 @@ const OrgIdIndex = ({ userJwt }: Props) => {
   const router = useRouter();
   const { orgId } = router.query;
   const self = useAppSelector((state) => selectSelf(state));
-  const selfStatus = useAppSelector((state) => selectSelfStatus(state));
 
   const org = useAppSelector((state) => selectOrg(state));
-  const orgStatus = useAppSelector((state) => selectOrgStatus(state));
   const userTokenBalance = useAppSelector((state) =>
     selectOrgUserTokenBalance(state)
   );
@@ -63,32 +65,10 @@ const OrgIdIndex = ({ userJwt }: Props) => {
   const isMemberSelected = selectedUsersAndAmounts.length > 0;
   const showBottomStickyButton = isMemberSelected && !showModal;
 
-  useEffect(() => {
-    if (selfStatus === 'idle') {
-      dispatch(fetchSelf(userJwt));
-    }
-  }, [userJwt, dispatch, self, selfStatus]);
+  useFetchSelf(userJwt);
+  useFetchOrg(userJwt);
+  useFetchOrgTokenBalance();
 
-  useEffect(() => {
-    if (self && orgId && orgStatus === 'idle') {
-      dispatch(fetchOrgById({ orgId: orgId.toString(), jwtToken: userJwt }));
-    }
-  }, [self, userJwt, orgId, orgStatus, dispatch]);
-
-  useEffect(() => {
-    if (
-      userTokenBalance.status === 'idle' &&
-      org.avax_contract.address &&
-      self
-    ) {
-      dispatch(
-        fetchOrgTokenBalance({
-          walletAddress: self.walletAddressC,
-          contractAddress: org.avax_contract.address,
-        })
-      );
-    }
-  }, [userTokenBalance, org, self, dispatch]);
   useEffect(() => {
     if (!showModal) {
       dispatch(clearedLatestTxn());

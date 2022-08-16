@@ -9,11 +9,12 @@ import { useAppSelector, useAppDispatch } from '@/reduxHooks';
 import { getUserJwtTokenOnServer } from '@/util/cognitoAuthUtil';
 
 import {
-  fetchOrgById,
   selectOrg,
-  selectOrgStatus,
   reset as resetOrganization,
 } from '@/features/organization/organizationSlice';
+
+import { useFetchSelf, useFetchOrg } from '@/shared_hooks/sharedHooks';
+
 import { reset as resetSelf } from '@/features/selfSlice';
 import { reset as resetJoinOrg } from '@/features/joinOrg/joinOrgSlice';
 import { reset as resetMultisend } from '@/features/multisend/multisendSlice';
@@ -27,21 +28,15 @@ interface Props {
 }
 const SettingsPage = ({ userJwt }: Props) => {
   const router = useRouter();
-  const { orgId } = router.query;
 
   const dispatch = useAppDispatch();
   const { signOut } = useAuthenticator((context) => [context.signOut]);
   const org = useAppSelector((state) => selectOrg(state));
-  const orgStatus = useAppSelector((state) => selectOrgStatus(state));
   const [orgUrlWithJoinCode, setOrgUrlWithJoinCode] = useState('');
   const [copyMessage, setCopyMessage] = useState('Copy');
 
-  useEffect(() => {
-    if (userJwt && orgId && orgStatus === 'idle') {
-      const id = orgId.toString();
-      dispatch(fetchOrgById({ orgId: id, jwtToken: userJwt }));
-    }
-  }, [orgId, orgStatus, userJwt, dispatch]);
+  useFetchSelf(userJwt);
+  useFetchOrg(userJwt);
 
   useEffect(() => {
     if (org && org.join_code && !orgUrlWithJoinCode) {
