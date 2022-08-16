@@ -72,14 +72,14 @@ const Index: NextPage = () => {
       </Head>
 
       <main className="min-h-100vh ">
-        <div className="container w-full px-6 my-0 mx-auto md:max-w-50vw">
-          <div className="flex flex-col justify-center items-center">
+        <div className="container my-0 mx-auto w-full px-6 md:max-w-50vw">
+          <div className="flex flex-col items-center justify-center">
             {!user && <WelcomeHeader />}
             <div>
               <AuthComponent />
             </div>
             {user ? (
-              <div className="h-90vh flex items-center">
+              <div className="flex h-90vh items-center">
                 <Footer />
               </div>
             ) : (

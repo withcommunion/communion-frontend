@@ -65,20 +65,20 @@ const RedeemModalContainer = ({
     }
   }, [latestTxnStatus]);
   return (
-    <div className="absolute top-0 left-0 mx-auto w-full z-50 bg-secondaryLightGray min-h-100vh">
-      <div className="container w-full md:max-w-50vw px-6 pb-1 mx-auto bg-secondaryLightGray">
+    <div className="absolute top-0 left-0 z-50 mx-auto min-h-100vh w-full bg-secondaryLightGray">
+      <div className="container mx-auto w-full bg-secondaryLightGray px-6 pb-1 md:max-w-50vw">
         <BackToButton backToDestinationText={'List'} onClick={closeModal} />
 
         {currentStep === 'input' && (
-          <div className="shadow-primaryModalShadow rounded-4px bg-white px-15px pb-10">
-            <div className="flex justify-center items-center py-4">
+          <div className="rounded-4px bg-white px-15px pb-10 shadow-primaryModalShadow">
+            <div className="flex items-center justify-center py-4">
               <Image
                 src="/images/redeem/Shopping-cart.svg"
                 width="25px"
                 height="25px"
                 alt="shopping cart"
               />
-              <span className="mx-1 font-semibold text-21px text-primaryDarkGray">
+              <span className="mx-1 text-21px font-semibold text-primaryDarkGray">
                 Cart
               </span>
             </div>
@@ -96,8 +96,8 @@ const RedeemModalContainer = ({
             </ul>
 
             <div className="my-10 flex justify-between px-2">
-              <span className="text-fifthLightGray text-15px">Total: </span>
-              <span className="font-semibold text-primaryPurple text-15px">
+              <span className="text-15px text-fifthLightGray">Total: </span>
+              <span className="text-15px font-semibold text-primaryPurple">
                 {totalAmountRedeeming} {tokenSymbol}
               </span>
             </div>
@@ -110,15 +110,15 @@ const RedeemModalContainer = ({
                 size="big"
               />
             </div>
-            <div className="mt-5 text-sixthLightGray text-13px flex justify-center">
+            <div className="mt-5 flex justify-center text-13px text-sixthLightGray">
               Note: This action can not be undone!
             </div>
           </div>
         )}
         {currentStep === 'confirm' && (
-          <div className="shadow-primaryModalShadow rounded-4px bg-white pb-7">
-            <div className="relative p-15px flex justify-center items-center rounded-tl-4px rounded-tr-4px">
-              <span className="text-primaryDarkGray text-21px font-semibold">
+          <div className="rounded-4px bg-white pb-7 shadow-primaryModalShadow">
+            <div className="relative flex items-center justify-center rounded-tl-4px rounded-tr-4px p-15px">
+              <span className="text-21px font-semibold text-primaryDarkGray">
                 Confirmation
               </span>
               <div className="absolute right-18px top-18px">
@@ -136,10 +136,10 @@ const RedeemModalContainer = ({
               <table className="w-full border-collapse overflow-hidden rounded-md">
                 <thead>
                   <tr className="bg-primaryDarkGray">
-                    <th className="text-start p-4 text-14px text-white font-semibold">
+                    <th className="text-14px p-4 text-start font-semibold text-white">
                       Name
                     </th>
-                    <th className="text-end p-4 w-30vw text-14px text-white font-semibold">
+                    <th className="text-14px w-30vw p-4 text-end font-semibold text-white">
                       Tokens
                     </th>
                   </tr>
@@ -150,22 +150,22 @@ const RedeemModalContainer = ({
                       key={selectedRedeemable.id}
                       className="border-l-2 border-b-2 border-r-2 border-eighthLightGray"
                     >
-                      <td className="text-start text-primaryGray text-15px px-4 py-5">
+                      <td className="px-4 py-5 text-start text-15px text-primaryGray">
                         {selectedRedeemable.name}
                       </td>
-                      <td className="text-end text-primaryGray text-15px px-4 py-5">
+                      <td className="px-4 py-5 text-end text-15px text-primaryGray">
                         {selectedRedeemable.amount}
                       </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
-              <div className="flex justify-center items-center flex-col my-6">
-                <span className="mr-2 text-eighthGray text-15px">
+              <div className="my-6 flex flex-col items-center justify-center">
+                <span className="mr-2 text-15px text-eighthGray">
                   You are about to redeem rewards for a total of
                 </span>
                 <div>
-                  <span className="text-primaryPurple text-15px">
+                  <span className="text-15px text-primaryPurple">
                     <span className="font-semibold">
                       {totalAmountRedeeming}
                     </span>{' '}
@@ -188,8 +188,8 @@ const RedeemModalContainer = ({
           </div>
         )}
         {currentStep === 'success' && (
-          <div className="shadow-primaryModalShadow rounded-4px bg-white mb-16 flex flex-col justify-center items-center">
-            <div className="flex justify-center items-center pt-5">
+          <div className="mb-16 flex flex-col items-center justify-center rounded-4px bg-white shadow-primaryModalShadow">
+            <div className="flex items-center justify-center pt-5">
               <Image
                 src="/images/redeem/applePresent.png"
                 width="273px"
@@ -197,22 +197,22 @@ const RedeemModalContainer = ({
                 alt="A gift"
               />
             </div>
-            <p className="mt-3 mb-2 flex justify-center items-center">
-              <span className="text-primaryDarkGray text-21px font-semibold">
+            <p className="mt-3 mb-2 flex items-center justify-center">
+              <span className="text-21px font-semibold text-primaryDarkGray">
                 Success!
               </span>
             </p>
-            <p className="text-eleventhGray text-4 flex flex-col justify-center items-center mb-7">
+            <p className="text-4 mb-7 flex flex-col items-center justify-center text-eleventhGray">
               <div>
                 {totalAmountRedeeming} {tokenSymbol}
               </div>
               <span>were successfully redeemed</span>
             </p>
             {latestTxn && (
-              <div className="flex flex-col my-5">
+              <div className="my-5 flex flex-col">
                 <p className="">View the transaction on the blockchain!</p>
                 <a
-                  className="underline text-blue-600 hover:text-blue-800 visited:text-purple-600"
+                  className="text-blue-600 underline visited:text-purple-600 hover:text-blue-800"
                   href={getSnowtraceExplorerUrl(latestTxn.hash || '')}
                   target="_blank"
                   rel="noreferrer"

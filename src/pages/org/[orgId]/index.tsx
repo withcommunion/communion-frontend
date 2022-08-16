@@ -97,8 +97,8 @@ const Home = ({ userJwt }: Props) => {
         activeOrgId={(orgId || '').toString()}
       />
       <>
-        <div className="bg-secondaryLightGray pb-2 min-h-100vh ">
-          <div className="container w-full px-6 my-0 mx-auto md:max-w-50vw">
+        <div className="min-h-100vh bg-secondaryLightGray pb-2 ">
+          <div className="container my-0 mx-auto w-full px-6 md:max-w-50vw">
             <SelfOrgHeader
               orgId={(orgId || '').toString()}
               tokenAmount={userTokenBalance.valueString}

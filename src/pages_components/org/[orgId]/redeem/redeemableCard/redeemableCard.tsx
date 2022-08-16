@@ -12,19 +12,19 @@ const RedeemableCard = ({ redeemable, toggleChecked, isChecked }: Props) => {
     <li
       className={
         isChecked
-          ? 'flex items-center h-16 bg-white rounded my-1 border-primaryBeige border-4'
-          : 'flex items-center h-16 bg-white rounded my-1'
+          ? 'my-1 flex h-16 items-center rounded border-4 border-primaryBeige bg-white'
+          : 'my-1 flex h-16 items-center rounded bg-white'
       }
       onClick={toggleChecked}
     >
       <div className="relative flex grow items-center">
         <div
-          className={`absolute w-1 h-30px bg-primaryYellow ${
+          className={`absolute h-30px w-1 bg-primaryYellow ${
             isChecked ? '-left-1' : 'left-0'
           }`}
         ></div>
         <span
-          className={`text-primaryGray text-15px ml-30px ${
+          className={`ml-30px text-15px text-primaryGray ${
             isChecked ? 'ml-26px' : 'ml-30px'
           }`}
         >
@@ -34,7 +34,7 @@ const RedeemableCard = ({ redeemable, toggleChecked, isChecked }: Props) => {
 
       <div className="flex items-center">
         <span
-          className={`text-primaryPurple text-15px font-semibold ${
+          className={`text-15px font-semibold text-primaryPurple ${
             isChecked ? 'mr-1' : ''
           }`}
         >
@@ -42,23 +42,23 @@ const RedeemableCard = ({ redeemable, toggleChecked, isChecked }: Props) => {
         </span>
         <input
           type="checkbox"
-          className={`${isChecked ? 'mx-4' : 'mx-5'} appearance-none
-          relative
-          bg-secondaryLightGray
-          border-1px
-          border-secondaryPurple
-          h-4 w-4
+          className={`${isChecked ? 'mx-4' : 'mx-5'} relative
+          inline-flex
+          h-4
+          w-4
           cursor-pointer
-          transition-all
-          rounded inline-flex text-center justify-center items-center
+          appearance-none items-center
+          justify-center
+          rounded
+          border-1px border-secondaryPurple bg-secondaryLightGray text-center transition-all
+          after:absolute
+          after:h-2.5
+          after:w-1.5
           checked:bg-secondaryLightGray
-          checked:after:border-b-[3px]
-          checked:after:border-primaryPurple
-          checked:after:border-r-[3px]
           checked:after:rotate-45
           checked:after:rounded-md
-          after:h-2.5 after:w-1.5
-          after:absolute`}
+          checked:after:border-b-[3px] checked:after:border-r-[3px]
+          checked:after:border-primaryPurple`}
           checked={isChecked}
           onChange={() => undefined}
         ></input>

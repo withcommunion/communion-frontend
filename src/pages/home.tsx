@@ -95,8 +95,8 @@ const HomePage = ({ userJwt }: { userJwt: string }) => {
   ]);
 
   return (
-    <div className="bg-secondaryLightGray pb-2 min-h-100vh ">
-      <div className="container flex w-full px-6 my-0 mx-auto md:max-w-50vw justify-center">
+    <div className="min-h-100vh bg-secondaryLightGray pb-2 ">
+      <div className="container my-0 mx-auto flex w-full justify-center px-6 md:max-w-50vw">
         <div className="mt-5">
           <IndexHeader userName={self?.first_name} />
           {(selfStatus === 'idle' || selfStatus === 'loading') && (
@@ -109,12 +109,12 @@ const HomePage = ({ userJwt }: { userJwt: string }) => {
             <div className="flex flex-col">
               {self.organizations.length ? (
                 <div className="text-center ">
-                  <h2 className="text-xl mt-5">Available groups</h2>
+                  <h2 className="mt-5 text-xl">Available groups</h2>
                   <ul>
                     {self.organizations.map((org) => (
                       <li key={org.orgId} className="my-2">
                         <Link href={`/org/${org.orgId}`}>
-                          <button className="bg-secondaryOrange w-275px h-46px text-white shadow-primaryButtonShadow">
+                          <button className="h-46px w-275px bg-secondaryOrange text-white shadow-primaryButtonShadow">
                             {org.orgId}
                           </button>
                         </Link>
@@ -124,8 +124,8 @@ const HomePage = ({ userJwt }: { userJwt: string }) => {
                 </div>
               ) : (
                 <div className="mt-5">
-                  <h2 className="text-2xl text-center">Hmmmm...</h2>
-                  <h3 className="text-xl text-start">
+                  <h2 className="text-center text-2xl">Hmmmm...</h2>
+                  <h3 className="text-start text-xl">
                     It looks like you are not a member of any groups.
                   </h3>
                   <p>
@@ -140,7 +140,7 @@ const HomePage = ({ userJwt }: { userJwt: string }) => {
 
           {latestJoinedOrgStatus === 'loading' && (
             <div className="mt-5">
-              <h2 className="text-2xl text-center">
+              <h2 className="text-center text-2xl">
                 Joining the organization!
               </h2>
               <Footer />
@@ -149,11 +149,11 @@ const HomePage = ({ userJwt }: { userJwt: string }) => {
           {latestJoinedOrgStatus === 'failed' && (
             <div className="mt-5">
               <h2 className="text-2xl">Hmmmm...Something went wrong</h2>
-              <p className="text-xl text-start my-2">
+              <p className="my-2 text-start text-xl">
                 It looks like the organization you are trying to join does not
                 exist.
               </p>
-              <p className="text-xl text-start my-2">
+              <p className="my-2 text-start text-xl">
                 Or the joinCode you were given is wrong.
               </p>
               <p>

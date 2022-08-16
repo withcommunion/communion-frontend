@@ -64,8 +64,8 @@ const RedeemPage = ({ userJwt }: Props) => {
         activePage={AvailablePages.orgRedeem}
         activeOrgId={(orgId || '').toString()}
       />
-      <div className="pb-6 h-full min-h-100vh bg-secondaryLightGray">
-        <div className="container w-full px-6 my-0 mx-auto mb-10 md:max-w-50vw">
+      <div className="h-full min-h-100vh bg-secondaryLightGray pb-6">
+        <div className="container my-0 mx-auto mb-10 w-full px-6 md:max-w-50vw">
           {!isManagerModeActive && (
             <>
               <SelfOrgHeader
@@ -100,7 +100,7 @@ const RedeemPage = ({ userJwt }: Props) => {
           {isManagerModeActive && (
             <div>
               <RedeemPageHeader />
-              <div className="flex flex-col text-center text-primaryGray h-50vh place-content-center">
+              <div className="flex h-50vh flex-col place-content-center text-center text-primaryGray">
                 <div className="">
                   <Image
                     src="/images/redeem/arrow-right.png"

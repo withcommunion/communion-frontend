@@ -29,12 +29,12 @@ export default function ManagerModeBanner() {
 
   return isManagerModeAvailable ? (
     <div
-      className={cx('py-2 relative top-0 z-100', {
+      className={cx('z-100 relative top-0 py-2', {
         'bg-primaryOrange': isManagerModeActive,
         'bg-primaryLightGray': !isManagerModeActive,
       })}
     >
-      <div className="container w-full px-6 place-content-between my-0 mx-auto md:max-w-50vw items-center flex flex-row">
+      <div className="container my-0 mx-auto flex w-full flex-row place-content-between items-center px-6 md:max-w-50vw">
         <p
           className={cx('font-medium', {
             'text-white': isManagerModeActive,
@@ -43,24 +43,24 @@ export default function ManagerModeBanner() {
         >
           Manager Mode
         </p>
-        <label className="inline-flex relative items-center cursor-pointer">
+        <label className="relative inline-flex cursor-pointer items-center">
           <input
             onClick={() => {
               dispatch(toggledManagerModeActive());
             }}
             type="checkbox"
             value={isManagerModeActive.toString()}
-            className="sr-only peer"
+            className="peer sr-only"
           />
           <div
             className={cx(
-              'w-16 h-6 focus:outline-none rounded-full',
-              "after:content-[''] after:absolute after:top-[2px]  after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all",
+              'h-6 w-16 rounded-full focus:outline-none',
+              "after:absolute after:top-[2px] after:h-5  after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-['']",
               {
-                'bg-thirdOrange after:translate-x-full after:left-[20px] after:border-white':
+                'bg-thirdOrange after:left-[20px] after:translate-x-full after:border-white':
                   isManagerModeActive,
               },
-              { 'after:left-[5px] bg-thirdGray': !isManagerModeActive }
+              { 'bg-thirdGray after:left-[5px]': !isManagerModeActive }
             )}
           >
             <span

@@ -17,11 +17,11 @@ const HistoryOrg = ({
   return (
     <>
       <div className="my-4 flex justify-between text-center">
-        <span className="text-primaryGray font-semibold text-4">
+        <span className="text-4 font-semibold text-primaryGray">
           {isManagerModeActive ? 'Bank History' : 'Your History'}
         </span>
         <button
-          className="text-sm border-2 border-primaryOrange text-primaryOrange py-1 px-1 rounded"
+          className="rounded border-2 border-primaryOrange py-1 px-1 text-sm text-primaryOrange"
           onClick={fetchRefreshTxns}
         >
           Refresh
