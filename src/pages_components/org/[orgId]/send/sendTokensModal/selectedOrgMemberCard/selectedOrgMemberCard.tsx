@@ -9,7 +9,7 @@ const selectedMemberCard = ({ selectedUser, removeSelectedUser }: Props) => {
   const { first_name, last_name } = selectedUser;
 
   return (
-    <li className="flex items-center justify-between my-6">
+    <li className="my-6 flex items-center justify-between">
       <div className="flex items-center">
         <Image
           src={'/images/send/avatar.svg'}
@@ -17,7 +17,7 @@ const selectedMemberCard = ({ selectedUser, removeSelectedUser }: Props) => {
           height="30px"
           alt="person icon"
         />
-        <span className="text-primaryGray text-5 font-semibold pl-2">
+        <span className="text-5 pl-2 font-semibold text-primaryGray">
           {first_name} {last_name}
         </span>
       </div>

@@ -75,8 +75,8 @@ const SendTokenTipsModalContainer = ({
     }
   }, [latestTxnStatus]);
   return (
-    <div className=" w-full bg-secondaryLightGray min-h-100vh">
-      <div className="w-full md:max-w-50vw pb-1 bg-secondaryLightGray">
+    <div className=" min-h-100vh w-full bg-secondaryLightGray">
+      <div className="w-full bg-secondaryLightGray pb-1 md:max-w-50vw">
         <BackToButton backToDestinationText={'List'} onClick={closeModal} />
         {currentStep === 'input' && (
           <BasicModal
@@ -181,9 +181,9 @@ const SendTokenTipsModalContainer = ({
           </BasicModal>
         )}
         {currentStep === 'confirm' && (
-          <div className="shadow-primaryModalShadow rounded-4px bg-white pb-7">
-            <div className="relative p-15px flex justify-center items-center rounded-tl-4px rounded-tr-4px">
-              <span className="text-primaryDarkGray text-21px font-semibold">
+          <div className="rounded-4px bg-white pb-7 shadow-primaryModalShadow">
+            <div className="relative flex items-center justify-center rounded-tl-4px rounded-tr-4px p-15px">
+              <span className="text-21px font-semibold text-primaryDarkGray">
                 Confirmation
               </span>
               <div className="absolute right-18px top-18px">
@@ -206,10 +206,10 @@ const SendTokenTipsModalContainer = ({
                       'bg-primaryOrange': isManagerModeActive,
                     })}
                   >
-                    <th className="text-start p-4 text-14px text-white font-semibold">
+                    <th className="text-14px p-4 text-start font-semibold text-white">
                       Name
                     </th>
-                    <th className="text-end p-4 w-30vw text-14px text-white font-semibold">
+                    <th className="text-14px w-30vw p-4 text-end font-semibold text-white">
                       Tokens
                     </th>
                   </tr>
@@ -220,23 +220,23 @@ const SendTokenTipsModalContainer = ({
                       key={userAndAmount.user.id}
                       className="border-l-2 border-b-2 border-r-2 border-eighthLightGray"
                     >
-                      <td className="text-start text-primaryGray text-15px px-4 py-5">
+                      <td className="px-4 py-5 text-start text-15px text-primaryGray">
                         {userAndAmount.user.first_name}{' '}
                         {userAndAmount.user.last_name}
                       </td>
-                      <td className="text-end text-primaryGray text-15px px-4 py-5">
+                      <td className="px-4 py-5 text-end text-15px text-primaryGray">
                         {userAndAmount.amount}
                       </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
-              <div className="flex justify-center items-center flex-col my-6">
-                <span className="mr-2 text-eighthGray text-15px">
+              <div className="my-6 flex flex-col items-center justify-center">
+                <span className="mr-2 text-15px text-eighthGray">
                   You are about to send a total of
                 </span>
                 <div>
-                  <span className="text-primaryPurple text-15px ">
+                  <span className="text-15px text-primaryPurple ">
                     <span className="font-semibold">{totalAmountSending}</span>{' '}
                     tokens
                   </span>
@@ -260,8 +260,8 @@ const SendTokenTipsModalContainer = ({
           </div>
         )}
         {currentStep === 'success' && (
-          <div className="shadow-primaryModalShadow rounded-4px bg-white mb-16 flex flex-col justify-center items-center">
-            <div className="flex justify-center items-center pt-10">
+          <div className="mb-16 flex flex-col items-center justify-center rounded-4px bg-white shadow-primaryModalShadow">
+            <div className="flex items-center justify-center pt-10">
               <Image
                 src="/images/send/donat.png"
                 width="192px"
@@ -269,12 +269,12 @@ const SendTokenTipsModalContainer = ({
                 alt="donat image"
               />
             </div>
-            <p className="my-3 flex justify-center items-center">
-              <span className="text-primaryDarkGray text-21px font-semibold">
+            <p className="my-3 flex items-center justify-center">
+              <span className="text-21px font-semibold text-primaryDarkGray">
                 Congratulations
               </span>
             </p>
-            <div className="text-eleventhGray text-4 flex flex-col justify-center items-center mb-7">
+            <div className="text-4 mb-7 flex flex-col items-center justify-center text-eleventhGray">
               <div>
                 <span className="font-semibold">
                   {totalAmountSending} {tokenSymbol}
@@ -301,10 +301,10 @@ const SendTokenTipsModalContainer = ({
               </ul>
             </div>
             {latestTxn && (
-              <div className="flex flex-col my-5">
+              <div className="my-5 flex flex-col">
                 <p className="">View the transaction on the blockchain!</p>
                 <a
-                  className="underline text-blue-600 hover:text-blue-800 visited:text-purple-600"
+                  className="text-blue-600 underline visited:text-purple-600 hover:text-blue-800"
                   href={getSnowtraceExplorerUrl(latestTxn.hash || '')}
                   target="_blank"
                   rel="noreferrer"

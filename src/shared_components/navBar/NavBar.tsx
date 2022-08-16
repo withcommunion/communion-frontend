@@ -56,8 +56,8 @@ export default function NavBar({ activePage, activeOrgId }: Props) {
     selectIsManagerModeActive(state)
   );
   return (
-    <nav className="fixed h-14 inset-x-0 bottom-0 bg-white shadow-menuShadow z-30">
-      <ul className="flex justify-around items-center h-full mx-auto md:max-w-50vw ">
+    <nav className="fixed inset-x-0 bottom-0 z-30 h-14 bg-white shadow-menuShadow">
+      <ul className="mx-auto flex h-full items-center justify-around md:max-w-50vw ">
         {pages.map((link, num: number) => {
           const isActive = link.name === activePage;
           const isDisabledInManagerMode =
@@ -65,10 +65,10 @@ export default function NavBar({ activePage, activeOrgId }: Props) {
 
           const navLink = `/org/${activeOrgId}/${link.linkHref}`;
           return (
-            <li key={num} className="w-12 h-full">
+            <li key={num} className="h-full w-12">
               <div
                 className={cx({
-                  'w-12 h-1 bg-primaryOrange rounded-xl': isActive,
+                  'h-1 w-12 rounded-xl bg-primaryOrange': isActive,
                 })}
               ></div>
               <Link href={navLink}>
@@ -78,7 +78,7 @@ export default function NavBar({ activePage, activeOrgId }: Props) {
                       event.preventDefault();
                     }
                   }}
-                  className={cx('flex items-center justify-center h-full', {
+                  className={cx('flex h-full items-center justify-center', {
                     'opacity-20': isDisabledInManagerMode,
                   })}
                 >

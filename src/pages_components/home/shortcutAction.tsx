@@ -9,16 +9,16 @@ interface Props {
 const ShortcutAction = ({ actionAmount, actionName }: Props) => {
   return (
     <Link href="/org/jacks-pizza-pittsfield/send" passHref>
-      <button className="bg-slate-200 p-2 rounded-lg hover:bg-slate-400">
+      <button className="rounded-lg bg-slate-200 p-2 hover:bg-slate-400">
         <div className="relative">
-          <div className="flex items-center min-w-55vw md:min-w-15vw max-h-10vh">
-            <span className="text-black text-4xl p-1">{actionAmount}</span>
+          <div className="flex max-h-10vh min-w-55vw items-center md:min-w-15vw">
+            <span className="p-1 text-4xl text-black">{actionAmount}</span>
             <div className="flex flex-col p-2">
               <span className="text-xl text-black">Token tip</span>
               <span className="text-xl text-black">{actionName}</span>
             </div>
           </div>
-          <div className="absolute -right-8 -top-1 overflow-visible z-100">
+          <div className="z-100 absolute -right-8 -top-1 overflow-visible">
             <Image
               className=""
               width="90"

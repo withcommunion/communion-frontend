@@ -15,21 +15,21 @@ const AssetAmountInput = ({ amount, tokenSymbol, onChange }: Props) => {
   return (
     <div
       className={cx(
-        'rounded-4px bg-secondaryLightGray  p-15px my-15px',
+        'my-15px rounded-4px  bg-secondaryLightGray p-15px',
         { 'border-1px border-thirdLightGray': !isManagerModeActive },
         { 'border-1px border-primaryOrange': isManagerModeActive }
       )}
     >
-      <div className="flex justify-between items-center pb-15px">
+      <div className="flex items-center justify-between pb-15px">
         <span className="text-15px text-primaryGray ">Amount</span>
         {/**TODO: Add "max" */}
         {/* <button className="rounded-3px border-1px border-thirdOrange w-12 h-7">
           <span className="text-fourthOrange text-12px">Max</span>
         </button> */}
       </div>
-      <div className="bg-white border-thirdLightGray border-1px pl-5 pr-4 py-6 flex justify-between items-center">
+      <div className="flex items-center justify-between border-1px border-thirdLightGray bg-white py-6 pl-5 pr-4">
         <input
-          className="text-primaryPurple bg-white w-full border-thirdLightGray border-1px pl-5 pr-4 py-2"
+          className="w-full border-1px border-thirdLightGray bg-white py-2 pl-5 pr-4 text-primaryPurple"
           type="number"
           min="0"
           max={1000}
@@ -48,7 +48,7 @@ const AssetAmountInput = ({ amount, tokenSymbol, onChange }: Props) => {
         />
 
         <div>
-          <span className="font-light text-17px mx-15px text-fourthGray">
+          <span className="mx-15px text-17px font-light text-fourthGray">
             {tokenSymbol}
           </span>
           <Image

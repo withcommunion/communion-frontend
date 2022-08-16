@@ -3,17 +3,17 @@ import Image from 'next/image';
 const Welcome = () => {
   return (
     <div className="flex items-center justify-center">
-      <div className="relative pt-3 flex items-center justify-center flex-col">
+      <div className="relative flex flex-col items-center justify-center pt-3">
         <Image
           src="/images/orgLogos/jacksPizzaLogo.png"
           alt="jacks pizza logo"
           width="84px"
           height="84px"
         />
-        <span className="font-paytoneOne text-fifthOrange text-6xl z-10">
+        <span className="z-10 font-paytoneOne text-6xl text-fifthOrange">
           Welcome
         </span>
-        <span className="text-primaryGray font-semibold text-xl pt-3 z-10 mb-8">
+        <span className="z-10 mb-8 pt-3 text-xl font-semibold text-primaryGray">
           Please sign in or create an account
         </span>
 

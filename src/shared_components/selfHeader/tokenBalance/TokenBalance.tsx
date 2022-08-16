@@ -21,14 +21,14 @@ const TokenBalance = ({
   return (
     <div
       className={cx(
-        'bg-primaryLightGray rounded-md flex justify-between items-center px-4 py-4 font-normal',
+        'flex items-center justify-between rounded-md bg-primaryLightGray px-4 py-4 font-normal',
         { 'border border-primaryOrange': isManagerModeActive }
       )}
     >
       <span className="text-4 text-secondaryGray">
         {isManagerModeActive ? 'Bank Balance' : 'Your Balance'}
       </span>
-      <div className="flex rounded-lg bg-white px-4 py-3 w-44">
+      <div className="flex w-44 rounded-lg bg-white px-4 py-3">
         <div className={isExpanded ? 'rotate-90' : 'rotate-0'}>
           <Image
             src="/images/home/Arrow.svg"
@@ -38,7 +38,7 @@ const TokenBalance = ({
           />
         </div>
         {isBalanceLoading && <span>♻️</span>}
-        <span className="text-17px text-primaryPurple px-3">
+        <span className="px-3 text-17px text-primaryPurple">
           {isManagerModeActive ? '--' : tokenAmount} {tokenSymbol}
         </span>
       </div>

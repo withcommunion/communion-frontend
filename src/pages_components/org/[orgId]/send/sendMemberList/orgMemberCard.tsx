@@ -14,8 +14,8 @@ const OrgMemberCard = ({ userInOrg, toggleChecked, isChecked }: Props) => {
     <li
       className={
         isChecked
-          ? 'flex justify-between items-center h-16 bg-white rounded my-1 border-primaryBeige border-4'
-          : 'flex justify-between items-center h-16 bg-white rounded my-1'
+          ? 'my-1 flex h-16 items-center justify-between rounded border-4 border-primaryBeige bg-white'
+          : 'my-1 flex h-16 items-center justify-between rounded bg-white'
       }
       onClick={toggleChecked}
     >
@@ -34,7 +34,7 @@ const OrgMemberCard = ({ userInOrg, toggleChecked, isChecked }: Props) => {
             alt="user avatar"
           />
         </span>
-        <span className="text-primaryGray text-15px">
+        <span className="text-15px text-primaryGray">
           {first_name} {last_name}
         </span>
       </div>
@@ -42,23 +42,23 @@ const OrgMemberCard = ({ userInOrg, toggleChecked, isChecked }: Props) => {
         type="checkbox"
         checked={isChecked}
         onChange={() => undefined}
-        className={`${isChecked ? 'mx-4' : 'mx-5'} appearance-none
-          relative
-          bg-secondaryLightGray
-          border-1px
-          border-secondaryPurple
-          h-4 w-4
+        className={`${isChecked ? 'mx-4' : 'mx-5'} relative
+          inline-flex
+          h-4
+          w-4
           cursor-pointer
-          transition-all
-          rounded inline-flex text-center justify-center items-center
+          appearance-none items-center
+          justify-center
+          rounded
+          border-1px border-secondaryPurple bg-secondaryLightGray text-center transition-all
+          after:absolute
+          after:h-2.5
+          after:w-1.5
           checked:bg-secondaryLightGray
-          checked:after:border-b-[3px]
-          checked:after:border-primaryPurple
-          checked:after:border-r-[3px]
           checked:after:rotate-45
           checked:after:rounded-md
-          after:h-2.5 after:w-1.5
-          after:absolute`}
+          checked:after:border-b-[3px] checked:after:border-r-[3px]
+          checked:after:border-primaryPurple`}
       />
     </li>
   );

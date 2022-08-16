@@ -8,7 +8,7 @@ const UploadButton = ({ onClick }: Props) => {
   return (
     <button
       onClick={() => onClick()}
-      className="w-full border-2 rounded-xl border-secondaryBeige bg-thirdBeige flex items-center justify-center py-3"
+      className="flex w-full items-center justify-center rounded-xl border-2 border-secondaryBeige bg-thirdBeige py-3"
     >
       <Image
         src="/images/home/csv/csvUploadIcon.png"
@@ -16,7 +16,7 @@ const UploadButton = ({ onClick }: Props) => {
         width="46px"
         height="39px"
       />
-      <span className="text-17px font-bold text-sixthOrange mx-10px">
+      <span className="mx-10px text-17px font-bold text-sixthOrange">
         CSV Upload
       </span>
     </button>

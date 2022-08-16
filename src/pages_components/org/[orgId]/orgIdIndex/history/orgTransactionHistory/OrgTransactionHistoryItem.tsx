@@ -36,7 +36,7 @@ const OrgTransactionHistory = ({ transaction, selfWalletAddress }: Props) => {
 
   return (
     <li
-      className={cx('bg-white my-1 rounded px-3 py-4 cursor-pointer', {
+      className={cx('my-1 cursor-pointer rounded bg-white px-3 py-4', {
         'border border-primaryOrange': isManagerModeActive,
       })}
     >
@@ -59,7 +59,7 @@ const OrgTransactionHistory = ({ transaction, selfWalletAddress }: Props) => {
             width="25px"
             height="22px"
           />
-          <span className="text-primaryGray font-normal text-15px ml-2">
+          <span className="ml-2 text-15px font-normal text-primaryGray">
             {isRedemptionTxn && `Redeemed award for ${value} ${tokenSymbol}`}
             {isReceivedTxn &&
               `Received ${value} ${tokenSymbol} from ${fromUser.first_name} `}
@@ -72,18 +72,18 @@ const OrgTransactionHistory = ({ transaction, selfWalletAddress }: Props) => {
           </span>
         </div>
         <div>
-          <span className="text-secondaryPurple text-13px font-light">
+          <span className="text-13px font-light text-secondaryPurple">
             {dateString}
           </span>
         </div>
       </div>
       {isExpanded && (
         <div className="ml-9">
-          <span className="text-primaryGray font-normal text-15px">
+          <span className="text-15px font-normal text-primaryGray">
             View Txn Details:{' '}
           </span>
           <a
-            className="underline text-15px text-blue-600 hover:text-blue-800 visited:text-purple-600"
+            className="text-15px text-blue-600 underline visited:text-purple-600 hover:text-blue-800"
             href={
               isProd
                 ? `https://snowtrace.io/tx/${transaction.hash}`

@@ -2,20 +2,20 @@ import Image from 'next/image';
 
 const AssetSelectorInput = () => {
   return (
-    <div className="rounded-4px bg-secondaryLightGray border-1px border-thirdLightGray p-15px my-15px">
-      <div className="flex justify-between items-center pb-15px">
+    <div className="my-15px rounded-4px border-1px border-thirdLightGray bg-secondaryLightGray p-15px">
+      <div className="flex items-center justify-between pb-15px">
         <span className="text-15px text-primaryGray ">Asset</span>
         <div className="flex items-center">
-          <span className="px-1 font-light text-secondaryPurple text-3">
+          <span className="text-3 px-1 font-light text-secondaryPurple">
             Balance:
           </span>
           <span className="text-3 text-primaryPurple">0.0475938368 ETH</span>
         </div>
       </div>
-      <div className="bg-white border-thirdLightGray border-1px pl-5 pr-4 py-6 flex justify-between items-center">
+      <div className="flex items-center justify-between border-1px border-thirdLightGray bg-white py-6 pl-5 pr-4">
         <span className="text-primaryPurple">P</span>
         <div>
-          <span className="font-light text-17px mx-15px text-fourthGray">
+          <span className="mx-15px text-17px font-light text-fourthGray">
             PPP
           </span>
           <Image

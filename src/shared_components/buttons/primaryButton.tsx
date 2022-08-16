@@ -21,7 +21,7 @@ const PrimaryButton = ({ text, onClick, size, disabled, loading }: Props) => {
         {
           'bg-secondaryOrange text-white shadow-primaryButtonShadow': !disabled,
         },
-        'rounded-28px h-46px  mx-7.5px'
+        'mx-7.5px h-46px  rounded-28px'
       )}
       onClick={() => onClick()}
     >

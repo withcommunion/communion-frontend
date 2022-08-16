@@ -59,20 +59,20 @@ const SelfOrgHeader = ({ tokenAmount, tokenSymbol, name, orgId }: Props) => {
         />
       </div>
       {isExpanded && contractAddress && walletAddress && (
-        <div className="flex align-middle justify-between">
+        <div className="flex justify-between align-middle">
           <div>
             <span className="text-12px">Your wallet address: </span>
             <a
               target="_blank"
               rel="noreferrer"
-              className="text-12px underline text-blue-600 hover:text-blue-800 visited:text-purple-600"
+              className="text-12px text-blue-600 underline visited:text-purple-600 hover:text-blue-800"
               href={`${getBaseSnowtraceUrl()}/address/${walletAddress}`}
             >
               {formatWalletAddress(walletAddress)}
             </a>
           </div>
           <button
-            className="self-end text-sm border-2 border-primaryOrange text-primaryOrange py-1 px-1 rounded"
+            className="self-end rounded border-2 border-primaryOrange py-1 px-1 text-sm text-primaryOrange"
             disabled={tokenBalanceStatus === 'loading'}
             onClick={() =>
               dispatch(

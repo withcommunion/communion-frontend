@@ -19,7 +19,7 @@ const BackToButton = ({ backToDestinationText, onClick }: Props) => {
         height="13px"
         alt="back arrow"
       />
-      <span className="text-4 text-primaryPurple mx-6px ">
+      <span className="text-4 mx-6px text-primaryPurple ">
         Back to {backToDestinationText}
       </span>
     </button>

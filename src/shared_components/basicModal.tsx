@@ -31,15 +31,15 @@ const BasicModal = ({
   children,
 }: Props) => {
   return (
-    <div className="shadow-primaryModalShadow rounded-4px bg-white mb-16">
+    <div className="mb-16 rounded-4px bg-white shadow-primaryModalShadow">
       <div
         className={cx(
-          'p-15px flex justify-between items-center rounded-tl-4px rounded-tr-4px',
+          'flex items-center justify-between rounded-tl-4px rounded-tr-4px p-15px',
           { 'bg-primaryOrange': isManagerModeActive },
           { 'bg-thirdGray ': !isManagerModeActive }
         )}
       >
-        <span className="text-white font-medium text-17px">{title}</span>
+        <span className="text-17px font-medium text-white">{title}</span>
         <button onClick={toggleModal}>
           <Image
             src="/images/whiteExit.svg"
@@ -52,7 +52,7 @@ const BasicModal = ({
       <div className="px-15px">
         <div className="mb-3">{children}</div>
       </div>
-      <div className="px-15px pb-5 flex justify-center items-center flex-row">
+      <div className="flex flex-row items-center justify-center px-15px pb-5">
         {onSecondaryActionButtonClick && secondaryActionButtonText && (
           <SecondaryButton
             onClick={onSecondaryActionButtonClick}
