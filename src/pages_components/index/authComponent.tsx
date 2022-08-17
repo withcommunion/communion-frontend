@@ -6,22 +6,27 @@ const formFields = {
       order: 3,
       isRequired: true,
     },
-    given_name: {
+    phone_number: {
       order: 4,
+      isRequired: false,
+      placeholder: 'Phone Number (Optional)',
+    },
+    given_name: {
+      order: 5,
       isRequired: true,
       placeholder: 'First Name',
     },
     family_name: {
-      order: 5,
+      order: 6,
       isRequired: true,
       placeholder: 'Last Name',
     },
     password: {
-      order: 6,
+      order: 7,
       isRequired: true,
     },
     confirm_password: {
-      order: 7,
+      order: 8,
       isRequired: true,
     },
   },
@@ -32,7 +37,7 @@ const AuthComponent = () => {
     <Authenticator
       className="mt-5"
       initialState="signIn"
-      signUpAttributes={['email', 'given_name', 'family_name']}
+      signUpAttributes={['email', 'given_name', 'family_name', 'phone_number']}
       formFields={formFields}
       loginMechanisms={['email']}
       components={{
