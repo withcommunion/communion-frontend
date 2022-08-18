@@ -106,7 +106,11 @@ export const fetchPatchSelf = createAsyncThunk(
 export const { phoneNumberUpdated, allowSmsUpdated } =
   selfSettingsSlice.actions;
 
-// Other code such as selectors can use the imported `RootState` type
-export const selectCount = (state: RootState) => state.counter.value;
+export const selectfetchPatchSelfStatus = (state: RootState) =>
+  state.selfSettings.status;
+
+export const selectPhoneNumber = (state: RootState) =>
+  state.selfSettings.phoneNumber;
+export const selectAllowSms = (state: RootState) => state.selfSettings.allowSms;
 
 export default selfSettingsSlice.reducer;

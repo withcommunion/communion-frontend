@@ -21,7 +21,10 @@ import { useFetchSelf, useFetchOrg } from '@/shared_hooks/sharedHooks';
 import NavBar, { AvailablePages } from '@/shared_components/navBar/NavBar';
 import PrimaryButton from '@/shared_components/buttons/primaryButton';
 
-import { InviteLink } from '@/pages_components/org/[orgId]/settingsComponents';
+import {
+  InviteLink,
+  PhoneSettingsContainer,
+} from '@/pages_components/org/[orgId]/settingsComponents';
 
 interface Props {
   userJwt: string;
@@ -69,6 +72,7 @@ const SettingsPage = ({ userJwt }: Props) => {
             {org?.join_code && (
               <InviteLink orgId={org.id} orgJoinCode={org.join_code} />
             )}
+            <PhoneSettingsContainer userJwt={userJwt} />
             <PrimaryButton
               text="Sign Out"
               size="big"
