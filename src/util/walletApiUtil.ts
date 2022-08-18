@@ -21,6 +21,8 @@ export interface User {
 
 export interface Self extends User {
   walletPrivateKeyWithLeadingHex: string;
+  phone_number: string;
+  allow_sms: boolean;
 }
 
 export interface UserInTxn {
