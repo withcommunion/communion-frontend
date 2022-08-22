@@ -7,6 +7,7 @@ import organizationReducer from '@/features/organization/organizationSlice';
 import cartReducer from '@/features/cart/cartSlice';
 import multisendReducer from '@/features/multisend/multisendSlice';
 import joinOrgReducer from '@/features/joinOrg/joinOrgSlice';
+import selfSettingsReducer from './features/selfSettings/selfSettingsSlice';
 
 const store = configureStore({
   reducer: {
@@ -15,6 +16,7 @@ const store = configureStore({
     posts: postsReducer,
     joinOrg: joinOrgReducer,
     self: selfReducer,
+    selfSettings: selfSettingsReducer,
     transactions: transactionsReducer,
     organization: organizationReducer,
     cart: cartReducer,

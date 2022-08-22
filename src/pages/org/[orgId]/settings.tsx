@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { useAuthenticator } from '@aws-amplify/ui-react';
 import { useRouter } from 'next/router';
 import { GetServerSideProps } from 'next';
-import copy from 'copy-to-clipboard';
 
 import { isProd, isDev, isLocal } from '@/util/envUtil';
 import { getUserJwtTokenOnServer } from '@/util/cognitoAuthUtil';
@@ -21,7 +20,11 @@ import { useFetchSelf, useFetchOrg } from '@/shared_hooks/sharedHooks';
 
 import NavBar, { AvailablePages } from '@/shared_components/navBar/NavBar';
 import PrimaryButton from '@/shared_components/buttons/primaryButton';
-import SecondaryButton from '@/shared_components/buttons/secondaryButton';
+
+import {
+  InviteLink,
+  PhoneSettingsContainer,
+} from '@/pages_components/org/[orgId]/settingsComponents';
 
 interface Props {
   userJwt: string;
@@ -33,7 +36,6 @@ const SettingsPage = ({ userJwt }: Props) => {
   const { signOut } = useAuthenticator((context) => [context.signOut]);
   const org = useAppSelector((state) => selectOrg(state));
   const [orgUrlWithJoinCode, setOrgUrlWithJoinCode] = useState('');
-  const [copyMessage, setCopyMessage] = useState('Copy');
 
   useFetchSelf(userJwt);
   useFetchOrg(userJwt);
@@ -68,51 +70,10 @@ const SettingsPage = ({ userJwt }: Props) => {
           <div className="space-around flex flex-col items-center pt-5">
             <h2 className="mb-5 text-xl">Settings</h2>
             {org?.join_code && (
-              <div className="my-8 flex w-full flex-col text-start">
-                <label>
-                  <span className="text-xl">Invite code</span>
-                </label>
-                <div className="flex flex-row">
-                  <input
-                    readOnly
-                    className="w-full border-1px border-thirdLightGray bg-white py-2 pl-5 pr-4 text-primaryPurple focus:outline-0"
-                    value={orgUrlWithJoinCode}
-                  />
-                  {org?.join_code && (
-                    <button
-                      className="w-2/6 rounded border-2 border-primaryOrange py-1 px-1 text-sm text-primaryOrange"
-                      onClick={() => {
-                        copy(orgUrlWithJoinCode);
-                        setCopyMessage('✅ Copied!');
-                        setTimeout(() => {
-                          setCopyMessage('Copy');
-                        }, 1000);
-                      }}
-                    >
-                      {copyMessage}
-                    </button>
-                  )}
-                </div>
-                {navigator.share && (
-                  <SecondaryButton
-                    text="Share"
-                    size="big"
-                    onClick={async () => {
-                      try {
-                        console.log(navigator.canShare());
-                        await navigator.share({
-                          title: `Join Communion Org ${org.id}`,
-                          url: orgUrlWithJoinCode,
-                        });
-                      } catch (err) {
-                        // @ts-expect-error it's okay
-                        console.error('Share failed:', err.message);
-                      }
-                    }}
-                  />
-                )}
-              </div>
+              <InviteLink orgId={org.id} orgJoinCode={org.join_code} />
             )}
+            {/** TODO: Remove to release feature */}
+            {!isProd && <PhoneSettingsContainer userJwt={userJwt} />}
             <PrimaryButton
               text="Sign Out"
               size="big"
