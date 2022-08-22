@@ -72,7 +72,8 @@ const SettingsPage = ({ userJwt }: Props) => {
             {org?.join_code && (
               <InviteLink orgId={org.id} orgJoinCode={org.join_code} />
             )}
-            <PhoneSettingsContainer userJwt={userJwt} />
+            {/** TODO: Remove to release feature */}
+            {!isProd && <PhoneSettingsContainer userJwt={userJwt} />}
             <PrimaryButton
               text="Sign Out"
               size="big"
