@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { ethers } from 'ethers';
 
 import type { RootState } from '@/reduxStore';
 import {
@@ -9,20 +8,11 @@ import {
 } from '@reduxjs/toolkit';
 
 import { API_URL, Self } from '@/util/walletApiUtil';
-import { getEthersWallet } from '@/util/avaxEthersUtil';
 
 // Define a type for the slice state
 export interface SelfState {
   id: string;
   self: Self | null;
-  wallet: {
-    ethersWalletKey: string | null;
-    balance: {
-      valueString: string | null;
-      status: 'idle' | 'loading' | 'succeeded' | 'failed';
-      error: string | null | undefined;
-    };
-  };
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
   error: string | null | undefined;
 }
@@ -31,14 +21,6 @@ export interface SelfState {
 const initialState: SelfState = {
   id: '',
   self: null,
-  wallet: {
-    ethersWalletKey: null,
-    balance: {
-      valueString: null,
-      status: 'idle',
-      error: null,
-    },
-  },
   status: 'idle',
   error: null,
 };
@@ -60,52 +42,19 @@ export const userSlice = createSlice({
       .addCase(fetchSelf.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.self = action.payload;
-        state.wallet.ethersWalletKey =
-          action.payload.walletPrivateKeyWithLeadingHex;
       })
       .addCase(fetchSelf.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.error.message;
-      })
-      .addCase(fetchWalletBalance.pending, (state) => {
-        state.wallet.balance.status = 'loading';
-      })
-      .addCase(fetchWalletBalance.fulfilled, (state, action) => {
-        state.wallet.balance.status = 'succeeded';
-        state.wallet.balance.valueString = action.payload;
-      })
-      .addCase(fetchWalletBalance.rejected, (state, action) => {
-        state.wallet.balance.status = 'failed';
-        state.wallet.balance.error = action.error.message;
       });
   },
 });
 
 export const { reset } = userSlice.actions;
 
-export const fetchWalletBalance = createAsyncThunk(
-  'self/fetchWalletBalance',
-  async (args: {
-    wallet?: ethers.Wallet;
-    privateKeyWithLeadingHex?: string;
-  }) => {
-    const { wallet, privateKeyWithLeadingHex } = args;
-    if (wallet) {
-      const balanceBigNumber = await wallet.getBalance();
-      return ethers.utils.formatEther(balanceBigNumber);
-    } else if (privateKeyWithLeadingHex) {
-      const wallet = getEthersWallet(privateKeyWithLeadingHex);
-      const balanceBigNumber = await wallet.getBalance();
-      return ethers.utils.formatEther(balanceBigNumber);
-    } else {
-      throw new Error('No wallet or private key provided');
-    }
-  }
-);
-
 export const fetchSelf = createAsyncThunk(
   'self/fetchSelf',
-  async (jwtToken: string, { dispatch }) => {
+  async (jwtToken: string) => {
     const rawSelf = await axios.get<Self>(`${API_URL}/user/self`, {
       headers: {
         Authorization: jwtToken,
@@ -113,30 +62,15 @@ export const fetchSelf = createAsyncThunk(
     });
     const self = rawSelf.data;
 
-    dispatch(
-      fetchWalletBalance({
-        privateKeyWithLeadingHex: self.walletPrivateKeyWithLeadingHex,
-      })
-    );
-
     return self;
   }
 );
 
-export const selectSelf = (state: RootState) => state.self.self;
-export const selectSelfStatus = (state: RootState) => state.self.status;
-
-export const selectWallet = (state: RootState) => state.self.wallet;
-export const selectEthersWallet = createSelector([selectWallet], (wallet) =>
-  wallet.ethersWalletKey ? getEthersWallet(wallet.ethersWalletKey) : null
+export const selectRootSelf = (state: RootState) => state.self;
+export const selectSelf = createSelector([selectRootSelf], (root) => root.self);
+export const selectSelfStatus = createSelector(
+  [selectRootSelf],
+  (root) => root.status
 );
-export const selectWalletBalance = (state: RootState) =>
-  state.self.wallet.balance;
-export const selectWalletBalanceBigNumber = createSelector(
-  [selectWalletBalance],
-  (balance) => ethers.BigNumber.from(balance.valueString)
-);
-export const selectWalletBalanceStatus = (state: RootState) =>
-  state.self.wallet.balance.status;
 
 export default userSlice.reducer;
