@@ -21,9 +21,9 @@ const PhoneSettingsContainer = ({ userJwt }: { userJwt: string }) => {
   const dispatch = useAppDispatch();
   const phoneNumber = useAppSelector((state) => selectPhoneNumber(state));
   const allowSms = useAppSelector((state) => selectAllowSms(state));
-  //   const fetchPatchSelfStatus = useAppSelector((state) =>
-  //     selectfetchPatchSelfStatus(state)
-  //   );
+  const fetchPatchSelfStatus = useAppSelector((state) =>
+    selectfetchPatchSelfStatus(state)
+  );
   const self = useAppSelector((state) => selectSelf(state));
 
   useEffect(() => {
@@ -39,7 +39,7 @@ const PhoneSettingsContainer = ({ userJwt }: { userJwt: string }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   return (
     <li
-      className={cx('flex w-full flex-col bg-white text-start', {
+      className={cx('my-5 flex w-full flex-col bg-white text-start', {
         'border-4 border-primaryBeige ': isExpanded,
       })}
     >
@@ -98,16 +98,17 @@ const PhoneSettingsContainer = ({ userJwt }: { userJwt: string }) => {
             />
           </div>
 
-          <div>
+          <div className="py-5 text-center">
             <SecondaryButton
+              disabled={fetchPatchSelfStatus === 'loading'}
               onClick={() =>
                 dispatch(
                   fetchPatchSelf({ phoneNumber, allowSms, jwtToken: userJwt })
                 )
               }
               size="big"
-              text="Submit"
-            ></SecondaryButton>
+              text={fetchPatchSelfStatus === 'loading' ? '♻️ Submit' : 'Submit'}
+            />
           </div>
         </div>
       )}
