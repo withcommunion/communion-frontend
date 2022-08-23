@@ -94,7 +94,7 @@ const OrgIdIndex = ({ userJwt }: Props) => {
                 dispatch(
                   fetchOrgTokenBalance({
                     walletAddress: self?.walletAddressC || '',
-                    contractAddress: org.avax_contract.address,
+                    tokenContractAddress: org.avax_contract.token_address,
                   })
                 );
                 dispatch(

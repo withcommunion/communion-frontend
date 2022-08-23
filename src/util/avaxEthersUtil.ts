@@ -7,6 +7,10 @@ export const fujiTestAvaxUrl = 'api.avax-test.network';
 export const prodAvaxRpcUrl = 'https://api.avax.network/ext/bc/C/rpc';
 export const fujiTestAvaxRpcUrl = 'https://api.avax-test.network/ext/bc/C/rpc';
 
+export const rootExplorerUrl = isProd
+  ? `https://snowtrace.io`
+  : `https://testnet.snowtrace.io`;
+
 export const HTTPSProvider = new ethers.providers.JsonRpcProvider(
   isProd ? prodAvaxRpcUrl : fujiTestAvaxRpcUrl
 );

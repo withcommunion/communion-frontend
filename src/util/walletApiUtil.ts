@@ -80,6 +80,7 @@ export interface OrgWithPublicData {
   join_code?: string;
   avax_contract: {
     address: string;
+    token_address: string;
     token_name: string;
     token_symbol: string;
   };

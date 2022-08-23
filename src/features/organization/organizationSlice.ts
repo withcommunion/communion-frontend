@@ -4,13 +4,11 @@ import {
   createAsyncThunk,
   createSelector,
 } from '@reduxjs/toolkit';
-import { Contract, utils, BigNumber } from 'ethers';
 import axios from 'axios';
 import type { RootState } from '@/reduxStore';
-import contractAbi from '../../contractAbi/jacksPizza/JacksPizzaGovernance.json';
 
 import { API_URL, OrgWithPublicData, Self } from '@/util/walletApiUtil';
-import { HTTPSProvider } from '@/util/avaxEthersUtil';
+import { rootExplorerUrl } from '@/util/avaxEthersUtil';
 
 export interface OrganizationState {
   org: OrgWithPublicData;
@@ -40,6 +38,7 @@ const initialState: OrganizationState = {
     members: [],
     avax_contract: {
       address: '',
+      token_address: '',
       token_name: '',
       token_symbol: '',
     },
@@ -138,21 +137,28 @@ export const fetchOrgById = createAsyncThunk(
 
 export const fetchOrgTokenBalance = createAsyncThunk(
   'organization/fetchOrgTokenBalance',
-  async (args: { contractAddress: string; walletAddress: string }) => {
-    const { contractAddress, walletAddress } = args;
+  async (args: { tokenContractAddress: string; walletAddress: string }) => {
+    const { tokenContractAddress, walletAddress } = args;
+    console.log(tokenContractAddress);
 
-    const contract = new Contract(
-      contractAddress,
-      contractAbi.abi,
-      HTTPSProvider
-    );
+    const res = await axios.get<{
+      status: string;
+      message: string;
+      result: string;
+    }>(`${rootExplorerUrl}/api`, {
+      params: {
+        module: 'account',
+        action: 'tokenbalance',
+        contractaddress: tokenContractAddress.toLowerCase(),
+        address: walletAddress.toLowerCase(),
+        tag: 'latest',
+      },
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+      },
+    });
 
-    // eslint-disable-next-line
-    const balanceBigNumber = (await contract.getBalanceOf(
-      walletAddress
-    )) as BigNumber;
-
-    return utils.formatUnits(balanceBigNumber, 'wei');
+    return res.data.message;
   }
 );
 
@@ -175,14 +181,6 @@ export const selectOrgRedeemablesSortedByAmount = createSelector(
     );
   }
 );
-
-export const selectOrgContract = createSelector([selectOrg], (org) => {
-  return new Contract(
-    org.avax_contract.address,
-    contractAbi.abi,
-    HTTPSProvider
-  );
-});
 
 export const selectOrgUserToken = (state: RootState) =>
   state.organization.userToken;

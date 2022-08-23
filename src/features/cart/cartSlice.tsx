@@ -186,7 +186,7 @@ export const fetchOrgRedeem = createAsyncThunk(
 
       dispatch(
         fetchOrgTokenBalance({
-          contractAddress: organization.org.avax_contract.address,
+          tokenContractAddress: organization.org.avax_contract.token_address,
           walletAddress: self.self?.walletAddressC || '',
         })
       );

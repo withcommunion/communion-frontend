@@ -82,7 +82,7 @@ const SelfOrgHeader = () => {
             onClick={() =>
               dispatch(
                 fetchOrgTokenBalance({
-                  contractAddress,
+                  tokenContractAddress: org.avax_contract.token_address,
                   walletAddress,
                 })
               )
