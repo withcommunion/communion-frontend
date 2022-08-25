@@ -94,9 +94,17 @@ const RedeemablesListContainer = ({
           totalAmountRedeeming={totalAmountRedeeming}
           tokenSymbol={org.avax_contract.token_symbol}
           fetchOrgRedeem={async () => {
+            // TODO: This isn't ideal, we probably want this to be more similar to multisend
+            // Wait for time to see where it wants to go
+            const message = selectedRedeemables
+              .map((redeemable) => {
+                return redeemable.name;
+              })
+              .join(', ');
             await dispatch(
               fetchOrgRedeem({
                 amount: totalAmountRedeeming,
+                message,
                 orgId: org.id,
                 jwtToken: userJwt,
               })
