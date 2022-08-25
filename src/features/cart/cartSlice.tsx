@@ -142,10 +142,12 @@ export const fetchOrgRedeem = createAsyncThunk(
   async (
     {
       amount,
+      message,
       orgId,
       jwtToken,
     }: {
       amount: number;
+      message: string;
       orgId: string;
       jwtToken: string;
     },
@@ -162,6 +164,7 @@ export const fetchOrgRedeem = createAsyncThunk(
         `${API_URL}/org/${orgId}/redeem`,
         {
           amount,
+          message,
         },
         {
           headers: {
