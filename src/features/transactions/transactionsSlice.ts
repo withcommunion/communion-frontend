@@ -8,7 +8,7 @@ import type { RootState } from '@/reduxStore';
 import { Transaction } from 'ethers';
 import { HTTPSProvider } from '@/util/avaxEthersUtil';
 
-import { API_URL, HistoricalTxn } from '@/util/walletApiUtil';
+import { API_URL, CommunionTx } from '@/util/walletApiUtil';
 
 interface TransactionsState {
   latestTxn: {
@@ -17,7 +17,7 @@ interface TransactionsState {
     error: string | null | undefined;
   };
   historicalTxns: {
-    txns: HistoricalTxn[];
+    txns: CommunionTx[];
     status: 'idle' | 'loading' | 'succeeded' | 'failed';
     error: string | null | undefined;
   };
@@ -175,24 +175,28 @@ export const fetchSelfHistoricalTxns = createAsyncThunk(
     { orgId, jwtToken }: { orgId: string; jwtToken: string },
     { getState }
   ) => {
+    console.log('here?');
     const state = getState() as RootState;
     const managerMode = state.organization.managerMode;
 
     const isManagerModeAvailable = managerMode.isAvailable;
     const isManagerModeActive = isManagerModeAvailable && managerMode.isActive;
 
-    const rawWallet = await axios.get<{ txs: HistoricalTxn[] }>(
-      `${API_URL}/org/${orgId}/txs/self`,
+    const rawTxsResp = await axios.get<{ txs: CommunionTx[] }>(
+      `${API_URL}/user/self/txs`,
       {
         headers: {
           Authorization: jwtToken,
         },
         params: {
+          orgId,
           isManagerMode: isManagerModeActive,
         },
       }
     );
-    const selfTxs = rawWallet.data;
+
+    console.log(rawTxsResp);
+    const selfTxs = rawTxsResp.data;
     return selfTxs.txs;
   }
 );
