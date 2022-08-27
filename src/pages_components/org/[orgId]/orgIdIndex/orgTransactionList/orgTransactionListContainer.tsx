@@ -74,7 +74,7 @@ const HistoryOrg = ({ userJwt }: Props) => {
           {historicalTxnsStatus === 'loading' && <span>♻️</span>} Refresh
         </button>
       </div>
-      <ul>
+      <ul className="pb-10">
         {historicalTxnsStatus === 'loading' && (
           <div>
             <p>Loading...</p>
@@ -85,6 +85,7 @@ const HistoryOrg = ({ userJwt }: Props) => {
             key={num}
             transaction={transaction}
             selfWalletAddress={self?.walletAddressC || ''}
+            orgId={orgId?.toString() || ''}
           />
         ))}
       </ul>

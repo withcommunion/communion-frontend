@@ -54,6 +54,29 @@ export interface HistoricalTxn {
   confirmations: string;
 }
 
+export interface CommunionTx {
+  timeStampSeconds: number;
+  tokenName: string;
+  tokenSymbol: string;
+  value: number;
+  txHash: string;
+  txHashUrl: string;
+  txStatus: 'succeeded' | 'failed';
+  txType: 'received' | 'sent' | 'redemption';
+  fromUser: {
+    id: string;
+    walletAddressC: string;
+    firstName: string;
+    lastName: string;
+  };
+  toUser: {
+    id: string;
+    walletAddressC: string;
+    firstName: string;
+    lastName: string;
+  };
+}
+
 export interface OrgAction {
   name: string;
   amount: string;

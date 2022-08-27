@@ -2,20 +2,28 @@ import { useState } from 'react';
 import Image from 'next/image';
 import cx from 'classnames';
 
-import { HistoricalTxn } from '@/util/walletApiUtil';
+import { CommunionTx } from '@/util/walletApiUtil';
 import { formatTxnHash } from '@/util/avaxEthersUtil';
-import { isProd } from '@/util/envUtil';
 
 import { useAppSelector } from '@/reduxHooks';
 import { selectIsManagerModeActive } from '@/features/organization/organizationSlice';
 
 interface Props {
-  transaction: HistoricalTxn;
+  transaction: CommunionTx;
   selfWalletAddress: string;
+  orgId: string;
 }
-// TODO: Need to get Status from TXN, need to handle redemptions!
-const OrgTransactionHistory = ({ transaction, selfWalletAddress }: Props) => {
-  const { toUser, fromUser, timeStamp, tokenSymbol, value, to } = transaction;
+const OrgTransactionHistoryItem = ({ transaction, orgId }: Props) => {
+  const {
+    fromUser,
+    timeStampSeconds,
+    tokenSymbol,
+    value,
+    toUser,
+    txType,
+    txHashUrl,
+    txHash,
+  } = transaction;
   const [isExpanded, setIsExpanded] = useState(false);
 
   const isManagerModeActive = useAppSelector((state) =>
@@ -23,16 +31,13 @@ const OrgTransactionHistory = ({ transaction, selfWalletAddress }: Props) => {
   );
 
   const status = 'succeeded';
-  const date = new Date(parseInt(timeStamp) * 1000);
+  const date = new Date(timeStampSeconds * 1000);
   const dateString = date.toLocaleDateString('en-US', {
     // hour: 'numeric',
     // minute: 'numeric',
   });
 
-  const isRedemptionTxn =
-    to.toLowerCase() === '0x0000000000000000000000000000000000000000';
-  const isReceivedTxn = to.toLowerCase() === selfWalletAddress.toLowerCase();
-  const isSentTxn = !isRedemptionTxn && !isReceivedTxn;
+  const isFromBank = fromUser.firstName === orgId;
 
   return (
     <li
@@ -44,8 +49,6 @@ const OrgTransactionHistory = ({ transaction, selfWalletAddress }: Props) => {
         className="flex items-center justify-between "
         onClick={() => {
           setIsExpanded(!isExpanded);
-          console.log(transaction);
-          console.log(selfWalletAddress);
         }}
       >
         <div className="flex items-center">
@@ -60,15 +63,14 @@ const OrgTransactionHistory = ({ transaction, selfWalletAddress }: Props) => {
             height="22px"
           />
           <span className="ml-2 text-15px font-normal text-primaryGray">
-            {isRedemptionTxn && `Redeemed award for ${value} ${tokenSymbol}`}
-            {isReceivedTxn &&
-              `Received ${value} ${tokenSymbol} from ${fromUser.first_name} `}
-            {isSentTxn &&
-              `Sent ${value} ${tokenSymbol} to ${toUser.first_name} `}
-            {/** TODO: Handle statuses! */}
-            {/* {status === 'succeeded'
-            ? `Sent ${toUser.first_name} `
-            : 'Claiming '}{' '} */}
+            {txType === 'redemption' &&
+              `Redeemed award for ${value} ${tokenSymbol}`}
+            {txType === 'received' &&
+              `Received ${value} ${tokenSymbol} from ${
+                isFromBank ? `🏦 ${tokenSymbol} Bank` : fromUser.firstName
+              } `}
+            {txType === 'sent' &&
+              `Sent ${value} ${tokenSymbol} to ${toUser.firstName} `}
           </span>
         </div>
         <div>
@@ -84,15 +86,11 @@ const OrgTransactionHistory = ({ transaction, selfWalletAddress }: Props) => {
           </span>
           <a
             className="text-15px text-blue-600 underline visited:text-purple-600 hover:text-blue-800"
-            href={
-              isProd
-                ? `https://snowtrace.io/tx/${transaction.hash}`
-                : `https://testnet.snowtrace.io/tx/${transaction.hash}`
-            }
+            href={txHashUrl}
             target="_blank"
             rel="noreferrer"
           >
-            {transaction.hash && `${formatTxnHash(transaction.hash)}`}
+            {txHash && `${formatTxnHash(txHash)}`}
           </a>
         </div>
       )}
@@ -100,4 +98,4 @@ const OrgTransactionHistory = ({ transaction, selfWalletAddress }: Props) => {
   );
 };
 
-export default OrgTransactionHistory;
+export default OrgTransactionHistoryItem;
