@@ -175,7 +175,6 @@ export const fetchSelfHistoricalTxns = createAsyncThunk(
     { orgId, jwtToken }: { orgId: string; jwtToken: string },
     { getState }
   ) => {
-    console.log('here?');
     const state = getState() as RootState;
     const managerMode = state.organization.managerMode;
 
@@ -195,7 +194,6 @@ export const fetchSelfHistoricalTxns = createAsyncThunk(
       }
     );
 
-    console.log(rawTxsResp);
     const selfTxs = rawTxsResp.data;
     return selfTxs.txs;
   }
