@@ -74,7 +74,7 @@ const HistoryOrg = ({ userJwt }: Props) => {
           {historicalTxnsStatus === 'loading' && <span>♻️</span>} Refresh
         </button>
       </div>
-      <ul>
+      <ul className="pb-10">
         {historicalTxnsStatus === 'loading' && (
           <div>
             <p>Loading...</p>
