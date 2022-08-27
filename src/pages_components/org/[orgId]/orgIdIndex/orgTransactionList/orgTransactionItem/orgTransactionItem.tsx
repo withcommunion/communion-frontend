@@ -11,9 +11,9 @@ import { selectIsManagerModeActive } from '@/features/organization/organizationS
 interface Props {
   transaction: CommunionTx;
   selfWalletAddress: string;
+  orgId: string;
 }
-// TODO: Need to get Status from TXN, need to handle redemptions!
-const OrgTransactionHistory = ({ transaction }: Props) => {
+const OrgTransactionHistoryItem = ({ transaction, orgId }: Props) => {
   const {
     fromUser,
     timeStampSeconds,
@@ -36,6 +36,8 @@ const OrgTransactionHistory = ({ transaction }: Props) => {
     // hour: 'numeric',
     // minute: 'numeric',
   });
+
+  const isFromBank = fromUser.firstName === orgId;
 
   return (
     <li
@@ -64,13 +66,11 @@ const OrgTransactionHistory = ({ transaction }: Props) => {
             {txType === 'redemption' &&
               `Redeemed award for ${value} ${tokenSymbol}`}
             {txType === 'received' &&
-              `Received ${value} ${tokenSymbol} from ${fromUser.firstName} `}
+              `Received ${value} ${tokenSymbol} from ${
+                isFromBank ? `🏦 ${tokenSymbol} Bank` : fromUser.firstName
+              } `}
             {txType === 'sent' &&
               `Sent ${value} ${tokenSymbol} to ${toUser.firstName} `}
-            {/** TODO: Handle statuses! */}
-            {/* {status === 'succeeded'
-            ? `Sent ${toUser.first_name} `
-            : 'Claiming '}{' '} */}
           </span>
         </div>
         <div>
@@ -98,4 +98,4 @@ const OrgTransactionHistory = ({ transaction }: Props) => {
   );
 };
 
-export default OrgTransactionHistory;
+export default OrgTransactionHistoryItem;

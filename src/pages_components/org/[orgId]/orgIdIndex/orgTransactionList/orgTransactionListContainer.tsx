@@ -85,6 +85,7 @@ const HistoryOrg = ({ userJwt }: Props) => {
             key={num}
             transaction={transaction}
             selfWalletAddress={self?.walletAddressC || ''}
+            orgId={orgId?.toString() || ''}
           />
         ))}
       </ul>
