@@ -366,6 +366,7 @@ const SendTokenTipsModalContainer = ({
                 onClick={() => {
                   dispatch(clearedUsers());
                   dispatch(baseAmountUpdated(0));
+                  dispatch(baseMsgUpdated(''));
                   closeModal();
                 }}
                 size="big"
