@@ -72,6 +72,12 @@ const OrgTransactionHistoryItem = ({ transaction, orgId }: Props) => {
             {txType === 'sent' &&
               `Sent ${value} ${tokenSymbol} to ${toUser.firstName} `}
           </span>
+          {!isExpanded && transaction.message && (
+            <span className="ml-2 text-13px font-light text-secondaryPurple">
+              {' '}
+              {transaction.message.substring(0, 8)}..
+            </span>
+          )}
         </div>
         <div>
           <span className="text-13px font-light text-secondaryPurple">
@@ -80,7 +86,8 @@ const OrgTransactionHistoryItem = ({ transaction, orgId }: Props) => {
         </div>
       </div>
       {isExpanded && (
-        <div className="ml-9">
+        <div className="ml-9 flex flex-col">
+          <span className="my-2">{transaction.message}</span>
           <span className="text-15px font-normal text-primaryGray">
             View Txn Details:{' '}
           </span>
