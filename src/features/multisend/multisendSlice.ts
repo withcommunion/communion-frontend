@@ -14,6 +14,7 @@ import { API_URL, User, postToLogTxnError } from '@/util/walletApiUtil';
 export interface UserAndAmount {
   user: User;
   amount: number;
+  message?: string;
 }
 
 interface MultisendState {
@@ -64,10 +65,11 @@ export const multisendSlice = createSlice({
       );
 
       if (!userExists) {
-        const { user, amount } = action.payload;
+        const { user, amount, message } = action.payload;
         state.selectedUsersAndAmounts.push({
           user,
           amount: amount || state.baseAmount,
+          message,
         });
       }
     },
@@ -93,6 +95,18 @@ export const multisendSlice = createSlice({
 
       if (updatedUser) {
         updatedUser.amount = action.payload.amount;
+      }
+    },
+    updatedUserMessage(
+      state: MultisendState,
+      action: PayloadAction<UserAndAmount>
+    ) {
+      const updatedUser = state.selectedUsersAndAmounts.find(
+        (userAndAmount) => userAndAmount.user.id === action.payload.user.id
+      );
+
+      if (updatedUser) {
+        updatedUser.message = action.payload.message;
       }
     },
     clearedLatestTxn(state: MultisendState) {
