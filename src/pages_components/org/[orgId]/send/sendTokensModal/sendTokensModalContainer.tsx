@@ -242,7 +242,10 @@ const SendTokenTipsModalContainer = ({
                     <th className="text-14px p-4 text-start font-semibold text-white">
                       Name
                     </th>
-                    <th className="text-14px w-30vw p-4 text-end font-semibold text-white">
+                    <th className="text-14px p-4 text-end font-semibold text-white">
+                      Message
+                    </th>
+                    <th className="text-14px w-20vw p-4 text-end font-semibold text-white">
                       Tokens
                     </th>
                   </tr>
@@ -256,6 +259,9 @@ const SendTokenTipsModalContainer = ({
                       <td className="px-4 py-5 text-start text-15px text-primaryGray">
                         {userAndAmount.user.first_name}{' '}
                         {userAndAmount.user.last_name}
+                      </td>
+                      <td className="px-4 py-5 text-end text-15px text-primaryGray">
+                        {userAndAmount.message}
                       </td>
                       <td className="px-4 py-5 text-end text-15px text-primaryGray">
                         {userAndAmount.amount}
