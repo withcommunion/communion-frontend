@@ -14,6 +14,7 @@ import { API_URL, User, postToLogTxnError } from '@/util/walletApiUtil';
 export interface UserAndAmount {
   user: User;
   amount: number;
+  message?: string;
 }
 
 interface MultisendState {
@@ -24,6 +25,7 @@ interface MultisendState {
   };
   selectedUsersAndAmounts: UserAndAmount[];
   baseAmount: number;
+  baseMsg: string;
 }
 
 // Define the initial state using that type
@@ -35,6 +37,7 @@ const initialState: MultisendState = {
   },
   selectedUsersAndAmounts: [],
   baseAmount: 0,
+  baseMsg: '',
 };
 
 export const multisendSlice = createSlice({
@@ -55,6 +58,17 @@ export const multisendSlice = createSlice({
         (selectedUserAndAmount) => ({
           ...selectedUserAndAmount,
           amount: baseAmount,
+          message: state.baseMsg,
+        })
+      );
+    },
+    baseMsgUpdated: (state: MultisendState, action: PayloadAction<string>) => {
+      const baseMsg = action.payload;
+      state.baseMsg = baseMsg;
+      state.selectedUsersAndAmounts = state.selectedUsersAndAmounts.map(
+        (selectedUserAndAmount) => ({
+          ...selectedUserAndAmount,
+          message: baseMsg,
         })
       );
     },
@@ -64,10 +78,11 @@ export const multisendSlice = createSlice({
       );
 
       if (!userExists) {
-        const { user, amount } = action.payload;
+        const { user, amount, message } = action.payload;
         state.selectedUsersAndAmounts.push({
           user,
           amount: amount || state.baseAmount,
+          message,
         });
       }
     },
@@ -93,6 +108,19 @@ export const multisendSlice = createSlice({
 
       if (updatedUser) {
         updatedUser.amount = action.payload.amount;
+      }
+    },
+    updatedUserMsg(
+      state: MultisendState,
+      action: PayloadAction<UserAndAmount>
+    ) {
+      const updatedUser = state.selectedUsersAndAmounts.find(
+        (userAndAmount) => userAndAmount.user.id === action.payload.user.id
+      );
+
+      if (updatedUser) {
+        state.baseMsg = '';
+        updatedUser.message = action.payload.message;
       }
     },
     clearedLatestTxn(state: MultisendState) {
@@ -133,6 +161,8 @@ export const selectTotalAmountSending = createSelector(
 
 export const selectBaseAmount = (state: RootState) =>
   state.multisend.baseAmount;
+
+export const selectBaseMsg = (state: RootState) => state.multisend.baseMsg;
 
 // Other code such as selectors can use the imported `RootState` type
 export const selectRootLatestTxn = (state: RootState) =>
@@ -176,6 +206,7 @@ export const fetchMultisendFunds = createAsyncThunk(
     const toUserIdAndAmountObjs = toUsersAndAmounts.map((userAndAmount) => ({
       userId: userAndAmount.user.id,
       amount: userAndAmount.amount,
+      message: userAndAmount.message,
     }));
     try {
       const txnResp = await axios.post<{
@@ -238,9 +269,11 @@ export const {
   reset,
   clearedLatestTxn,
   baseAmountUpdated,
+  baseMsgUpdated,
   userAdded,
   userRemoved,
   updatedUserAmount,
+  updatedUserMsg,
   clearedUsers,
 } = multisendSlice.actions;
 

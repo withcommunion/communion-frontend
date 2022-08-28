@@ -7,11 +7,15 @@ import { useAppSelector, useAppDispatch } from '@/reduxHooks';
 import BackToButton from '@/shared_components/backToButton/BackToButton';
 import BasicModal from '@/shared_components/basicModal';
 import AssetAmountInput from '@/pages_components/org/[orgId]/send/sendTokensModal/assetInputs/assetAmountInput';
+import SendMsgInput from '@/pages_components/org/[orgId]/send/sendTokensModal/sendMsgInput/sendMsgInput';
+
 import SelectedOrgMemberCard from './selectedOrgMemberCard/selectedOrgMemberCard';
 import {
   clearedLatestTxn,
   baseAmountUpdated,
+  baseMsgUpdated,
   updatedUserAmount,
+  updatedUserMsg,
   userRemoved,
   clearedUsers,
   selectBaseAmount,
@@ -20,10 +24,13 @@ import {
   selectLatestTxn,
   selectUsersAndAmounts,
   selectTotalAmountSending,
+  selectBaseMsg,
 } from '@/features/multisend/multisendSlice';
 import { selectIsManagerModeActive } from '@/features/organization/organizationSlice';
 import { formatTxnHash, getSnowtraceExplorerUrl } from '@/util/avaxEthersUtil';
 import PrimaryButton from '@/shared_components/buttons/primaryButton';
+import SecondaryButton from '@/shared_components/buttons/secondaryButton';
+import { isProd } from '@/util/envUtil';
 
 interface Props {
   closeModal: () => void;
@@ -51,6 +58,11 @@ const SendTokenTipsModalContainer = ({
   const baseAmountToSendPerUser = useAppSelector((state) =>
     selectBaseAmount(state)
   );
+
+  const baseMsgToToSendForAllUsers = useAppSelector((state) =>
+    selectBaseMsg(state)
+  );
+
   const selectedUsersAndAmounts = useAppSelector((state) =>
     selectUsersAndAmounts(state)
   );
@@ -145,6 +157,18 @@ const SendTokenTipsModalContainer = ({
                       dispatch(baseAmountUpdated(value))
                     }
                   />
+                  {/** TODO: Remove to launch messages */}
+                  {!isProd && (
+                    <div className="mt-12">
+                      <SendMsgInput
+                        isToAll
+                        msg={baseMsgToToSendForAllUsers}
+                        onChange={(value: string) =>
+                          dispatch(baseMsgUpdated(value))
+                        }
+                      />
+                    </div>
+                  )}
                 </div>
               )}
               {!isSendingSameAmount &&
@@ -163,11 +187,28 @@ const SendTokenTipsModalContainer = ({
                         dispatch(
                           updatedUserAmount({
                             user: userAndAmount.user,
+                            message: userAndAmount.message,
                             amount: value,
                           })
                         )
                       }
                     />
+
+                    {/** TODO: Remove to launch messages */}
+                    {!isProd && (
+                      <SendMsgInput
+                        msg={userAndAmount.message || ''}
+                        onChange={(value: string) =>
+                          dispatch(
+                            updatedUserMsg({
+                              user: userAndAmount.user,
+                              amount: userAndAmount.amount,
+                              message: value,
+                            })
+                          )
+                        }
+                      />
+                    )}
                   </ul>
                 ))}
 
@@ -209,7 +250,14 @@ const SendTokenTipsModalContainer = ({
                     <th className="text-14px p-4 text-start font-semibold text-white">
                       Name
                     </th>
-                    <th className="text-14px w-30vw p-4 text-end font-semibold text-white">
+
+                    {/** TODO: Remove to launch messages */}
+                    {!isProd && (
+                      <th className="text-14px p-4 text-end font-semibold text-white">
+                        Message
+                      </th>
+                    )}
+                    <th className="text-14px w-20vw p-4 text-end font-semibold text-white">
                       Tokens
                     </th>
                   </tr>
@@ -224,6 +272,13 @@ const SendTokenTipsModalContainer = ({
                         {userAndAmount.user.first_name}{' '}
                         {userAndAmount.user.last_name}
                       </td>
+
+                      {/** TODO: Remove to launch messages */}
+                      {!isProd && (
+                        <td className="px-4 py-5 text-end text-15px text-primaryGray">
+                          {userAndAmount.message}
+                        </td>
+                      )}
                       <td className="px-4 py-5 text-end text-15px text-primaryGray">
                         {userAndAmount.amount}
                       </td>
@@ -246,6 +301,14 @@ const SendTokenTipsModalContainer = ({
                 </div>
               </div>
               <div className="flex justify-center">
+                <SecondaryButton
+                  text={'Back'}
+                  onClick={() => {
+                    setCurrentStep('input');
+                  }}
+                  size="big"
+                  disabled={Boolean(latestTxnStatus === 'loading')}
+                />
                 <PrimaryButton
                   text={'Send'}
                   onClick={async () => {
@@ -319,6 +382,7 @@ const SendTokenTipsModalContainer = ({
                 onClick={() => {
                   dispatch(clearedUsers());
                   dispatch(baseAmountUpdated(0));
+                  dispatch(baseMsgUpdated(''));
                   closeModal();
                 }}
                 size="big"
