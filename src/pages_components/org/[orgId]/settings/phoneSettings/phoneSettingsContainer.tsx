@@ -45,7 +45,6 @@ const PhoneSettingsContainer = ({ userJwt }: { userJwt: string }) => {
       !phoneNumber || (phoneNumber && isValidPhoneNumber(phoneNumber));
 
     if (isValid && !isLoading) {
-      console.log('fired');
       dispatch(fetchPatchSelf({ phoneNumber, allowSms, jwtToken: userJwt }));
     }
   };
