@@ -4,12 +4,14 @@ import cx from 'classnames';
 interface Props {
   text: string;
   size: 'small' | 'big';
+  type?: 'button' | 'submit' | 'reset';
   disabled?: boolean;
   onClick: () => void;
 }
 
-const SecondaryButton = ({ onClick, text, size, disabled }: Props) => (
+const SecondaryButton = ({ onClick, text, size, disabled, type }: Props) => (
   <button
+    type={type}
     disabled={disabled}
     className={cx(
       { 'w-155px': size === 'small' },
