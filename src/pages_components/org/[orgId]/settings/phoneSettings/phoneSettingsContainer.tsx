@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import cx from 'classnames';
 import Image from 'next/image';
+import { isValidPhoneNumber } from 'react-phone-number-input';
 
 import { useAppSelector, useAppDispatch } from '@/reduxHooks';
 import {
@@ -37,6 +38,17 @@ const PhoneSettingsContainer = ({ userJwt }: { userJwt: string }) => {
   }, [self, dispatch]);
 
   const [isExpanded, setIsExpanded] = useState(false);
+
+  const formSubmit = () => {
+    const isLoading = fetchPatchSelfStatus === 'loading';
+    const isValid =
+      !phoneNumber || (phoneNumber && isValidPhoneNumber(phoneNumber));
+
+    if (isValid && !isLoading) {
+      console.log('fired');
+      dispatch(fetchPatchSelf({ phoneNumber, allowSms, jwtToken: userJwt }));
+    }
+  };
   return (
     <li
       className={cx('my-5 flex w-full flex-col bg-white text-start', {
@@ -81,35 +93,41 @@ const PhoneSettingsContainer = ({ userJwt }: { userJwt: string }) => {
       </div>
       {isExpanded && (
         <div className="px-5">
-          <UpdatePhoneNumberInput
-            phoneNumber={phoneNumber}
-            onChange={(phoneNumber) => {
-              dispatch(phoneNumberUpdated(phoneNumber));
+          <form
+            onSubmit={(event) => {
+              event.preventDefault();
+              formSubmit();
             }}
-          />
-
-          <div>
-            <label>Allow us to send SMS notifications</label>
-            <input
-              className="mx-3"
-              checked={allowSms}
-              onChange={() => dispatch(allowSmsUpdated(!allowSms))}
-              type="checkbox"
+          >
+            <UpdatePhoneNumberInput
+              phoneNumber={phoneNumber}
+              onChange={(phoneNumber) => {
+                dispatch(phoneNumberUpdated(phoneNumber));
+              }}
             />
-          </div>
 
-          <div className="py-5 text-center">
-            <SecondaryButton
-              disabled={fetchPatchSelfStatus === 'loading'}
-              onClick={() =>
-                dispatch(
-                  fetchPatchSelf({ phoneNumber, allowSms, jwtToken: userJwt })
-                )
-              }
-              size="big"
-              text={fetchPatchSelfStatus === 'loading' ? '♻️ Submit' : 'Submit'}
-            />
-          </div>
+            <div>
+              <label>Allow us to send SMS notifications</label>
+              <input
+                className="mx-3"
+                checked={allowSms}
+                onChange={() => dispatch(allowSmsUpdated(!allowSms))}
+                type="checkbox"
+              />
+            </div>
+
+            <div className="py-5 text-center">
+              <SecondaryButton
+                disabled={fetchPatchSelfStatus === 'loading'}
+                type="submit"
+                onClick={() => formSubmit()}
+                size="big"
+                text={
+                  fetchPatchSelfStatus === 'loading' ? '♻️ Submit' : 'Submit'
+                }
+              />
+            </div>
+          </form>
         </div>
       )}
     </li>
