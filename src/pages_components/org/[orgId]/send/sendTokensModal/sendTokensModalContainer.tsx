@@ -7,11 +7,15 @@ import { useAppSelector, useAppDispatch } from '@/reduxHooks';
 import BackToButton from '@/shared_components/backToButton/BackToButton';
 import BasicModal from '@/shared_components/basicModal';
 import AssetAmountInput from '@/pages_components/org/[orgId]/send/sendTokensModal/assetInputs/assetAmountInput';
+import SendMsgInput from '@/pages_components/org/[orgId]/send/sendTokensModal/sendMsgInput/sendMsgInput';
+
 import SelectedOrgMemberCard from './selectedOrgMemberCard/selectedOrgMemberCard';
 import {
   clearedLatestTxn,
   baseAmountUpdated,
+  baseMsgUpdated,
   updatedUserAmount,
+  updatedUserMsg,
   userRemoved,
   clearedUsers,
   selectBaseAmount,
@@ -20,10 +24,12 @@ import {
   selectLatestTxn,
   selectUsersAndAmounts,
   selectTotalAmountSending,
+  selectBaseMsg,
 } from '@/features/multisend/multisendSlice';
 import { selectIsManagerModeActive } from '@/features/organization/organizationSlice';
 import { formatTxnHash, getSnowtraceExplorerUrl } from '@/util/avaxEthersUtil';
 import PrimaryButton from '@/shared_components/buttons/primaryButton';
+import SecondaryButton from '@/shared_components/buttons/secondaryButton';
 
 interface Props {
   closeModal: () => void;
@@ -51,6 +57,11 @@ const SendTokenTipsModalContainer = ({
   const baseAmountToSendPerUser = useAppSelector((state) =>
     selectBaseAmount(state)
   );
+
+  const baseMsgToToSendForAllUsers = useAppSelector((state) =>
+    selectBaseMsg(state)
+  );
+
   const selectedUsersAndAmounts = useAppSelector((state) =>
     selectUsersAndAmounts(state)
   );
@@ -145,6 +156,15 @@ const SendTokenTipsModalContainer = ({
                       dispatch(baseAmountUpdated(value))
                     }
                   />
+                  <div className="mt-12">
+                    <SendMsgInput
+                      isToAll
+                      msg={baseMsgToToSendForAllUsers}
+                      onChange={(value: string) =>
+                        dispatch(baseMsgUpdated(value))
+                      }
+                    />
+                  </div>
                 </div>
               )}
               {!isSendingSameAmount &&
@@ -163,7 +183,20 @@ const SendTokenTipsModalContainer = ({
                         dispatch(
                           updatedUserAmount({
                             user: userAndAmount.user,
+                            message: userAndAmount.message,
                             amount: value,
+                          })
+                        )
+                      }
+                    />
+                    <SendMsgInput
+                      msg={userAndAmount.message || ''}
+                      onChange={(value: string) =>
+                        dispatch(
+                          updatedUserMsg({
+                            user: userAndAmount.user,
+                            amount: userAndAmount.amount,
+                            message: value,
                           })
                         )
                       }
@@ -246,6 +279,14 @@ const SendTokenTipsModalContainer = ({
                 </div>
               </div>
               <div className="flex justify-center">
+                <SecondaryButton
+                  text={'Back'}
+                  onClick={() => {
+                    setCurrentStep('input');
+                  }}
+                  size="big"
+                  disabled={Boolean(latestTxnStatus === 'loading')}
+                />
                 <PrimaryButton
                   text={'Send'}
                   onClick={async () => {
