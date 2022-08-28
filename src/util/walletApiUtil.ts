@@ -30,30 +30,6 @@ export interface UserInTxn {
   last_name: string;
   id: string;
 }
-export interface HistoricalTxn {
-  fromUser: UserInTxn;
-  toUser: UserInTxn;
-  blockNumber: string;
-  timeStamp: string;
-  hash: string;
-  nonce: string;
-  blockHash: string;
-  from: string;
-  to: string;
-  contractAddress: string;
-  value: string;
-  tokenName: string;
-  tokenSymbol: string;
-  tokenDecimal: string;
-  transactionIndex: string;
-  gas: string;
-  gasPrice: string;
-  gasUsed: string;
-  cumulativeGasUsed: string;
-  input: string;
-  confirmations: string;
-}
-
 export interface CommunionTx {
   timeStampSeconds: number;
   tokenName: string;
@@ -63,6 +39,7 @@ export interface CommunionTx {
   txHashUrl: string;
   txStatus: 'succeeded' | 'failed';
   txType: 'received' | 'sent' | 'redemption';
+  message?: string;
   fromUser: {
     id: string;
     walletAddressC: string;
