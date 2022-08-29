@@ -30,7 +30,6 @@ import { selectIsManagerModeActive } from '@/features/organization/organizationS
 import { formatTxnHash, getSnowtraceExplorerUrl } from '@/util/avaxEthersUtil';
 import PrimaryButton from '@/shared_components/buttons/primaryButton';
 import SecondaryButton from '@/shared_components/buttons/secondaryButton';
-import { isProd } from '@/util/envUtil';
 
 interface Props {
   closeModal: () => void;
