@@ -157,18 +157,15 @@ const SendTokenTipsModalContainer = ({
                       dispatch(baseAmountUpdated(value))
                     }
                   />
-                  {/** TODO: Remove to launch messages */}
-                  {!isProd && (
-                    <div className="mt-12">
-                      <SendMsgInput
-                        isToAll
-                        msg={baseMsgToToSendForAllUsers}
-                        onChange={(value: string) =>
-                          dispatch(baseMsgUpdated(value))
-                        }
-                      />
-                    </div>
-                  )}
+                  <div className="mt-12">
+                    <SendMsgInput
+                      isToAll
+                      msg={baseMsgToToSendForAllUsers}
+                      onChange={(value: string) =>
+                        dispatch(baseMsgUpdated(value))
+                      }
+                    />
+                  </div>
                 </div>
               )}
               {!isSendingSameAmount &&
@@ -194,21 +191,18 @@ const SendTokenTipsModalContainer = ({
                       }
                     />
 
-                    {/** TODO: Remove to launch messages */}
-                    {!isProd && (
-                      <SendMsgInput
-                        msg={userAndAmount.message || ''}
-                        onChange={(value: string) =>
-                          dispatch(
-                            updatedUserMsg({
-                              user: userAndAmount.user,
-                              amount: userAndAmount.amount,
-                              message: value,
-                            })
-                          )
-                        }
-                      />
-                    )}
+                    <SendMsgInput
+                      msg={userAndAmount.message || ''}
+                      onChange={(value: string) =>
+                        dispatch(
+                          updatedUserMsg({
+                            user: userAndAmount.user,
+                            amount: userAndAmount.amount,
+                            message: value,
+                          })
+                        )
+                      }
+                    />
                   </ul>
                 ))}
 
@@ -251,12 +245,9 @@ const SendTokenTipsModalContainer = ({
                       Name
                     </th>
 
-                    {/** TODO: Remove to launch messages */}
-                    {!isProd && (
-                      <th className="text-14px p-4 text-end font-semibold text-white">
-                        Message
-                      </th>
-                    )}
+                    <th className="text-14px p-4 text-end font-semibold text-white">
+                      Message
+                    </th>
                     <th className="text-14px w-20vw p-4 text-end font-semibold text-white">
                       Tokens
                     </th>
@@ -273,12 +264,9 @@ const SendTokenTipsModalContainer = ({
                         {userAndAmount.user.last_name}
                       </td>
 
-                      {/** TODO: Remove to launch messages */}
-                      {!isProd && (
-                        <td className="px-4 py-5 text-end text-15px text-primaryGray">
-                          {userAndAmount.message}
-                        </td>
-                      )}
+                      <td className="px-4 py-5 text-end text-15px text-primaryGray">
+                        {userAndAmount.message}
+                      </td>
                       <td className="px-4 py-5 text-end text-15px text-primaryGray">
                         {userAndAmount.amount}
                       </td>
