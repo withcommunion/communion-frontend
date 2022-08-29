@@ -82,7 +82,7 @@ export const multisendSlice = createSlice({
         state.selectedUsersAndAmounts.push({
           user,
           amount: amount || state.baseAmount,
-          message,
+          message: message || state.baseMsg,
         });
       }
     },
