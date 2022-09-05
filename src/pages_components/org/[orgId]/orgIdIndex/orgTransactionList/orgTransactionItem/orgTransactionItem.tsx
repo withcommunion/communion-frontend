@@ -15,6 +15,7 @@ interface Props {
 }
 const OrgTransactionHistoryItem = ({ transaction, orgId }: Props) => {
   const {
+    modifier,
     fromUser,
     timeStampSeconds,
     tokenSymbol,
@@ -71,6 +72,10 @@ const OrgTransactionHistoryItem = ({ transaction, orgId }: Props) => {
               } `}
             {txType === 'sent' &&
               `Sent ${value} ${tokenSymbol} to ${toUser.firstName} `}
+          </span>
+
+          <span className="-ml-6 text-center md:ml-2">
+            {modifier === 'bankHeist' && '🏦 Bank Heist!'}
           </span>
           {!isExpanded && transaction.message && (
             <span className="ml-2 text-13px font-light text-secondaryPurple">
