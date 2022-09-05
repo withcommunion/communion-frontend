@@ -31,9 +31,13 @@ const ShortcutActionsList = ({
   isBankHeistAvailable,
 }: Props) => {
   const dispatch = useAppDispatch();
+  const isOrgParticipatingInBankHeist =
+    orgId === 'jacks-pizza-pittsfield' || orgId === 'communion-test-org';
+
+  const showBankHeist = isBankHeistAvailable && isOrgParticipatingInBankHeist;
   return (
     <ul>
-      {isBankHeistAvailable && (
+      {showBankHeist && (
         <ShortcutAction
           orgId={orgId}
           key={4}
