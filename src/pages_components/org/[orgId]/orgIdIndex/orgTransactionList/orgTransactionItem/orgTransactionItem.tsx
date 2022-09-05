@@ -74,7 +74,7 @@ const OrgTransactionHistoryItem = ({ transaction, orgId }: Props) => {
               `Sent ${value} ${tokenSymbol} to ${toUser.firstName} `}
           </span>
 
-          <span className="-ml-6 text-center md:ml-2">
+          <span className="text-center md:ml-2">
             {modifier === 'bankHeist' && '🏦 Bank Heist!'}
           </span>
           {!isExpanded && transaction.message && (
