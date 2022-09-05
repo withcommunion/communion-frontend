@@ -53,6 +53,7 @@ export interface CommunionTx {
     firstName: string;
     lastName: string;
   };
+  modifier?: 'bankHeist';
 }
 
 export interface OrgAction {
