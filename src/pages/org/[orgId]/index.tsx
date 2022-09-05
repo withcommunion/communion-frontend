@@ -10,6 +10,7 @@ import { useAppSelector } from '@/reduxHooks';
 import // selectHistoricalTxnsStatus,
 '@/features/transactions/transactionsSlice';
 import { selectOrg } from '@/features/organization/organizationSlice';
+import { selectSelf } from '@/features/selfSlice';
 
 import { useFetchSelf, useFetchOrg } from '@/shared_hooks/sharedHooks';
 
@@ -31,6 +32,7 @@ const Home = ({ userJwt }: Props) => {
   const { orgId } = router.query;
 
   const org = useAppSelector((state) => selectOrg(state));
+  const self = useAppSelector((state) => selectSelf(state));
 
   useFetchSelf(userJwt);
   useFetchOrg(userJwt);
@@ -47,6 +49,7 @@ const Home = ({ userJwt }: Props) => {
             <OrgTokenBalanceContainer />
             <div className={cx('my-6', { 'h-35vh': !org.actions.length })}>
               <ShortcutActionsList
+                isBankHeistAvailable={Boolean(self?.isBankHeistAvailable)}
                 shortcutActions={org.actions}
                 orgId={(orgId || '').toString()}
               />
