@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import type { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import { Amplify } from 'aws-amplify';
@@ -6,11 +7,11 @@ import cx from 'classnames';
 import { AMPLIFY_CONFIG } from '@/util/cognitoAuthUtil';
 import { getUserJwtTokenOnServer } from '@/util/cognitoAuthUtil';
 
-import { useAppSelector } from '@/reduxHooks';
+import { useAppSelector, useAppDispatch } from '@/reduxHooks';
 import // selectHistoricalTxnsStatus,
 '@/features/transactions/transactionsSlice';
 import { selectOrg } from '@/features/organization/organizationSlice';
-import { selectSelf } from '@/features/selfSlice';
+import { selectSelf, fetchSelf } from '@/features/selfSlice';
 
 import { useFetchSelf, useFetchOrg } from '@/shared_hooks/sharedHooks';
 
@@ -29,6 +30,7 @@ interface Props {
 }
 const Home = ({ userJwt }: Props) => {
   const router = useRouter();
+  const dispatch = useAppDispatch();
   const { orgId } = router.query;
 
   const org = useAppSelector((state) => selectOrg(state));
@@ -36,6 +38,11 @@ const Home = ({ userJwt }: Props) => {
 
   useFetchSelf(userJwt);
   useFetchOrg(userJwt);
+
+  useEffect(() => {
+    dispatch(fetchSelf(userJwt));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <>
