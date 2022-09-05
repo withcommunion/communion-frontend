@@ -28,7 +28,7 @@ const ShortcutAction = ({ action, imageUrl, orgId, onClick }: Props) => {
             'my-2.5 flex items-center justify-between rounded-xl bg-white px-4 text-primaryGray',
             { 'border border-primaryOrange': isManagerModeActive },
             {
-              'drop-shadow-md drop-shadow-[0_4px_3px_rgba(0,203,0,0.25)]':
+              'animate-pulse drop-shadow-md drop-shadow-[0_4px_3px_rgba(0,203,0,0.25)]':
                 isBankHeist,
             }
           )}
