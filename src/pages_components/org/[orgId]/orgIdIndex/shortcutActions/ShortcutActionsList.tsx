@@ -34,7 +34,11 @@ const ShortcutActionsList = ({
   const isOrgParticipatingInBankHeist =
     orgId === 'jacks-pizza-pittsfield' || orgId === 'communion-test-org';
 
-  const showBankHeist = isBankHeistAvailable && isOrgParticipatingInBankHeist;
+  const showBankHeist = Boolean(
+    isBankHeistAvailable &&
+      isOrgParticipatingInBankHeist &&
+      shortcutActions.length
+  );
   return (
     <ul>
       {showBankHeist && (
