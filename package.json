@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@aws-amplify/ui-react": "^3.5.0",
-    "@headlessui/react": "^1.6.4",
+    "@headlessui/react": "^1.7.0",
     "@heroicons/react": "^1.0.6",
     "@reduxjs/toolkit": "^1.8.4",
     "autoprefixer": "^10.4.8",
