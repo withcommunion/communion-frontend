@@ -19,6 +19,8 @@ import {
   fetchMultisendFunds,
   clearedUsers,
   clearedLatestTxn,
+  baseMsgUpdated,
+  baseAmountUpdated,
 } from '@/features/multisend/multisendSlice';
 
 import { useFetchSelf, useFetchOrg } from '@/shared_hooks/sharedHooks';
@@ -72,6 +74,8 @@ const OrgIdIndex = ({ userJwt }: Props) => {
       if (latestTxnStatus === 'succeeded') {
         dispatch(clearedUsers());
         dispatch(clearedLatestTxn());
+        dispatch(baseMsgUpdated(''));
+        dispatch(baseAmountUpdated(0));
       }
     };
   }, [latestTxnStatus, dispatch]);
