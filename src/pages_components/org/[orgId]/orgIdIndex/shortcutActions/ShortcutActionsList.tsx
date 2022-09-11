@@ -6,7 +6,6 @@ import { baseAmountUpdated } from '@/features/multisend/multisendSlice';
 interface Props {
   shortcutActions: OrgAction[];
   orgId: string;
-  isBankHeistAvailable: boolean;
 }
 
 /**
@@ -18,40 +17,11 @@ const images = [
   '/images/home/tokenTips/Politeness.png',
 ];
 
-const bankHeistImagePath = '/images/home/tokenTips/moneyStacksTokenTip.png';
-const bankHeistAction: OrgAction = {
-  name: 'Bank Heist',
-  amount: '5',
-  allowed_roles: ['worker'],
-};
-
-const ShortcutActionsList = ({
-  shortcutActions,
-  orgId,
-  isBankHeistAvailable,
-}: Props) => {
+const ShortcutActionsList = ({ shortcutActions, orgId }: Props) => {
   const dispatch = useAppDispatch();
-  const isOrgParticipatingInBankHeist =
-    orgId === 'jacks-pizza-pittsfield' || orgId === 'communion-test-org';
 
-  const showBankHeist = Boolean(
-    isBankHeistAvailable &&
-      isOrgParticipatingInBankHeist &&
-      shortcutActions.length
-  );
   return (
     <ul>
-      {showBankHeist && (
-        <ShortcutAction
-          orgId={orgId}
-          key={4}
-          action={bankHeistAction}
-          imageUrl={bankHeistImagePath}
-          onClick={() => {
-            dispatch(baseAmountUpdated(parseInt(bankHeistAction.amount)));
-          }}
-        />
-      )}
       {shortcutActions.map((action, num: number) => (
         <ShortcutAction
           orgId={orgId}
