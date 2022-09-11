@@ -15,6 +15,7 @@ import {
 import { fetchSelfHistoricalTxns } from '@/features/transactions/transactionsSlice';
 import {
   selectUsersAndAmounts,
+  selectLatestTxnStatus,
   fetchMultisendFunds,
   clearedUsers,
   clearedLatestTxn,
@@ -49,6 +50,9 @@ const OrgIdIndex = ({ userJwt }: Props) => {
   const selectedUsersAndAmounts = useAppSelector((state) =>
     selectUsersAndAmounts(state)
   );
+  const latestTxnStatus = useAppSelector((state) =>
+    selectLatestTxnStatus(state)
+  );
 
   const [showModal, setShowModal] = useState<boolean>(false);
   const isMemberSelected = selectedUsersAndAmounts.length > 0;
@@ -62,6 +66,15 @@ const OrgIdIndex = ({ userJwt }: Props) => {
       dispatch(clearedLatestTxn());
     }
   }, [showModal, dispatch]);
+
+  useEffect(() => {
+    return function cleanup() {
+      if (latestTxnStatus === 'succeeded') {
+        dispatch(clearedUsers());
+        dispatch(clearedLatestTxn());
+      }
+    };
+  }, [latestTxnStatus, dispatch]);
 
   return (
     <>
