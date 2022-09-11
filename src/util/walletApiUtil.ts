@@ -23,7 +23,6 @@ export interface Self extends User {
   walletPrivateKeyWithLeadingHex: string;
   phone_number: string;
   allow_sms: boolean;
-  isBankHeistAvailable: boolean;
 }
 
 export interface UserInTxn {

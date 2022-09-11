@@ -19,18 +19,13 @@ const ShortcutAction = ({ action, imageUrl, orgId, onClick }: Props) => {
     selectIsManagerModeActive(state)
   );
 
-  const isBankHeist = name === 'Bank Heist';
   return (
     <li onClick={onClick}>
       <Link href={`/org/${orgId}/send`}>
         <a
           className={cx(
             'my-2.5 flex items-center justify-between rounded-xl bg-white px-4 text-primaryGray',
-            { 'border border-primaryOrange': isManagerModeActive },
-            {
-              'animate-pulse drop-shadow-md drop-shadow-[0_4px_3px_rgba(0,203,0,0.25)]':
-                isBankHeist,
-            }
+            { 'border border-primaryOrange': isManagerModeActive }
           )}
         >
           <div className="flex items-center">
