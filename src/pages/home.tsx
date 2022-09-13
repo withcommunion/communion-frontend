@@ -145,6 +145,13 @@ const HomePage = ({ userJwt }: { userJwt: string }) => {
               <h2 className="text-center text-2xl">
                 Joining the organization!
               </h2>
+              {orgId === 'communion-test-org' && (
+                <div className="text-md mt-5 text-center">
+                  <p>🙏 Thanks for joining our test org!</p>
+                  <p>⏱ This will take longer than usual.</p>
+                  <p>🌱 We are seeding you with CTC...</p>
+                </div>
+              )}
               <Footer />
             </div>
           )}
