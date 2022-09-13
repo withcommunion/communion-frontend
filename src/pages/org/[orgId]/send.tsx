@@ -11,6 +11,8 @@ import { selectSelf } from '@/features/selfSlice';
 import {
   fetchOrgTokenBalance,
   selectOrg,
+  // TODO: Uncomment for manager mode show nft button
+  // selectIsManagerModeActive
 } from '@/features/organization/organizationSlice';
 import { fetchSelfHistoricalTxns } from '@/features/transactions/transactionsSlice';
 import {
@@ -48,6 +50,8 @@ const OrgIdIndex = ({ userJwt }: Props) => {
   const self = useAppSelector((state) => selectSelf(state));
 
   const org = useAppSelector((state) => selectOrg(state));
+  // TODO: Uncomment for manager mode show nft button
+  // const isManagerModeActive = useAppSelector((state) => selectIsManagerModeActive(state));
 
   const selectedUsersAndAmounts = useAppSelector((state) =>
     selectUsersAndAmounts(state)
