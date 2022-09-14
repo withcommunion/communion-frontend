@@ -7,11 +7,11 @@ import {
   selectBaseAmount,
 } from '@/features/multisend/multisendSlice';
 import OrgMemberCard from './sendMemberList/orgMemberCard';
-import { selectOrgUsers } from '@/features/organization/organizationSlice';
+import { selectOrgUsersSortedByName } from '@/features/organization/organizationSlice';
 
 const SendMemberListContainer = () => {
   const dispatch = useAppDispatch();
-  const orgUsers = useAppSelector((state) => selectOrgUsers(state));
+  const orgUsers = useAppSelector((state) => selectOrgUsersSortedByName(state));
   const selectedUsersAndAmounts = useAppSelector((state) =>
     selectUsersAndAmounts(state)
   );
