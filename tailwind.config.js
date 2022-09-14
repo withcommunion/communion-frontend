@@ -65,6 +65,7 @@ module.exports = {
         '30px': '30px',
         '5px': '5px',
         '155px': '155px',
+        '255px': '255px',
         '295px': '295px',
         '275px': '275px',
         '18px': '18px',
@@ -74,7 +75,8 @@ module.exports = {
         '10px': '10px',
         '20%':'20%',
         '230px':'230px',
-        '98px':'98px'
+        '98px':'98px',
+        '100px':'100px'
       },
       colors: {
         primaryGray: '#606279',
@@ -87,6 +89,7 @@ module.exports = {
         fifthLightGray: '#AAADC6',
         sixthLightGray: '#CACCE1',
         fifthGray: '#989BB2',
+
         primaryDarkGray: '#767892',
         fourthLightGray: '#EAEBFA',
         primaryLightGray: '#EDEDF3',
@@ -105,6 +108,7 @@ module.exports = {
         primaryBeige: '#FFF1E1',
         secondaryBeige: '#FFDFBA',
         thirdBeige: '#FFE4C5',
+        seventhBeige: '#FFF2DC',
         eleventhGray: '#8688A8',
         eighthGray: '#B8BAD2',
         eighthLightGray: '#EEEEEE',
@@ -113,9 +117,11 @@ module.exports = {
         fifthPurple: '#CAA9FF',
         sixthPurple: '#D3BEFF',
         ninethLightGray: 'rgba(199, 199, 204, 0.64)',
-        twelfthGray: '#A7A9CC'
+        twelfthGray: '#A7A9CC',
+        twelfthLightGray:'#E7E8EF'
       },
       fontSize: {
+        '10px':'10px',
         '19px': '19px',
         '16px': '16px',
         '17px': '17px',

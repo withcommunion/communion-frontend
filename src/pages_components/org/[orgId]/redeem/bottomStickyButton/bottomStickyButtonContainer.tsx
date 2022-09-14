@@ -10,7 +10,7 @@ const BottomStickyButtonContainer = ({
   onPrimaryClick,
 }: Props) => {
   return (
-    <div className="fixed left-0 bottom-14 w-full ">
+    <div className="fixed left-0 bottom-14 z-30 w-full">
       <div className="flex items-center justify-center bg-white p-5">
         <SecondaryButton onClick={onCancelClick} text={'Cancel'} size="small" />
         <PrimarySmallButton

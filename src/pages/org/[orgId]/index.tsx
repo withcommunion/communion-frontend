@@ -32,11 +32,13 @@ const nfts = [
         name: 'string',
         description: 'string',
         image: '/images/nftTrophyDisplay/nft.png',
-        attributes: {
-          display_type: 1,
-          trait_type: 'string',
-          value: 1,
-        },
+        attributes: [
+          {
+            display_type: 1,
+            trait_type: 'string',
+            value: 1,
+          },
+        ],
       },
     },
   },
@@ -47,11 +49,13 @@ const nfts = [
         name: 'string',
         description: 'string',
         image: '/images/nftTrophyDisplay/nft.png',
-        attributes: {
-          display_type: 1,
-          trait_type: 'string',
-          value: 1,
-        },
+        attributes: [
+          {
+            display_type: 1,
+            trait_type: 'string',
+            value: 1,
+          },
+        ],
       },
     },
   },
@@ -62,11 +66,13 @@ const nfts = [
         name: 'string',
         description: 'string',
         image: '/images/nftTrophyDisplay/nft.png',
-        attributes: {
-          display_type: 1,
-          trait_type: 'string',
-          value: 1,
-        },
+        attributes: [
+          {
+            display_type: 1,
+            trait_type: 'string',
+            value: 1,
+          },
+        ],
       },
     },
   },

@@ -1,6 +1,10 @@
 import Image from 'next/image';
 
-const SendPageHeader = () => {
+interface Props {
+  onClick: () => void;
+}
+
+const SendPageHeader = ({ onClick }: Props) => {
   return (
     <div className="flex justify-between py-5">
       <div className="flex text-center">
@@ -16,9 +20,7 @@ const SendPageHeader = () => {
       </div>
       <button
         className="rounded border-2 border-eighthOrange px-14px py-1 text-sm font-medium text-eighthOrange"
-        onClick={() => {
-          console.log('hi');
-        }}
+        onClick={onClick}
       >
         Send NFTs
       </button>

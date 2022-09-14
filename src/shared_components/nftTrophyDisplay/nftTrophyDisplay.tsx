@@ -1,6 +1,6 @@
 import Image from 'next/image';
 
-interface CommunionNft {
+export interface CommunionNft {
   erc721Meta: {
     title: string;
     properties: {
@@ -11,7 +11,7 @@ interface CommunionNft {
         display_type: number;
         trait_type: string;
         value: number;
-      };
+      }[];
     };
   };
 }

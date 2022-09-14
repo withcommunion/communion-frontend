@@ -35,6 +35,7 @@ import {
   SendTokenTipsModal,
   BottomStickyButton,
 } from '@/pages_components/org/[orgId]/sendComponents';
+import SendNft from '@/pages_components/org/[orgId]/send/nft/sendNft';
 
 // https://docs.amplify.aws/lib/client-configuration/configuring-amplify-categories/q/platform/js/#general-configuration
 Amplify.configure({ ...AMPLIFY_CONFIG, ssr: true });
@@ -61,6 +62,7 @@ const OrgIdIndex = ({ userJwt }: Props) => {
   );
 
   const [showModal, setShowModal] = useState<boolean>(false);
+  const [showModalSendNFTs, setShowModalSendNFTs] = useState<boolean>(false);
   const isMemberSelected = selectedUsersAndAmounts.length > 0;
   const showBottomStickyButton = isMemberSelected && !showModal;
 
@@ -92,15 +94,17 @@ const OrgIdIndex = ({ userJwt }: Props) => {
       />
       <div className="h-full min-h-100vh bg-secondaryLightGray pb-6">
         <div className="container my-0 mx-auto mb-10 w-full px-6 md:max-w-50vw">
-          {!showModal && (
+          {!showModal && !showModalSendNFTs && (
             <>
               <OrgTokenBalanceContainer />
-              <SendPageHeader />
+              <SendPageHeader
+                onClick={() => setShowModalSendNFTs(!showModalSendNFTs)}
+              />
               <SendMemberListContainer />
             </>
           )}
-
-          {showModal && (
+          {!showModal && showModalSendNFTs && <SendNft selectedNft={null} />}
+          {showModal && !showModalSendNFTs && (
             <SendTokenTipsModal
               closeModal={() => setShowModal(false)}
               tokenSymbol={org.avax_contract.token_symbol}
