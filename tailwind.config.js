@@ -72,6 +72,7 @@ module.exports = {
         13: '3.25rem',
         18: '4.5rem',
         '10px': '10px',
+        '30%':'30%'
       },
       colors: {
         primaryGray: '#606279',
@@ -109,6 +110,7 @@ module.exports = {
         fifthPurple: '#CAA9FF',
         sixthPurple: '#D3BEFF',
         ninethLightGray: 'rgba(199, 199, 204, 0.64)',
+        twelthGray: '#A7A9CC'
       },
       fontSize: {
         '19px': '19px',
@@ -125,6 +127,7 @@ module.exports = {
         menuShadow: '0px 37px 75px 0px rgba(0,0,0,0.59)',
         primaryButtonShadow: '0px 4px 16px #FFDA93',
         primaryModalShadow: '0px 3px 9px rgba(124, 123, 143, 0.25)',
+        nftTrophyShadow: '0px 2.98662px 4.9777px rgba(59, 65, 89, 0.25)'
       },
       borderRadius: {
         '23px': '23px',
