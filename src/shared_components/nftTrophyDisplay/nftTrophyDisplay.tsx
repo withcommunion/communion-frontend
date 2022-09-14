@@ -62,7 +62,7 @@ export default function NftTrophyDisplay({
           <Image
             width="100%"
             height="100%"
-            src={'/images/nftTrophyDisplay/clock.png'}
+            src={'/images/nftTrophyDisplay/Clock.png'}
             alt="nftTrophy image"
           />
         )}
@@ -80,7 +80,7 @@ export default function NftTrophyDisplay({
             <Image
               width="85%"
               height="75%"
-              src={'/images/nftTrophyDisplay/Airplane1.png'}
+              src={'/images/nftTrophyDisplay/Airplane.png'}
               alt="nftTrophy image"
             />
           </div>
