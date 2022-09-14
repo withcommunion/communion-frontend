@@ -153,7 +153,7 @@ const availableNfts: CommunionNft[] = [
   },
 ];
 
-const SendNftContainer = () => {
+const SelectNftContainer = () => {
   useEffect(() => {
     setSelectedItem(availableNfts[0]);
   }, []);
@@ -197,4 +197,4 @@ const SendNftContainer = () => {
   );
 };
 
-export default SendNftContainer;
+export default SelectNftContainer;
