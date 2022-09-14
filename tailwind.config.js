@@ -72,7 +72,8 @@ module.exports = {
         13: '3.25rem',
         18: '4.5rem',
         '10px': '10px',
-        '30%':'30%'
+        '20%':'20%',
+        '230px':'230px'
       },
       colors: {
         primaryGray: '#606279',
@@ -110,7 +111,7 @@ module.exports = {
         fifthPurple: '#CAA9FF',
         sixthPurple: '#D3BEFF',
         ninethLightGray: 'rgba(199, 199, 204, 0.64)',
-        twelthGray: '#A7A9CC'
+        twelfthGray: '#A7A9CC'
       },
       fontSize: {
         '19px': '19px',

@@ -19,13 +19,57 @@ import {
   OrgTransactionHistoryList,
   ShortcutActionsList,
 } from '@/pages_components/org/[orgId]/orgIdIndexComponents';
+import NftTrophyDisplay from "@/shared_components/nftTrophyDisplay/nftTrophyDisplay";
 
 // https://docs.amplify.aws/lib/client-configuration/configuring-amplify-categories/q/platform/js/#general-configuration
 Amplify.configure({ ...AMPLIFY_CONFIG, ssr: true });
 
+const nfts = [
+  {erc721Meta: {
+  title: "string",
+      properties: {
+    name: "string",
+        description: "string",
+        image: "/images/nftTrophyDisplay/nft.png",
+        attributes: {
+      display_type: 1,
+          trait_type: "string",
+          value: 1
+    }
+  }
+}},
+  {erc721Meta: {
+      title: "string",
+      properties: {
+        name: "string",
+        description: "string",
+        image: '/images/nftTrophyDisplay/nft.png',
+        attributes: {
+          display_type: 1,
+          trait_type: "string",
+          value: 1
+        }
+      }
+    }},
+  {erc721Meta: {
+      title: "string",
+      properties: {
+        name: "string",
+        description: "string",
+        image: "/images/nftTrophyDisplay/nft.png",
+        attributes: {
+          display_type: 1,
+          trait_type: "string",
+          value: 1
+        }
+      }
+    }},
+]
+
 interface Props {
   userJwt: string;
 }
+
 const Home = ({ userJwt }: Props) => {
   const router = useRouter();
   const { orgId } = router.query;
@@ -45,6 +89,15 @@ const Home = ({ userJwt }: Props) => {
         <div className="min-h-100vh bg-secondaryLightGray pb-2 ">
           <div className="container my-0 mx-auto w-full px-6 md:max-w-50vw">
             <OrgTokenBalanceContainer />
+            <div className='bg-primaryLightGray pt-14px p-4 rounded-md mt-10px mb-4 flex flex-col'>
+              <div className='mb-2'>
+                <span className='text-twelfthGray'>Your NFTs</span>
+                <span className='text-primaryGray text-xs ml-1.5'>({nfts ? `You have ${nfts.length} NFT` : 'You don’t have any NFTs'})</span>
+              </div>
+              <div className='w-230px self-center'>
+              <NftTrophyDisplay nfts={nfts} showcaseNft={null}/>
+              </div>
+            </div>
             <div className={cx('my-6', { 'h-35vh': !org.actions.length })}>
               <ShortcutActionsList
                 shortcutActions={org.actions}
