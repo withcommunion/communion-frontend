@@ -62,7 +62,7 @@ export default function NftTrophyDisplay({
           <Image
             width="100%"
             height="100%"
-            src={'/images/nftTrophyDisplay/Clock.png'}
+            src={'/images/nftTrophyDisplay/clock.png'}
             alt="nftTrophy image"
           />
         )}
