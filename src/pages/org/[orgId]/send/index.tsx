@@ -11,8 +11,7 @@ import { selectSelf } from '@/features/selfSlice';
 import {
   fetchOrgTokenBalance,
   selectOrg,
-  // TODO: Uncomment for manager mode show nft button
-  // selectIsManagerModeActive
+  selectIsManagerModeActive,
 } from '@/features/organization/organizationSlice';
 import { fetchSelfHistoricalTxns } from '@/features/transactions/transactionsSlice';
 import {
@@ -35,7 +34,6 @@ import {
   SendTokenTipsModal,
   BottomStickyButton,
 } from '@/pages_components/org/[orgId]/sendComponents';
-import SendNft from '@/pages_components/org/[orgId]/send/nft/sendNft';
 
 // https://docs.amplify.aws/lib/client-configuration/configuring-amplify-categories/q/platform/js/#general-configuration
 Amplify.configure({ ...AMPLIFY_CONFIG, ssr: true });
@@ -51,8 +49,9 @@ const OrgIdIndex = ({ userJwt }: Props) => {
   const self = useAppSelector((state) => selectSelf(state));
 
   const org = useAppSelector((state) => selectOrg(state));
-  // TODO: Uncomment for manager mode show nft button
-  // const isManagerModeActive = useAppSelector((state) => selectIsManagerModeActive(state));
+  const isManagerModeActive = useAppSelector((state) =>
+    selectIsManagerModeActive(state)
+  );
 
   const selectedUsersAndAmounts = useAppSelector((state) =>
     selectUsersAndAmounts(state)
@@ -62,7 +61,6 @@ const OrgIdIndex = ({ userJwt }: Props) => {
   );
 
   const [showModal, setShowModal] = useState<boolean>(false);
-  const [showModalSendNFTs, setShowModalSendNFTs] = useState<boolean>(false);
   const isMemberSelected = selectedUsersAndAmounts.length > 0;
   const showBottomStickyButton = isMemberSelected && !showModal;
 
@@ -94,17 +92,17 @@ const OrgIdIndex = ({ userJwt }: Props) => {
       />
       <div className="h-full min-h-100vh bg-secondaryLightGray pb-6">
         <div className="container my-0 mx-auto mb-10 w-full px-6 md:max-w-50vw">
-          {!showModal && !showModalSendNFTs && (
+          {!showModal && (
             <>
               <OrgTokenBalanceContainer />
               <SendPageHeader
-                onClick={() => setShowModalSendNFTs(!showModalSendNFTs)}
+                activeOrgId={(orgId || '').toString()}
+                isManagerModeActive={isManagerModeActive}
               />
               <SendMemberListContainer />
             </>
           )}
-          {!showModal && showModalSendNFTs && <SendNft selectedNft={null} />}
-          {showModal && !showModalSendNFTs && (
+          {showModal && (
             <SendTokenTipsModal
               closeModal={() => setShowModal(false)}
               tokenSymbol={org.avax_contract.token_symbol}
