@@ -112,8 +112,8 @@ const Home = ({ userJwt }: Props) => {
                   )
                 </span>
               </div>
-              <div className="w-230px self-center">
-                <NftTrophyDisplay nfts={nfts} showcaseNft={null} />
+              <div className="self-center">
+                <NftTrophyDisplay nfts={nfts.slice(0, 1)} showcaseNft={null} />
               </div>
             </div>
             <div className={cx('my-6', { 'h-35vh': !org.actions.length })}>
