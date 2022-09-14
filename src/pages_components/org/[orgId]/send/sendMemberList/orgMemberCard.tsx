@@ -1,5 +1,7 @@
 import { User } from '@/util/walletApiUtil';
 import Image from 'next/image';
+import NftTrophyDisplay from '@/shared_components/nftTrophyDisplay/nftTrophyDisplay';
+import { isNftFeatureEnabled } from '@/util/envUtil';
 
 interface Props {
   userInOrg: User;
@@ -14,8 +16,8 @@ const OrgMemberCard = ({ userInOrg, toggleChecked, isChecked }: Props) => {
     <li
       className={
         isChecked
-          ? 'my-1 flex h-16 items-center justify-between rounded border-4 border-primaryBeige bg-white'
-          : 'my-1 flex h-16 items-center justify-between rounded bg-white'
+          ? 'my-1 flex h-16 items-center justify-between gap-4 rounded border-4 border-primaryBeige bg-white'
+          : 'my-1 flex h-16 items-center justify-between gap-4 rounded bg-white'
       }
       onClick={toggleChecked}
     >
@@ -34,15 +36,21 @@ const OrgMemberCard = ({ userInOrg, toggleChecked, isChecked }: Props) => {
             alt="user avatar"
           />
         </span>
-        <span className="text-15px text-primaryGray">
+        <span className="ml-1 text-15px text-primaryGray">
           {first_name} {last_name}
         </span>
       </div>
-      <input
-        type="checkbox"
-        checked={isChecked}
-        onChange={() => undefined}
-        className={`${isChecked ? 'mx-4' : 'mx-5'} relative
+      <div className="flex items-center">
+        {isNftFeatureEnabled && (
+          <div className="w-98px">
+            <NftTrophyDisplay nfts={[]} showcaseNft={null} />
+          </div>
+        )}
+        <input
+          type="checkbox"
+          checked={isChecked}
+          onChange={() => undefined}
+          className={`${isChecked ? 'mr-4 ml-5' : 'mx-5'} relative
           inline-flex
           h-4
           w-4
@@ -59,7 +67,8 @@ const OrgMemberCard = ({ userInOrg, toggleChecked, isChecked }: Props) => {
           checked:after:rounded-md
           checked:after:border-b-[3px] checked:after:border-r-[3px]
           checked:after:border-primaryPurple`}
-      />
+        />
+      </div>
     </li>
   );
 };
