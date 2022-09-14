@@ -3,3 +3,5 @@ export const isDev = Boolean(process.env.NEXT_PUBLIC_VERCEL_STAGE === 'dev');
 export const isLocal = Boolean(
   process.env.NEXT_PUBLIC_VERCEL_STAGE === 'local'
 );
+
+export const isNftFeatureEnabled = Boolean(isDev || isLocal);

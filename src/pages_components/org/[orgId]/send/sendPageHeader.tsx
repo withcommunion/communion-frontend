@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import { isNftFeatureEnabled } from '@/util/envUtil';
 
 interface Props {
   activeOrgId: string;
@@ -20,7 +21,7 @@ const SendPageHeader = ({ activeOrgId, isManagerModeActive }: Props) => {
           Send Token Tips
         </h2>
       </div>
-      {isManagerModeActive && (
+      {isNftFeatureEnabled && isManagerModeActive && (
         <button className="rounded border-2 border-eighthOrange px-14px py-1 text-sm font-medium text-eighthOrange">
           <Link href={`/org/${activeOrgId}/send/nft`}>Send NFTs</Link>
         </button>
