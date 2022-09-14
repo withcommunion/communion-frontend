@@ -1,10 +1,11 @@
-import BackToButton from '@/shared_components/backToButton/BackToButton';
-import { CommunionNft } from '@/shared_components/nftTrophyDisplay/nftTrophyDisplay';
 import { useEffect, useState, useCallback } from 'react';
-import NftGridDisplayList from '@/pages_components/org/[orgId]/send/nft/nftGridDisplayList/nftGridDisplayList';
-import SelectedNftComponent from '@/pages_components/org/[orgId]/send/nft/selectedNftComponent/selectedNftComponent';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+
+import BackToButton from '@/shared_components/backToButton/BackToButton';
+import { CommunionNft } from '@/shared_components/nftTrophyDisplay/nftTrophyDisplay';
+import NftGridDisplayList from '@/pages_components/org/[orgId]/send/nft/nftGridDisplayList/nftGridDisplayList';
+import SelectedNftComponent from '@/pages_components/org/[orgId]/send/nft/selectedNftComponent/selectedNftComponent';
 
 const availableNfts: CommunionNft[] = [
   {
@@ -168,31 +169,19 @@ const SelectNftContainer = () => {
     setSelectedItem(nft);
   }, []);
 
-  const onCloseSelected = () => {
-    setSelectedItem(null);
-    setNftActive(null);
-  };
-
   return (
-    <div className=" min-h-100vh w-full bg-secondaryLightGray">
-      <div className="w-full bg-secondaryLightGray pb-1 md:max-w-50vw">
-        <Link href={`/org/${(orgId || '').toString()}/send`}>
-          <div className="w-fit">
-            <BackToButton onClick={() => true} backToDestinationText={'Send'} />
-          </div>
-        </Link>
-        {selectedItem && (
-          <SelectedNftComponent
-            onCloseSelected={onCloseSelected}
-            selectedItem={selectedItem}
-          />
-        )}
-        <NftGridDisplayList
-          availableNfts={availableNfts}
-          onNftClick={onNftClick}
-          nftActive={nftActive}
-        />
-      </div>
+    <div>
+      <Link href={`/org/${(orgId || '').toString()}/send`}>
+        <div className="w-fit">
+          <BackToButton onClick={() => true} backToDestinationText={'Send'} />
+        </div>
+      </Link>
+      {selectedItem && <SelectedNftComponent selectedItem={selectedItem} />}
+      <NftGridDisplayList
+        availableNfts={availableNfts}
+        onNftClick={onNftClick}
+        nftActive={nftActive}
+      />
     </div>
   );
 };
