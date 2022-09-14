@@ -1,10 +1,12 @@
 import Image from 'next/image';
+import Link from 'next/link';
 
 interface Props {
-  onClick: () => void;
+  activeOrgId: string;
+  isManagerModeActive: boolean;
 }
 
-const SendPageHeader = ({ onClick }: Props) => {
+const SendPageHeader = ({ activeOrgId, isManagerModeActive }: Props) => {
   return (
     <div className="flex justify-between py-5">
       <div className="flex text-center">
@@ -18,12 +20,11 @@ const SendPageHeader = ({ onClick }: Props) => {
           Send Token Tips
         </h2>
       </div>
-      <button
-        className="rounded border-2 border-eighthOrange px-14px py-1 text-sm font-medium text-eighthOrange"
-        onClick={onClick}
-      >
-        Send NFTs
-      </button>
+      {isManagerModeActive && (
+        <button className="rounded border-2 border-eighthOrange px-14px py-1 text-sm font-medium text-eighthOrange">
+          <Link href={`/org/${activeOrgId}/send/nft`}>Send NFTs</Link>
+        </button>
+      )}
     </div>
   );
 };
