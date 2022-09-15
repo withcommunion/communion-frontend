@@ -8,7 +8,7 @@ interface Props {
 
 const SelectedNftComponent = ({ selectedItem }: Props) => {
   return (
-    <div className="w-full">
+    <div className="mx-auto w-full md:w-full lg:w-70% xl:w-60% 2xl:w-50%">
       <div className="mb-14px rounded-xl border-4 border-twelfthLightGray bg-white sm:h-full sm:w-full">
         <div className="relative mb-5 h-255px w-full ">
           <Image
