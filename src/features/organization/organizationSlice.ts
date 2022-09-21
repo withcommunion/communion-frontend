@@ -181,6 +181,10 @@ export const selectOrgRedeemablesSortedByAmount = createSelector(
   }
 );
 
+export const selectAvailableNfts = createSelector([selectOrg], (org) => {
+  return org.available_nfts;
+});
+
 export const selectOrgContract = createSelector([selectOrg], (org) => {
   return new Contract(
     org.avax_contract.address,

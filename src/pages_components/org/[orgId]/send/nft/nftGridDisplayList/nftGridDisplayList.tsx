@@ -1,4 +1,4 @@
-import { CommunionNft } from '@/shared_components/nftTrophyDisplay/nftTrophyDisplay';
+import { CommunionNft } from '@/util/walletApiUtil';
 import Image from 'next/image';
 
 interface Props {

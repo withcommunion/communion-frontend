@@ -12,6 +12,7 @@ export interface User {
   last_name: string;
   organization: string;
   organizations: { orgId: string; role: string }[];
+  owned_nfts?: MintedNftDetails[];
   role: 'worker' | 'manager' | 'owner' | 'seeder' | string;
   walletPrivateKeyWithLeadingHex?: string;
   walletAddressC: string;
@@ -76,6 +77,8 @@ export interface OrgWithPublicData {
   actions: OrgAction[];
   roles: Roles[];
   redeemables: OrgRedeemable[];
+  available_nfts?: CommunionNft[];
+  minted_nfts?: MintedNftDetails[];
   member_ids: string[];
   members: User[];
   join_code?: string;
@@ -84,6 +87,48 @@ export interface OrgWithPublicData {
     token_name: string;
     token_symbol: string;
   };
+}
+
+export interface CommunionNft {
+  id: string;
+  contractAddress?: string;
+  mintedTokenId?: string;
+  erc721Meta: {
+    title: string;
+    id: string;
+    properties: {
+      name: string;
+      description: string;
+      image: string;
+      attributes: {
+        display_type: number;
+        trait_type: string;
+        value: number;
+      }[];
+    };
+  };
+}
+
+export interface Erc721Nft {
+  name: string;
+  description: string;
+  image: string;
+  attributes: {
+    display_type: number;
+    trait_type: string;
+    value: number;
+  }[];
+}
+
+export interface MintedNftDetails {
+  communionNftId: string;
+  ownerUserId: string;
+  mintedNftId: number;
+  mintedNftUri: string;
+  orgId: string;
+  txnHash: string;
+  contractAddress: string;
+  createdAt: number;
 }
 
 export async function postToLogTxnError(
