@@ -19,65 +19,12 @@ import {
   OrgTransactionHistoryList,
   ShortcutActionsList,
 } from '@/pages_components/org/[orgId]/orgIdIndexComponents';
+import { selectSelf } from '@/features/selfSlice';
 import NftTrophyDisplay from '@/shared_components/nftTrophyDisplay/nftTrophyDisplay';
 import { isNftFeatureEnabled } from '@/util/envUtil';
 
 // https://docs.amplify.aws/lib/client-configuration/configuring-amplify-categories/q/platform/js/#general-configuration
 Amplify.configure({ ...AMPLIFY_CONFIG, ssr: true });
-
-const nfts = [
-  {
-    erc721Meta: {
-      title: 'string',
-      properties: {
-        name: 'string',
-        description: 'string',
-        image: '/images/nftTrophyDisplay/nft.png',
-        attributes: [
-          {
-            display_type: 1,
-            trait_type: 'string',
-            value: 1,
-          },
-        ],
-      },
-    },
-  },
-  {
-    erc721Meta: {
-      title: 'string',
-      properties: {
-        name: 'string',
-        description: 'string',
-        image: '/images/nftTrophyDisplay/nft.png',
-        attributes: [
-          {
-            display_type: 1,
-            trait_type: 'string',
-            value: 1,
-          },
-        ],
-      },
-    },
-  },
-  {
-    erc721Meta: {
-      title: 'string',
-      properties: {
-        name: 'string',
-        description: 'string',
-        image: '/images/nftTrophyDisplay/nft.png',
-        attributes: [
-          {
-            display_type: 1,
-            trait_type: 'string',
-            value: 1,
-          },
-        ],
-      },
-    },
-  },
-];
 
 interface Props {
   userJwt: string;
@@ -88,6 +35,7 @@ const Home = ({ userJwt }: Props) => {
   const { orgId } = router.query;
 
   const org = useAppSelector((state) => selectOrg(state));
+  const ownedNfts = useAppSelector((state) => selectSelf(state))?.owned_nfts;
 
   useFetchSelf(userJwt);
   useFetchOrg(userJwt);
@@ -108,17 +56,14 @@ const Home = ({ userJwt }: Props) => {
                   <span className="text-twelfthGray">Your NFTs</span>
                   <span className="ml-1.5 text-xs text-primaryGray">
                     (
-                    {nfts
-                      ? `You have ${nfts.length} NFT`
+                    {ownedNfts
+                      ? `You have ${ownedNfts.length} NFT`
                       : 'You don’t have any NFTs'}
                     )
                   </span>
                 </div>
                 <div className="self-center">
-                  <NftTrophyDisplay
-                    nfts={nfts.slice(0, 1)}
-                    showcaseNft={null}
-                  />
+                  <NftTrophyDisplay nftDetails={ownedNfts} showcaseNft={null} />
                 </div>
               </div>
             )}

@@ -10,7 +10,7 @@ interface Props {
 }
 
 const OrgMemberCard = ({ userInOrg, toggleChecked, isChecked }: Props) => {
-  const { first_name, last_name } = userInOrg;
+  const { first_name, last_name, owned_nfts } = userInOrg;
 
   return (
     <li
@@ -43,7 +43,7 @@ const OrgMemberCard = ({ userInOrg, toggleChecked, isChecked }: Props) => {
       <div className="flex items-center">
         {isNftFeatureEnabled && (
           <div className="w-98px">
-            <NftTrophyDisplay nfts={[]} showcaseNft={null} />
+            <NftTrophyDisplay nftDetails={owned_nfts} showcaseNft={null} />
           </div>
         )}
         <input
