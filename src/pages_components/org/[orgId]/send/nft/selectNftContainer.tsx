@@ -1,30 +1,42 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useAppSelector } from '@/reduxHooks';
-import { CommunionNft } from '@/util/walletApiUtil';
+import { useAppSelector, useAppDispatch } from '@/reduxHooks';
 import BackToButton from '@/shared_components/backToButton/BackToButton';
 import NftGridDisplayList from '@/pages_components/org/[orgId]/send/nft/nftGridDisplayList/nftGridDisplayList';
 import SelectedNftComponent from '@/pages_components/org/[orgId]/send/nft/selectedNftComponent/selectedNftComponent';
-import { selectAvailableNfts } from '@/features/organization/organizationSlice';
+import {
+  selectAvailableNfts,
+  selectOrgUsersSortedByName,
+} from '@/features/organization/organizationSlice';
+import OrgMemberCard from '../sendMemberList/orgMemberCard';
+import {
+  clearedSelectedUser,
+  selectedNftUpdated,
+  selectedUserUpdated,
+  selectSelectedNft,
+  selectSelectedUser,
+} from '@/features/sendNft/sendNftSlice';
+import { BottomStickyButton } from '../../sendComponents';
 
 const SelectNftContainer = () => {
+  const dispatch = useAppDispatch();
   const router = useRouter();
   const { orgId } = router.query;
-  const [selectedItem, setSelectedItem] = useState<CommunionNft | null>(null);
-  const [nftActive, setNftActive] = useState<number | null>(null);
+  const orgUsers = useAppSelector((state) => selectOrgUsersSortedByName(state));
   const availableNfts = useAppSelector((state) => selectAvailableNfts(state));
+  const selectedUser = useAppSelector((state) => selectSelectedUser(state));
+  const selectedNft = useAppSelector((state) => selectSelectedNft(state));
+
+  const [currentStep, setCurrentStep] = useState<
+    'selectNft' | 'selectUser' | 'confirm' | 'success' | 'error'
+  >('selectNft');
 
   useEffect(() => {
-    if (availableNfts && availableNfts.length > 0) {
-      setSelectedItem(availableNfts[0]);
+    if (availableNfts) {
+      dispatch(selectedNftUpdated(availableNfts[0]));
     }
-  }, [availableNfts]);
-
-  const onNftClick = useCallback((num: number, nft: CommunionNft) => {
-    setNftActive(num);
-    setSelectedItem(nft);
-  }, []);
+  }, [availableNfts, dispatch]);
 
   return (
     <div>
@@ -33,12 +45,53 @@ const SelectNftContainer = () => {
           <BackToButton onClick={() => true} backToDestinationText={'Send'} />
         </div>
       </Link>
-      {selectedItem && <SelectedNftComponent selectedItem={selectedItem} />}
-      <NftGridDisplayList
-        availableNfts={availableNfts || []}
-        onNftClick={onNftClick}
-        nftActive={nftActive}
-      />
+      {currentStep === 'selectNft' && (
+        <>
+          {selectedNft && (
+            <SelectedNftComponent
+              selectedItem={selectedNft}
+              onSendClick={() => setCurrentStep('selectUser')}
+            />
+          )}
+          <NftGridDisplayList
+            availableNfts={availableNfts || []}
+            onNftClick={(nft) => {
+              dispatch(selectedNftUpdated(nft));
+            }}
+            activeNft={selectedNft}
+          />
+        </>
+      )}
+
+      {currentStep === 'selectUser' && (
+        <>
+          <ul className="my-4">
+            {orgUsers.map((user) => {
+              const isUserSelected = Boolean(selectedUser?.id === user.id);
+              return (
+                <OrgMemberCard
+                  key={user.id}
+                  userInOrg={user}
+                  toggleChecked={() => {
+                    isUserSelected
+                      ? dispatch(clearedSelectedUser)
+                      : dispatch(selectedUserUpdated(user));
+                  }}
+                  isChecked={isUserSelected}
+                />
+              );
+            })}
+          </ul>
+          <BottomStickyButton
+            onCancelClick={() => {
+              dispatch(clearedSelectedUser);
+            }}
+            onPrimaryClick={() => {
+              setCurrentStep('confirm');
+            }}
+          />
+        </>
+      )}
     </div>
   );
 };

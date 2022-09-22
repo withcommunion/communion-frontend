@@ -4,9 +4,10 @@ import { CommunionNft } from '@/util/walletApiUtil';
 
 interface Props {
   selectedItem: CommunionNft;
+  onSendClick: () => void;
 }
 
-const SelectedNftComponent = ({ selectedItem }: Props) => {
+const SelectedNftComponent = ({ selectedItem, onSendClick }: Props) => {
   const nftAttributes = selectedItem.erc721Meta.properties.attributes;
   const characteristics = nftAttributes.filter(
     (attribute) => attribute.trait_type === 'characteristic'
@@ -65,7 +66,7 @@ const SelectedNftComponent = ({ selectedItem }: Props) => {
             <PrimaryButton
               text={'Send'}
               onClick={() => {
-                console.log('hi3');
+                onSendClick();
               }}
               size={'middle'}
             />
