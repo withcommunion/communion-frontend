@@ -53,11 +53,13 @@ const Home = ({ userJwt }: Props) => {
             {isNftFeatureEnabled && (
               <div className="mt-10px mb-4 flex flex-col rounded-md bg-primaryLightGray p-4 pt-14px">
                 <div className="mb-2">
-                  <span className="text-twelfthGray">Your NFTs</span>
+                  <span className="text-twelfthGray">Your Badges</span>
                   <span className="ml-1.5 text-xs text-primaryGray">
                     (
                     {ownedNfts
-                      ? `You have ${ownedNfts.length} NFT`
+                      ? `You have ${ownedNfts.length} NFT${
+                          ownedNfts.length > 1 ? 's' : ''
+                        }`
                       : 'You don’t have any NFTs'}
                     )
                   </span>
