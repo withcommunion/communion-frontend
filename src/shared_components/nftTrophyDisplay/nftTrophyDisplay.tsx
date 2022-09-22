@@ -30,14 +30,13 @@ export default function NftTrophyDisplay({
     const setNftsHelper = async (nftsToFetch: MintedNftDetails[]) => {
       const urls = nftsToFetch.map((nft) => nft.mintedNftUri);
       const nfts = await fetchNfts(urls);
-      console.log(nfts);
       setNfts(nfts);
     };
 
     if (!nfts && nftDetails.length > 0) {
       setNftsHelper(nftDetails);
     }
-  }, [nftDetails]);
+  }, [nftDetails, nfts]);
 
   return (
     <div className="flex h-full w-full items-center justify-center">
