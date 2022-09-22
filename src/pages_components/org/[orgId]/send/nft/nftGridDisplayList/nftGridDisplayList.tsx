@@ -13,7 +13,7 @@ const NftGridDisplayList = ({
   nftActive,
 }: Props) => {
   return (
-    <div className="flex flex-wrap justify-center gap-3">
+    <div className="mx-auto flex flex-wrap justify-center gap-3 md:w-full lg:w-70% xl:w-60% 2xl:w-50%">
       {availableNfts.map((nft: CommunionNft, num) => (
         <button
           key={num}
