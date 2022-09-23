@@ -69,7 +69,7 @@ export const sendNftSlice = createSlice({
       })
       .addCase(fetchSendNft.fulfilled, (state, action) => {
         state.latestTxn.status = 'succeeded';
-        state.latestTxn.txn = action.payload;
+        // state.latestTxn.txn = action.payload;
         // Add any fetched posts to the array
         if (action.payload) {
           state.latestTxn.error = null;
