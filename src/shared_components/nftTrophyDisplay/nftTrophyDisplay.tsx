@@ -43,6 +43,7 @@ export default function NftTrophyDisplay({
       <div className="flex items-center justify-start rounded bg-white shadow-nftTrophyShadow">
         {nfts && nfts.length > 1 ? (
           <Image
+            priority
             width="75%"
             height="75%"
             src={nfts[1].image}
@@ -51,6 +52,7 @@ export default function NftTrophyDisplay({
         ) : (
           <div className="relative -left-20% flex items-center">
             <Image
+              priority
               width="85%"
               height="75%"
               src={'/images/nftTrophyDisplay/Car.png'}
@@ -62,6 +64,7 @@ export default function NftTrophyDisplay({
       <div className="z-10 flex items-center justify-center rounded bg-white shadow-nftTrophyShadow">
         {nfts && nfts.length > 0 ? (
           <Image
+            priority
             width="100%"
             height="100%"
             src={showcaseNft ? showcaseNft.image : nfts[0].image}
@@ -70,6 +73,7 @@ export default function NftTrophyDisplay({
         ) : (
           <Image
             width="100%"
+            priority
             height="100%"
             src={'/images/nftTrophyDisplay/clock.png'}
             alt="nftTrophy image"
@@ -79,6 +83,7 @@ export default function NftTrophyDisplay({
       <div className="relative flex items-center justify-end rounded bg-white shadow-nftTrophyShadow">
         {nfts && nfts.length === 3 ? (
           <Image
+            priority
             width="75%"
             height="75%"
             src={nfts[2].image}
@@ -87,6 +92,7 @@ export default function NftTrophyDisplay({
         ) : (
           <div className="relative -right-20% flex items-center">
             <Image
+              priority
               width="85%"
               height="75%"
               src={'/images/nftTrophyDisplay/Airplane.png'}
