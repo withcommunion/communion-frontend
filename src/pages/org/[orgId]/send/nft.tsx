@@ -33,7 +33,7 @@ const OrgIdIndex = ({ userJwt }: Props) => {
       />
       <div className="h-full min-h-100vh bg-secondaryLightGray pb-6">
         <div className="container my-0 mx-auto mb-10 w-full px-6 md:max-w-50vw">
-          <SelectNftContainer />
+          <SelectNftContainer userJwt={userJwt} />
         </div>
       </div>
     </>

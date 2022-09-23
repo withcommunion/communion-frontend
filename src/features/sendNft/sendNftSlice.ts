@@ -14,6 +14,7 @@ import {
   User,
   postToLogTxnError,
   CommunionNft,
+  MintedNftDetails,
 } from '@/util/walletApiUtil';
 
 interface SendNftState {
@@ -68,6 +69,7 @@ export const sendNftSlice = createSlice({
       })
       .addCase(fetchSendNft.fulfilled, (state, action) => {
         state.latestTxn.status = 'succeeded';
+        state.latestTxn.txn = action.payload;
         // Add any fetched posts to the array
         if (action.payload) {
           state.latestTxn.error = null;
@@ -100,7 +102,8 @@ export const fetchSendNft = createAsyncThunk(
 
     try {
       const txnResp = await axios.post<{
-        transaction: Transaction;
+        success: boolean;
+        mintedNft: MintedNftDetails;
         txnHash: string;
       }>(
         `${API_URL}/org/${orgId}/mintNft`,
@@ -126,7 +129,8 @@ export const fetchSendNft = createAsyncThunk(
       if (ethersTxn) {
         await ethersTxn.wait();
       }
-      return txnResp.data.transaction;
+      console.log(ethersTxn);
+      return ethersTxn;
       // @ts-expect-error this is okay
     } catch (error: axios.AxiosError) {
       console.error(error);
