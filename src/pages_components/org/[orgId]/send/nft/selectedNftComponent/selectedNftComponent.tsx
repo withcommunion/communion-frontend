@@ -4,7 +4,7 @@ import { CommunionNft } from '@/util/walletApiUtil';
 
 interface Props {
   selectedItem: CommunionNft;
-  onSendClick: () => void;
+  onSendClick?: () => void;
 }
 
 const SelectedNftComponent = ({ selectedItem, onSendClick }: Props) => {
@@ -19,13 +19,14 @@ const SelectedNftComponent = ({ selectedItem, onSendClick }: Props) => {
   return (
     <div className="mx-auto w-full md:w-full lg:w-70% xl:w-60% 2xl:w-50%">
       <div className="mb-14px rounded-xl border-4 border-twelfthLightGray bg-white sm:h-full sm:w-full">
-        <div className="relative mb-5 h-255px w-full ">
+        <div className="relative mb-5">
           <Image
             src={selectedItem.erc721Meta.properties.image}
             alt="nft image"
+            priority
             width="100%"
             height="100%"
-            layout="fill"
+            layout="responsive"
             objectFit="fill"
           />
           <div className="absolute -bottom-4 right-2 flex w-full justify-end">
@@ -62,15 +63,17 @@ const SelectedNftComponent = ({ selectedItem, onSendClick }: Props) => {
               ))}
             </ul>
           </div>
-          <div className="mt-3 mb-4 flex justify-center">
-            <PrimaryButton
-              text={'Send'}
-              onClick={() => {
-                onSendClick();
-              }}
-              size={'middle'}
-            />
-          </div>
+          {onSendClick && (
+            <div className="mt-3 mb-4 flex justify-center">
+              <PrimaryButton
+                text={'Send'}
+                onClick={() => {
+                  onSendClick();
+                }}
+                size={'middle'}
+              />
+            </div>
+          )}
         </div>
       </div>
     </div>
