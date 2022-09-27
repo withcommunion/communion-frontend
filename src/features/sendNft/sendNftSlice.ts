@@ -6,7 +6,6 @@ import {
   createSelector,
 } from '@reduxjs/toolkit';
 import type { RootState } from '@/reduxStore';
-import { Transaction } from 'ethers';
 import { HTTPSProvider } from '@/util/avaxEthersUtil';
 
 import {
@@ -19,7 +18,7 @@ import {
 
 interface SendNftState {
   latestTxn: {
-    txn: Transaction | null;
+    txn: MintedNftDetails | null;
     status: 'idle' | 'loading' | 'succeeded' | 'failed';
     error: string | null | undefined;
   };
@@ -126,11 +125,8 @@ export const fetchSendNft = createAsyncThunk(
       const ethersTxn = await HTTPSProvider.getTransaction(
         txnResp.data.txnHash
       );
-      if (ethersTxn) {
-        await ethersTxn.wait();
-      }
-      console.log(ethersTxn);
-      return ethersTxn;
+      await ethersTxn.wait();
+      return txnResp.data.mintedNft;
       // @ts-expect-error this is okay
     } catch (error: axios.AxiosError) {
       console.error(error);
@@ -164,7 +160,7 @@ export const selectSelectedUser = (state: RootState) =>
   state.sendNft.selectedUser;
 
 export const selectRootLatestTxn = (state: RootState) =>
-  state.multisend.latestTxn;
+  state.sendNft.latestTxn;
 export const selectLatestTxn = createSelector(
   [selectRootLatestTxn],
   (multisend) => multisend.txn

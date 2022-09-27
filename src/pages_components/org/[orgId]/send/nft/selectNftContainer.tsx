@@ -21,8 +21,11 @@ import {
   selectSelectedUser,
   selectLatestTxnStatus,
   fetchSendNft,
+  clearedSelectedNft,
+  selectLatestTxn,
 } from '@/features/sendNft/sendNftSlice';
 import { BottomStickyButton } from '../../sendComponents';
+import { formatTxnHash, getSnowtraceExplorerUrl } from '@/util/avaxEthersUtil';
 
 interface Props {
   userJwt: string;
@@ -39,6 +42,7 @@ const SelectNftContainer = ({ userJwt }: Props) => {
   const latestTxnStatus = useAppSelector((state) =>
     selectLatestTxnStatus(state)
   );
+  const latestTxn = useAppSelector((state) => selectLatestTxn(state));
 
   const [currentStep, setCurrentStep] = useState<
     'selectNft' | 'selectUser' | 'confirm' | 'success' | 'error'
@@ -192,9 +196,7 @@ const SelectNftContainer = ({ userJwt }: Props) => {
                   text={'Send'}
                   onClick={async () => {
                     // TODO: Send NFT
-                    await Promise.resolve('hi');
-                    console.log('hi');
-                    dispatch(
+                    const resp = await dispatch(
                       fetchSendNft({
                         communionNftId: selectedNft.id,
                         toUserId: selectedUser.id,
@@ -202,6 +204,10 @@ const SelectNftContainer = ({ userJwt }: Props) => {
                         jwtToken: userJwt,
                       })
                     );
+
+                    console.log(resp);
+
+                    setCurrentStep('success');
                   }}
                   size="big"
                   disabled={Boolean(latestTxnStatus === 'loading')}
@@ -211,6 +217,61 @@ const SelectNftContainer = ({ userJwt }: Props) => {
             </div>
           </div>
         </>
+      )}
+
+      {currentStep === 'success' && (
+        <div className="mb-16 flex flex-col items-center justify-center rounded-4px bg-white shadow-primaryModalShadow">
+          <div className="flex items-center justify-center pt-10">
+            <Image
+              src="/images/send/wand.png"
+              width="192px"
+              height="199px"
+              alt="wand image"
+            />
+          </div>
+          <p className="my-3 flex items-center justify-center">
+            <span className="text-21px font-semibold text-primaryDarkGray">
+              Congratulations
+            </span>
+          </p>
+          <div className="text-4 mb-7 flex flex-col items-center justify-center text-eleventhGray">
+            <div>
+              <span className="font-semibold">
+                {selectedNft?.erc721Meta.properties.name}
+              </span>{' '}
+              was successfully sent!
+            </div>
+          </div>
+          {latestTxn && (
+            <div className="my-5 flex flex-col">
+              <p className="">View the transaction on the blockchain!</p>
+              <a
+                className="text-blue-600 underline visited:text-purple-600 hover:text-blue-800"
+                href={getSnowtraceExplorerUrl(latestTxn.txnHash)}
+                target="_blank"
+                rel="noreferrer"
+              >
+                Here: {formatTxnHash(latestTxn.txnHash)}
+              </a>
+            </div>
+          )}
+          <div className="my-6">
+            <PrimaryButton
+              text={'Back to Members’s List'}
+              onClick={() => {
+                dispatch(clearedSelectedNft());
+                dispatch(clearedSelectedUser());
+                router.push(`/org/${(orgId || '').toString()}/send`);
+              }}
+              size="big"
+            />
+          </div>
+          {/* <Link href={'#'}>
+              <a className="mt-6 mb-7 text-primaryOrange text-13px font-light">
+                Back to Dashboard
+              </a>
+            </Link> */}
+        </div>
       )}
     </div>
   );
