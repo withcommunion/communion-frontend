@@ -9,7 +9,7 @@ import { useFetchSelf, useFetchOrg } from '@/shared_hooks/sharedHooks';
 
 import NavBar, { AvailablePages } from '@/shared_components/navBar/NavBar';
 
-import SelectNftContainer from '@/pages_components/org/[orgId]/send/nft/selectNftContainer';
+import SendNftContainer from '@/pages_components/org/[orgId]/send/nft/sendNftContainer';
 
 // https://docs.amplify.aws/lib/client-configuration/configuring-amplify-categories/q/platform/js/#general-configuration
 Amplify.configure({ ...AMPLIFY_CONFIG, ssr: true });
@@ -33,7 +33,7 @@ const OrgIdIndex = ({ userJwt }: Props) => {
       />
       <div className="h-full min-h-100vh bg-secondaryLightGray pb-6">
         <div className="container my-0 mx-auto mb-10 w-full px-6 md:max-w-50vw">
-          <SelectNftContainer userJwt={userJwt} />
+          <SendNftContainer userJwt={userJwt} />
         </div>
       </div>
     </>

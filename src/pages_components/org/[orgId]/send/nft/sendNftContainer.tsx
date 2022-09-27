@@ -31,7 +31,7 @@ interface Props {
   userJwt: string;
 }
 
-const SelectNftContainer = ({ userJwt }: Props) => {
+const SendNftContainer = ({ userJwt }: Props) => {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const { orgId } = router.query;
@@ -277,4 +277,4 @@ const SelectNftContainer = ({ userJwt }: Props) => {
   );
 };
 
-export default SelectNftContainer;
+export default SendNftContainer;
