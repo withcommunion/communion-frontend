@@ -9,6 +9,7 @@ import SecondaryButton from '@/shared_components/buttons/secondaryButton';
 import NftGridDisplayList from '@/pages_components/org/[orgId]/send/nft/nftGridDisplayList/nftGridDisplayList';
 import SelectedNftComponent from '@/pages_components/org/[orgId]/send/nft/selectedNftComponent/selectedNftComponent';
 import {
+  fetchOrgById,
   selectAvailableNfts,
   selectOrgUsersSortedByName,
 } from '@/features/organization/organizationSlice';
@@ -197,8 +198,7 @@ const SendNftContainer = ({ userJwt }: Props) => {
                 <PrimaryButton
                   text={'Send'}
                   onClick={async () => {
-                    // TODO: Send NFT
-                    const resp = await dispatch(
+                    await dispatch(
                       fetchSendNft({
                         communionNftId: selectedNft.id,
                         toUserId: selectedUser.id,
@@ -207,7 +207,12 @@ const SendNftContainer = ({ userJwt }: Props) => {
                       })
                     );
 
-                    console.log(resp);
+                    dispatch(
+                      fetchOrgById({
+                        orgId: (orgId || '').toString(),
+                        jwtToken: userJwt,
+                      })
+                    );
 
                     setCurrentStep('success');
                   }}
