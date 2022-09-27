@@ -59,9 +59,11 @@ const SendNftContainer = ({ userJwt }: Props) => {
   return (
     <div>
       <Link href={`/org/${(orgId || '').toString()}/send`}>
-        <div className="w-fit">
-          <BackToButton onClick={() => true} backToDestinationText={'Send'} />
-        </div>
+        <a>
+          <div className="w-fit">
+            <BackToButton onClick={() => true} backToDestinationText={'Send'} />
+          </div>
+        </a>
       </Link>
       {currentStep === 'selectNft' && (
         <>

@@ -55,12 +55,14 @@ const MyNftPage = ({ userJwt }: Props) => {
         <div className="h-full min-h-100vh bg-secondaryLightGray pb-6">
           <div className="container my-0 mx-auto mb-10 w-full px-6 md:max-w-50vw">
             <Link href={`/org/${(orgId || '').toString()}/`}>
-              <div className="w-fit">
-                <BackToButton
-                  onClick={() => true}
-                  backToDestinationText={'Home'}
-                />
-              </div>
+              <a>
+                <div className="w-fit">
+                  <BackToButton
+                    onClick={() => true}
+                    backToDestinationText={'Home'}
+                  />
+                </div>
+              </a>
             </Link>
             <>
               {selectedNft && (

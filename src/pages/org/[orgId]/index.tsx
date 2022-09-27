@@ -52,30 +52,30 @@ const Home = ({ userJwt }: Props) => {
           <div className="container my-0 mx-auto w-full px-6 md:max-w-50vw">
             <OrgTokenBalanceContainer />
             {isNftFeatureEnabled && (
-              <div className="mt-10px mb-4 flex flex-col rounded-md bg-primaryLightGray p-4 pt-14px">
-                <div className="mb-2">
-                  <span className="text-twelfthGray">Your Badges</span>
-                  <span className="ml-1.5 text-xs text-primaryGray">
-                    (
-                    {ownedNfts
-                      ? `You have ${ownedNfts.length} NFT${
-                          ownedNfts.length > 1 ? 's' : ''
-                        }`
-                      : 'You don’t have any NFTs'}
-                    )
-                  </span>
-                </div>
-                <div className="self-center">
-                  <Link href={`/org/${(orgId || '').toString()}/my-nfts`}>
-                    <div>
+              <Link href={`/org/${(orgId || '').toString()}/my-nfts`}>
+                <a>
+                  <div className="mt-10px mb-4 flex flex-col rounded-md bg-primaryLightGray p-4 pt-14px">
+                    <div className="mb-2">
+                      <span className="text-twelfthGray">Your Badges</span>
+                      <span className="ml-1.5 text-xs text-primaryGray">
+                        (
+                        {ownedNfts
+                          ? `You have ${ownedNfts.length} NFT${
+                              ownedNfts.length > 1 ? 's' : ''
+                            }`
+                          : 'You don’t have any NFTs'}
+                        )
+                      </span>
+                    </div>
+                    <div className="self-center">
                       <NftTrophyDisplay
                         nftDetails={ownedNfts}
                         showcaseNft={null}
                       />
                     </div>
-                  </Link>
-                </div>
-              </div>
+                  </div>
+                </a>
+              </Link>
             )}
             <div className={cx('my-6', { 'h-35vh': !org.actions.length })}>
               <ShortcutActionsList
