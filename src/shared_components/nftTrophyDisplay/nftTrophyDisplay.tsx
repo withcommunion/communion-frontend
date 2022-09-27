@@ -81,7 +81,7 @@ export default function NftTrophyDisplay({
         )}
       </div>
       <div className="relative flex items-center justify-end rounded bg-white shadow-nftTrophyShadow">
-        {nfts && nfts.length === 3 ? (
+        {nfts && nfts.length >= 3 ? (
           <Image
             priority
             width="75%"
