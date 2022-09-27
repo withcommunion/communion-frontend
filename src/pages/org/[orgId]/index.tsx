@@ -22,6 +22,7 @@ import {
 import { selectSelf } from '@/features/selfSlice';
 import NftTrophyDisplay from '@/shared_components/nftTrophyDisplay/nftTrophyDisplay';
 import { isNftFeatureEnabled } from '@/util/envUtil';
+import Link from 'next/link';
 
 // https://docs.amplify.aws/lib/client-configuration/configuring-amplify-categories/q/platform/js/#general-configuration
 Amplify.configure({ ...AMPLIFY_CONFIG, ssr: true });
@@ -65,7 +66,14 @@ const Home = ({ userJwt }: Props) => {
                   </span>
                 </div>
                 <div className="self-center">
-                  <NftTrophyDisplay nftDetails={ownedNfts} showcaseNft={null} />
+                  <Link href={`/org/${(orgId || '').toString()}/my-nfts`}>
+                    <div>
+                      <NftTrophyDisplay
+                        nftDetails={ownedNfts}
+                        showcaseNft={null}
+                      />
+                    </div>
+                  </Link>
                 </div>
               </div>
             )}

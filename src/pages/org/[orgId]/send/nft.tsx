@@ -18,7 +18,7 @@ interface Props {
   userJwt: string;
 }
 
-const OrgIdIndex = ({ userJwt }: Props) => {
+const SendNftPage = ({ userJwt }: Props) => {
   const router = useRouter();
   const { orgId } = router.query;
 
@@ -57,4 +57,4 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 };
 
-export default OrgIdIndex;
+export default SendNftPage;

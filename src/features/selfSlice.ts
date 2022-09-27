@@ -7,7 +7,8 @@ import {
   createSelector,
 } from '@reduxjs/toolkit';
 
-import { API_URL, Self } from '@/util/walletApiUtil';
+import { API_URL, CommunionNft, Self } from '@/util/walletApiUtil';
+import { selectAvailableNfts } from './organization/organizationSlice';
 
 // Define a type for the slice state
 export interface SelfState {
@@ -71,6 +72,25 @@ export const selectSelf = createSelector([selectRootSelf], (root) => root.self);
 export const selectSelfStatus = createSelector(
   [selectRootSelf],
   (root) => root.status
+);
+export const selectSelfOwnedNfts = createSelector(
+  [selectRootSelf],
+  (root) => root.self?.owned_nfts || []
+);
+export const selectOwnedNftsInCurrentOrg = createSelector(
+  [selectSelfOwnedNfts, selectAvailableNfts],
+  (ownedNfts, availableNftsInOrg) => {
+    const ownedCommunionNfts = ownedNfts
+      .map((nft) => {
+        const nftInOrg = (availableNftsInOrg || []).find(
+          (orgNft) => orgNft.id === nft.communionNftId
+        );
+        return nftInOrg;
+      })
+      .filter((nft) => nft !== undefined) as CommunionNft[];
+
+    return ownedCommunionNfts;
+  }
 );
 
 export default userSlice.reducer;
