@@ -72,6 +72,10 @@ const OrgTransactionHistoryItem = ({ transaction, orgId }: Props) => {
               } `}
             {txType === 'sent' &&
               `Sent ${value} ${tokenSymbol} to ${toUser.firstName} `}
+            {txType === 'nftMint' &&
+              `Received ${
+                transaction.message || 'Badge'
+              } from 🏦 ${tokenSymbol} Bank `}
           </span>
 
           <span className="text-center md:ml-2">

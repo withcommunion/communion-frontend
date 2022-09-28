@@ -31,6 +31,7 @@ export interface UserInTxn {
   last_name: string;
   id: string;
 }
+export type TransactionType = 'erc20Transfer' | 'redemption' | 'nftMint';
 export interface CommunionTx {
   timeStampSeconds: number;
   tokenName: string;
@@ -39,7 +40,7 @@ export interface CommunionTx {
   txHash: string;
   txHashUrl: string;
   txStatus: 'succeeded' | 'failed';
-  txType: 'received' | 'sent' | 'redemption';
+  txType: 'received' | 'sent' | 'redemption' | 'nftMint' | 'erc20Transfer';
   message?: string;
   fromUser: {
     id: string;
