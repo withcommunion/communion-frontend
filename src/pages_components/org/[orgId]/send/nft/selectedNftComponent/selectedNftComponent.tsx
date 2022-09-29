@@ -8,7 +8,9 @@ interface Props {
 }
 
 const SelectedNftComponent = ({ selectedItem, onSendClick }: Props) => {
-  const nftAttributes = selectedItem.erc721Meta.properties.attributes;
+  const nftAttributes = selectedItem
+    ? selectedItem.erc721Meta.properties.attributes
+    : [];
   const characteristics = nftAttributes.filter(
     (attribute) => attribute.trait_type === 'characteristic'
   );
@@ -21,7 +23,7 @@ const SelectedNftComponent = ({ selectedItem, onSendClick }: Props) => {
       <div className="mb-14px rounded-xl border-4 border-twelfthLightGray bg-white sm:h-full sm:w-full">
         <div className="relative mb-5">
           <Image
-            src={selectedItem.erc721Meta.properties.image}
+            src={selectedItem && selectedItem.erc721Meta.properties.image}
             alt="nft image"
             priority
             width="100%"

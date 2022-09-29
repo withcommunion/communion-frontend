@@ -68,7 +68,9 @@ const MyNftPage = ({ userJwt }: Props) => {
           </Link>
           {Boolean(ownedCommunionNfts.length) && (
             <>
-              <SelectedNftComponent selectedItem={selectedNft} />
+              {selectedNft && (
+                <SelectedNftComponent selectedItem={selectedNft} />
+              )}
               <NftGridDisplayList
                 availableNfts={ownedCommunionNfts}
                 onNftClick={(nft) => {
