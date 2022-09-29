@@ -41,7 +41,7 @@ const OrgMemberCard = ({ userInOrg, toggleChecked, isChecked }: Props) => {
         </span>
       </div>
       <div className="flex items-center">
-        {isNftFeatureEnabled && (
+        {isNftFeatureEnabled && owned_nfts && (
           <div className="w-98px">
             <NftTrophyDisplay nftDetails={owned_nfts} showcaseNft={null} />
           </div>
