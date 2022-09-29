@@ -50,6 +50,17 @@ const OrgTransactionHistoryItem = ({
     ? availableNfts.find((nft) => nft.id === transaction.message)
     : null;
 
+  let nftText;
+  if (isNft && foundNft) {
+    const nftName = foundNft?.erc721Meta.properties.name || 'Badge';
+    nftText = isManagerModeActive
+      ? `Sent ${nftName} to ${toUser.firstName} ${toUser.lastName.substring(
+          0,
+          1
+        )}`
+      : `Received ${nftName} from 🏦 ${tokenSymbol} Bank `;
+  }
+
   return (
     <li
       className={cx('my-1 cursor-pointer rounded bg-white px-3 py-4', {
@@ -82,11 +93,7 @@ const OrgTransactionHistoryItem = ({
               } `}
             {txType === 'sent' &&
               `Sent ${value} ${tokenSymbol} to ${toUser.firstName} `}
-            {txType === 'nftMint' &&
-              foundNft &&
-              `Received ${
-                foundNft?.erc721Meta.properties.name || 'Badge'
-              } from 🏦 ${tokenSymbol} Bank `}
+            {txType === 'nftMint' && foundNft && nftText}
           </span>
 
           <span className="text-center md:ml-2">
