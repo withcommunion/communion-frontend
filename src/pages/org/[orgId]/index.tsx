@@ -19,65 +19,13 @@ import {
   OrgTransactionHistoryList,
   ShortcutActionsList,
 } from '@/pages_components/org/[orgId]/orgIdIndexComponents';
+import { selectSelf } from '@/features/selfSlice';
 import NftTrophyDisplay from '@/shared_components/nftTrophyDisplay/nftTrophyDisplay';
 import { isNftFeatureEnabled } from '@/util/envUtil';
+import Link from 'next/link';
 
 // https://docs.amplify.aws/lib/client-configuration/configuring-amplify-categories/q/platform/js/#general-configuration
 Amplify.configure({ ...AMPLIFY_CONFIG, ssr: true });
-
-const nfts = [
-  {
-    erc721Meta: {
-      title: 'string',
-      properties: {
-        name: 'string',
-        description: 'string',
-        image: '/images/nftTrophyDisplay/nft.png',
-        attributes: [
-          {
-            display_type: 1,
-            trait_type: 'string',
-            value: 1,
-          },
-        ],
-      },
-    },
-  },
-  {
-    erc721Meta: {
-      title: 'string',
-      properties: {
-        name: 'string',
-        description: 'string',
-        image: '/images/nftTrophyDisplay/nft.png',
-        attributes: [
-          {
-            display_type: 1,
-            trait_type: 'string',
-            value: 1,
-          },
-        ],
-      },
-    },
-  },
-  {
-    erc721Meta: {
-      title: 'string',
-      properties: {
-        name: 'string',
-        description: 'string',
-        image: '/images/nftTrophyDisplay/nft.png',
-        attributes: [
-          {
-            display_type: 1,
-            trait_type: 'string',
-            value: 1,
-          },
-        ],
-      },
-    },
-  },
-];
 
 interface Props {
   userJwt: string;
@@ -88,6 +36,7 @@ const Home = ({ userJwt }: Props) => {
   const { orgId } = router.query;
 
   const org = useAppSelector((state) => selectOrg(state));
+  const ownedNfts = useAppSelector((state) => selectSelf(state))?.owned_nfts;
 
   useFetchSelf(userJwt);
   useFetchOrg(userJwt);
@@ -103,24 +52,30 @@ const Home = ({ userJwt }: Props) => {
           <div className="container my-0 mx-auto w-full px-6 md:max-w-50vw">
             <OrgTokenBalanceContainer />
             {isNftFeatureEnabled && (
-              <div className="mt-10px mb-4 flex flex-col rounded-md bg-primaryLightGray p-4 pt-14px">
-                <div className="mb-2">
-                  <span className="text-twelfthGray">Your NFTs</span>
-                  <span className="ml-1.5 text-xs text-primaryGray">
-                    (
-                    {nfts
-                      ? `You have ${nfts.length} NFT`
-                      : 'You don’t have any NFTs'}
-                    )
-                  </span>
-                </div>
-                <div className="self-center">
-                  <NftTrophyDisplay
-                    nfts={nfts.slice(0, 1)}
-                    showcaseNft={null}
-                  />
-                </div>
-              </div>
+              <Link href={`/org/${(orgId || '').toString()}/my-nfts`}>
+                <a>
+                  <div className="mt-10px mb-4 flex flex-col rounded-md bg-primaryLightGray p-4 pt-14px">
+                    <div className="mb-2">
+                      <span className="text-twelfthGray">Your Badges</span>
+                      <span className="ml-1.5 text-xs text-primaryGray">
+                        (
+                        {ownedNfts
+                          ? `You have ${ownedNfts.length} NFT${
+                              ownedNfts.length > 1 ? 's' : ''
+                            }`
+                          : 'You don’t have any NFTs'}
+                        )
+                      </span>
+                    </div>
+                    <div className="self-center">
+                      <NftTrophyDisplay
+                        nftDetails={ownedNfts}
+                        showcaseNft={null}
+                      />
+                    </div>
+                  </div>
+                </a>
+              </Link>
             )}
             <div className={cx('my-6', { 'h-35vh': !org.actions.length })}>
               <ShortcutActionsList

@@ -7,7 +7,8 @@ import organizationReducer from '@/features/organization/organizationSlice';
 import cartReducer from '@/features/cart/cartSlice';
 import multisendReducer from '@/features/multisend/multisendSlice';
 import joinOrgReducer from '@/features/joinOrg/joinOrgSlice';
-import selfSettingsReducer from './features/selfSettings/selfSettingsSlice';
+import selfSettingsReducer from '@/features/selfSettings/selfSettingsSlice';
+import sendNftReducer from '@/features/sendNft/sendNftSlice';
 
 const store = configureStore({
   reducer: {
@@ -21,6 +22,7 @@ const store = configureStore({
     organization: organizationReducer,
     cart: cartReducer,
     multisend: multisendReducer,
+    sendNft: sendNftReducer,
   },
 });
 

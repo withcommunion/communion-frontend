@@ -8,7 +8,10 @@ import {
   selectHistoricalTxns,
   reSelectHistoricalTxnsStatus,
 } from '@/features/transactions/transactionsSlice';
-import { selectIsManagerModeActive } from '@/features/organization/organizationSlice';
+import {
+  selectIsManagerModeActive,
+  selectAvailableNfts,
+} from '@/features/organization/organizationSlice';
 import { selectSelf } from '@/features/selfSlice';
 
 import OrgTransactionHistoryItem from '@/pages_components/org/[orgId]/orgIdIndex/orgTransactionList/orgTransactionItem/orgTransactionItem';
@@ -30,6 +33,8 @@ const HistoryOrg = ({ userJwt }: Props) => {
   const isManagerModeActive = useAppSelector((state) =>
     selectIsManagerModeActive(state)
   );
+
+  const availableNfts = useAppSelector((state) => selectAvailableNfts(state));
 
   const memoizedFetchRefreshTxns = useCallback(
     () =>
@@ -86,6 +91,7 @@ const HistoryOrg = ({ userJwt }: Props) => {
             transaction={transaction}
             selfWalletAddress={self?.walletAddressC || ''}
             orgId={orgId?.toString() || ''}
+            availableNfts={availableNfts || []}
           />
         ))}
       </ul>
