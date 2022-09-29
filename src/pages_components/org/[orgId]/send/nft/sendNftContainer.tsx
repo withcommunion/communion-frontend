@@ -27,6 +27,7 @@ import {
 } from '@/features/sendNft/sendNftSlice';
 import { BottomStickyButton } from '../../sendComponents';
 import { formatTxnHash, getSnowtraceExplorerUrl } from '@/util/avaxEthersUtil';
+import { isNftFeatureEnabled } from '@/util/envUtil';
 
 interface Props {
   userJwt: string;
@@ -117,6 +118,9 @@ const SendNftContainer = ({ userJwt }: Props) => {
                       : dispatch(selectedUserUpdated(user));
                   }}
                   isChecked={isUserSelected}
+                  showNftTrophies={Boolean(
+                    isNftFeatureEnabled && availableNfts?.length
+                  )}
                 />
               );
             })}

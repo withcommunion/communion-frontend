@@ -51,7 +51,7 @@ const Home = ({ userJwt }: Props) => {
         <div className="min-h-100vh bg-secondaryLightGray pb-2 ">
           <div className="container my-0 mx-auto w-full px-6 md:max-w-50vw">
             <OrgTokenBalanceContainer />
-            {isNftFeatureEnabled && (
+            {isNftFeatureEnabled && org?.available_nfts && (
               <Link href={`/org/${(orgId || '').toString()}/my-nfts`}>
                 <a>
                   <div className="mt-10px mb-4 flex flex-col rounded-md bg-primaryLightGray p-4 pt-14px">

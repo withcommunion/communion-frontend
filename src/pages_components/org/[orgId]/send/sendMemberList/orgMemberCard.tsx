@@ -1,15 +1,20 @@
 import { User } from '@/util/walletApiUtil';
 import Image from 'next/image';
 import NftTrophyDisplay from '@/shared_components/nftTrophyDisplay/nftTrophyDisplay';
-import { isNftFeatureEnabled } from '@/util/envUtil';
 
 interface Props {
   userInOrg: User;
   toggleChecked: () => void;
   isChecked: boolean;
+  showNftTrophies: boolean;
 }
 
-const OrgMemberCard = ({ userInOrg, toggleChecked, isChecked }: Props) => {
+const OrgMemberCard = ({
+  userInOrg,
+  toggleChecked,
+  isChecked,
+  showNftTrophies,
+}: Props) => {
   const { first_name, last_name, owned_nfts } = userInOrg;
 
   return (
@@ -41,7 +46,7 @@ const OrgMemberCard = ({ userInOrg, toggleChecked, isChecked }: Props) => {
         </span>
       </div>
       <div className="flex items-center">
-        {isNftFeatureEnabled && owned_nfts && (
+        {showNftTrophies && owned_nfts && (
           <div className="w-98px">
             <NftTrophyDisplay nftDetails={owned_nfts} showcaseNft={null} />
           </div>
