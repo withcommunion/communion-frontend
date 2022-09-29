@@ -78,7 +78,7 @@ const MyNftPage = ({ userJwt }: Props) => {
               />
             </>
           )}
-          {!ownedCommunionNfts.length && availableNfts && (
+          {!ownedCommunionNfts.length && availableNfts && availableNfts[0] && (
             <div className="mx-auto w-full md:w-full lg:w-70% xl:w-60% 2xl:w-50%">
               <div className="mb-14px rounded-xl border-4 border-twelfthLightGray bg-white sm:h-full sm:w-full">
                 <div className="relative mb-5">
