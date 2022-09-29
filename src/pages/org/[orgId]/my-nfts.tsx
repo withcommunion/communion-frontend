@@ -83,7 +83,7 @@ const MyNftPage = ({ userJwt }: Props) => {
           {!ownedCommunionNfts.length && availableNfts && availableNfts[0] && (
             <div className="mx-auto w-full md:w-full lg:w-70% xl:w-60% 2xl:w-50%">
               <div className="mb-14px rounded-xl border-4 border-twelfthLightGray bg-white sm:h-full sm:w-full">
-                <div className="relative mb-5">
+                <div className="relative mb-3">
                   <Image
                     className="grayscale"
                     src={availableNfts[0]?.erc721Meta.properties.image}
@@ -95,14 +95,17 @@ const MyNftPage = ({ userJwt }: Props) => {
                     objectFit="fill"
                   />
                 </div>
-                <div className="text-primaryGray">
-                  <h2 className="mb-2 px-7 text-lg font-semibold uppercase">
-                    You don&apos;t have any NFTs
+                <div className="px-4 text-primaryGray">
+                  <h2 className="text-lg font-semibold">
+                    This is the home for your Badges
                   </h2>
-                  <p className="mb-2 break-words px-7 text-sm">
+                  <h3 className="text-md mb-2 ">
+                    (you don&apos;t have any Badges... yet!)
+                  </h3>
+                  <p className="mb-1 break-words text-sm">
                     NFT Badges are gifts from your employer.
                   </p>
-                  <p className="mb-2 break-words px-7 text-sm">
+                  <p className="mb-2 break-words  text-sm">
                     They are credentials that will follow you from job to job.
                     They are a way to show your skills and experience to future
                     employers.
