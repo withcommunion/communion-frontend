@@ -165,7 +165,7 @@ export const selectOrgUsers = createSelector([selectOrg], (org) => {
 });
 export const selectOrgUsersSortedByName = createSelector([selectOrg], (org) => {
   return [...org.members].sort((a, b) =>
-    a.first_name.localeCompare(b.first_name)
+    a.first_name?.localeCompare(b.first_name)
   );
 });
 export const selectOrgRedeemables = createSelector([selectOrg], (org) => {
