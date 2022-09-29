@@ -2,7 +2,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import cx from 'classnames';
 
-import { CommunionTx } from '@/util/walletApiUtil';
+import { CommunionNft, CommunionTx } from '@/util/walletApiUtil';
 import { formatTxnHash } from '@/util/avaxEthersUtil';
 
 import { useAppSelector } from '@/reduxHooks';
@@ -12,8 +12,13 @@ interface Props {
   transaction: CommunionTx;
   selfWalletAddress: string;
   orgId: string;
+  availableNfts: CommunionNft[];
 }
-const OrgTransactionHistoryItem = ({ transaction, orgId }: Props) => {
+const OrgTransactionHistoryItem = ({
+  transaction,
+  orgId,
+  availableNfts,
+}: Props) => {
   const {
     modifier,
     fromUser,
@@ -39,6 +44,11 @@ const OrgTransactionHistoryItem = ({ transaction, orgId }: Props) => {
   });
 
   const isFromBank = fromUser.firstName === orgId;
+
+  const isNft = txType === 'nftMint';
+  const foundNft = isNft
+    ? availableNfts.find((nft) => nft.id === transaction.message)
+    : null;
 
   return (
     <li
@@ -73,15 +83,16 @@ const OrgTransactionHistoryItem = ({ transaction, orgId }: Props) => {
             {txType === 'sent' &&
               `Sent ${value} ${tokenSymbol} to ${toUser.firstName} `}
             {txType === 'nftMint' &&
+              foundNft &&
               `Received ${
-                transaction.message || 'Badge'
+                foundNft?.erc721Meta.properties.name || 'Badge'
               } from 🏦 ${tokenSymbol} Bank `}
           </span>
 
           <span className="text-center md:ml-2">
             {modifier === 'bankHeist' && '🏦 Bank Heist!'}
           </span>
-          {!isExpanded && transaction.message && (
+          {!isExpanded && !isNft && transaction.message && (
             <span className="ml-2 text-13px font-light text-secondaryPurple">
               {' '}
               {transaction.message.substring(0, 8)}..
@@ -96,7 +107,7 @@ const OrgTransactionHistoryItem = ({ transaction, orgId }: Props) => {
       </div>
       {isExpanded && (
         <div className="ml-9 flex flex-col">
-          <span className="my-2">{transaction.message}</span>
+          {!isNft && <span className="my-2">{transaction.message}</span>}
           <span className="text-15px font-normal text-primaryGray">
             View Txn Details:{' '}
           </span>
