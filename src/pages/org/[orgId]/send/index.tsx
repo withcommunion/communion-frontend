@@ -25,6 +25,7 @@ import {
 } from '@/features/multisend/multisendSlice';
 
 import { useFetchSelf, useFetchOrg } from '@/shared_hooks/sharedHooks';
+import { isNftFeatureEnabled } from '@/util/envUtil';
 
 import OrgTokenBalanceContainer from '@/shared_components/orgTokenBalance/orgTokenBalanceContainer';
 import NavBar, { AvailablePages } from '@/shared_components/navBar/NavBar';
@@ -97,7 +98,11 @@ const OrgIdIndex = ({ userJwt }: Props) => {
               <OrgTokenBalanceContainer />
               <SendPageHeader
                 activeOrgId={(orgId || '').toString()}
-                isManagerModeActive={isManagerModeActive}
+                showSendNftBtn={Boolean(
+                  isManagerModeActive &&
+                    org?.available_nfts &&
+                    isNftFeatureEnabled
+                )}
               />
               <SendMemberListContainer />
             </>

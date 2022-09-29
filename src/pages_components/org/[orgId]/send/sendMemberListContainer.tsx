@@ -7,7 +7,11 @@ import {
   selectBaseAmount,
 } from '@/features/multisend/multisendSlice';
 import OrgMemberCard from './sendMemberList/orgMemberCard';
-import { selectOrgUsersSortedByName } from '@/features/organization/organizationSlice';
+import {
+  selectOrgUsersSortedByName,
+  selectAvailableNfts,
+} from '@/features/organization/organizationSlice';
+import { isNftFeatureEnabled } from '@/util/envUtil';
 
 const SendMemberListContainer = () => {
   const dispatch = useAppDispatch();
@@ -15,6 +19,7 @@ const SendMemberListContainer = () => {
   const selectedUsersAndAmounts = useAppSelector((state) =>
     selectUsersAndAmounts(state)
   );
+  const availableNfts = useAppSelector((state) => selectAvailableNfts(state));
   const baseAmountToSend = useAppSelector((state) => selectBaseAmount(state));
 
   return (
@@ -36,6 +41,9 @@ const SendMemberListContainer = () => {
                 : dispatch(userAdded({ user, amount: baseAmountToSend }));
             }}
             isChecked={isUserSelected}
+            showNftTrophies={Boolean(
+              isNftFeatureEnabled && availableNfts?.length
+            )}
           />
         );
       })}
