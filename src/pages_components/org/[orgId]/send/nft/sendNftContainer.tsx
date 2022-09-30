@@ -51,10 +51,10 @@ const SendNftContainer = ({ userJwt }: Props) => {
   >('selectNft');
 
   useEffect(() => {
-    if (availableNfts) {
+    if (availableNfts && !selectedNft) {
       dispatch(selectedNftUpdated(availableNfts[0]));
     }
-  }, [availableNfts, dispatch]);
+  }, [availableNfts, selectedNft, dispatch]);
 
   const isUserSelected = Boolean(selectedUser);
 
