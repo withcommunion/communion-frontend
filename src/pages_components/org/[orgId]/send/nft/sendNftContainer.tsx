@@ -24,6 +24,8 @@ import {
   fetchSendNft,
   clearedSelectedNft,
   selectLatestTxn,
+  selectLatestTxnErrorMessage,
+  clearedLatestTxn,
 } from '@/features/sendNft/sendNftSlice';
 import { BottomStickyButton } from '../../sendComponents';
 import { formatTxnHash, getSnowtraceExplorerUrl } from '@/util/avaxEthersUtil';
@@ -44,6 +46,9 @@ const SendNftContainer = ({ userJwt }: Props) => {
   const latestTxnStatus = useAppSelector((state) =>
     selectLatestTxnStatus(state)
   );
+  const latestTxnErrorMessage = useAppSelector((state) =>
+    selectLatestTxnErrorMessage(state)
+  );
   const latestTxn = useAppSelector((state) => selectLatestTxn(state));
 
   const [currentStep, setCurrentStep] = useState<
@@ -55,6 +60,14 @@ const SendNftContainer = ({ userJwt }: Props) => {
       dispatch(selectedNftUpdated(availableNfts[0]));
     }
   }, [availableNfts, selectedNft, dispatch]);
+
+  useEffect(() => {
+    if (latestTxnStatus === 'succeeded') {
+      setCurrentStep('success');
+    } else if (latestTxnStatus === 'failed') {
+      setCurrentStep('error');
+    }
+  }, [latestTxnStatus]);
 
   const isUserSelected = Boolean(selectedUser);
 
@@ -201,10 +214,10 @@ const SendNftContainer = ({ userJwt }: Props) => {
                 />
                 <PrimaryButton
                   text={'Send'}
-                  onClick={async () => {
-                    await dispatch(
+                  onClick={() => {
+                    dispatch(
                       fetchSendNft({
-                        communionNftId: selectedNft.id,
+                        communionNftId: 'asdf',
                         toUserId: selectedUser.id,
                         orgId: (orgId || '').toString(),
                         jwtToken: userJwt,
@@ -217,8 +230,6 @@ const SendNftContainer = ({ userJwt }: Props) => {
                         jwtToken: userJwt,
                       })
                     );
-
-                    setCurrentStep('success');
                   }}
                   size="big"
                   disabled={Boolean(latestTxnStatus === 'loading')}
@@ -272,6 +283,7 @@ const SendNftContainer = ({ userJwt }: Props) => {
               onClick={() => {
                 dispatch(clearedSelectedNft());
                 dispatch(clearedSelectedUser());
+                dispatch(clearedLatestTxn());
                 router.push(`/org/${(orgId || '').toString()}/send`);
               }}
               size="big"
@@ -282,6 +294,33 @@ const SendNftContainer = ({ userJwt }: Props) => {
                 Back to Dashboard
               </a>
             </Link> */}
+        </div>
+      )}
+
+      {currentStep === 'error' && (
+        <div className="mb-16 flex flex-col items-center justify-center rounded-4px bg-white pb-5 shadow-primaryModalShadow">
+          <div className="flex items-center justify-center">
+            <div className="px-5">
+              <p className="my-5 text-xl font-semibold">
+                Something went wrong.
+              </p>
+              <p className="my-5">
+                Your funds did not send, you can safely try again.
+              </p>
+              <p className="mt-5">
+                <p>Error:</p>
+              </p>
+              <p> {latestTxnErrorMessage && latestTxnErrorMessage}</p>
+
+              <div className="mt-5">
+                <PrimaryButton
+                  text="Try Again"
+                  onClick={() => setCurrentStep('confirm')}
+                  size="big"
+                />
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </div>

@@ -60,6 +60,9 @@ export const sendNftSlice = createSlice({
     clearedSelectedNft(state: SendNftState) {
       state.selectedNft = null;
     },
+    clearedLatestTxn(state: SendNftState) {
+      state.latestTxn = initialState.latestTxn;
+    },
   },
   extraReducers(builder) {
     builder
@@ -179,6 +182,7 @@ export const {
   clearedSelectedUser,
   selectedNftUpdated,
   clearedSelectedNft,
+  clearedLatestTxn,
 } = sendNftSlice.actions;
 
 export default sendNftSlice.reducer;
