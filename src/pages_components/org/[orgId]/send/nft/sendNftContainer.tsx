@@ -69,6 +69,20 @@ const SendNftContainer = ({ userJwt }: Props) => {
     }
   }, [latestTxnStatus]);
 
+  useEffect(() => {
+    return function cleanup() {
+      dispatch(clearedSelectedUser());
+      dispatch(clearedLatestTxn());
+      dispatch(clearedSelectedNft());
+      dispatch(
+        fetchOrgById({
+          orgId: (orgId || '').toString(),
+          jwtToken: userJwt,
+        })
+      );
+    };
+  }, [dispatch, orgId, userJwt]);
+
   const isUserSelected = Boolean(selectedUser);
 
   return (
@@ -217,15 +231,8 @@ const SendNftContainer = ({ userJwt }: Props) => {
                   onClick={() => {
                     dispatch(
                       fetchSendNft({
-                        communionNftId: 'asdf',
+                        communionNftId: selectedNft.id,
                         toUserId: selectedUser.id,
-                        orgId: (orgId || '').toString(),
-                        jwtToken: userJwt,
-                      })
-                    );
-
-                    dispatch(
-                      fetchOrgById({
                         orgId: (orgId || '').toString(),
                         jwtToken: userJwt,
                       })
