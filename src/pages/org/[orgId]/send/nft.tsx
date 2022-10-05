@@ -31,7 +31,7 @@ const SendNftPage = ({ userJwt }: Props) => {
         activePage={AvailablePages.orgSend}
         activeOrgId={(orgId || '').toString()}
       />
-      <div className="h-full min-h-100vh bg-secondaryLightGray pb-6">
+      <div className="h-full min-h-100vh bg-secondaryLightGray pb-20">
         <div className="container my-0 mx-auto mb-10 w-full px-6 md:max-w-50vw">
           <SendNftContainer userJwt={userJwt} />
         </div>

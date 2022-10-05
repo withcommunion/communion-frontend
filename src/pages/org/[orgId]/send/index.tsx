@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import { Amplify } from 'aws-amplify';
+import cx from 'classnames';
 
 import { AMPLIFY_CONFIG } from '@/util/cognitoAuthUtil';
 import { getUserJwtTokenOnServer } from '@/util/cognitoAuthUtil';
@@ -91,8 +92,13 @@ const OrgIdIndex = ({ userJwt }: Props) => {
         activePage={AvailablePages.orgSend}
         activeOrgId={(orgId || '').toString()}
       />
-      <div className="h-full min-h-100vh bg-secondaryLightGray pb-6">
-        <div className="container my-0 mx-auto mb-10 w-full px-6 md:max-w-50vw">
+      <div
+        className={cx('h-full min-h-100vh bg-secondaryLightGray', {
+          'pb-20': showBottomStickyButton,
+          'pb-50': !showBottomStickyButton,
+        })}
+      >
+        <div className="container my-0 mx-auto mb-20 w-full px-6 md:max-w-50vw">
           {!showModal && (
             <>
               <OrgTokenBalanceContainer />
@@ -134,19 +140,20 @@ const OrgIdIndex = ({ userJwt }: Props) => {
               }}
             />
           )}
-
-          {showBottomStickyButton && (
-            <BottomStickyButton
-              onCancelClick={() => {
-                dispatch(clearedUsers());
-              }}
-              onPrimaryClick={() => {
-                setShowModal(true);
-              }}
-            />
-          )}
         </div>
       </div>
+      {showBottomStickyButton && (
+        <div className="mt-5">
+          <BottomStickyButton
+            onCancelClick={() => {
+              dispatch(clearedUsers());
+            }}
+            onPrimaryClick={() => {
+              setShowModal(true);
+            }}
+          />
+        </div>
+      )}
     </>
   );
 };
