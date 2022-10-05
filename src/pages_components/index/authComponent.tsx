@@ -24,6 +24,16 @@ const formFields = {
     password: {
       order: 7,
       isRequired: true,
+      labelHidden: false,
+      label: (
+        <div className="color-purple text-sm">
+          <span className="font-semibold">🚨 Password Requirements</span>
+          <p className="ml-2">
+            Min length of 8 characters, upper & lowercase letters, number, and a
+            special character
+          </p>
+        </div>
+      ),
     },
     confirm_password: {
       order: 8,
@@ -38,6 +48,7 @@ const AuthComponent = () => {
       className="mt-5"
       initialState="signIn"
       signUpAttributes={['email', 'given_name', 'family_name', 'phone_number']}
+      // @ts-expect-error doesn't want to accept a JSX element, but it does
       formFields={formFields}
       loginMechanisms={['email']}
       components={{
