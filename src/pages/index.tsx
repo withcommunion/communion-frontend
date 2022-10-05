@@ -73,7 +73,7 @@ const Index: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="min-h-100vh ">
+      <main className="min-h-100vh">
         <div className="container my-0 mx-auto w-full px-6 md:max-w-50vw">
           <div className="flex flex-col items-center justify-center">
             {!user && <WelcomeHeader />}

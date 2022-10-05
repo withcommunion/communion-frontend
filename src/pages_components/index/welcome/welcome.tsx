@@ -3,13 +3,7 @@ import Image from 'next/image';
 const Welcome = () => {
   return (
     <div className="flex items-center justify-center">
-      <div className="relative flex flex-col items-center justify-center pt-3">
-        <Image
-          src="/images/orgLogos/jacksPizzaLogo.png"
-          alt="jacks pizza logo"
-          width="84px"
-          height="84px"
-        />
+      <div className="relative flex flex-col items-center justify-center pt-10">
         <span className="z-10 font-paytoneOne text-6xl text-fifthOrange">
           Welcome
         </span>
@@ -17,7 +11,7 @@ const Welcome = () => {
           Please sign in or create an account
         </span>
 
-        <div className="absolute -right-10 top-9">
+        <div className="absolute -right-10 -top-2">
           <Image
             src="/images/signUp/firstBackDecoration.svg"
             alt="background decoration image"
