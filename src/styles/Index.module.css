@@ -1,0 +1,337 @@
+.app {
+    display: flex;
+    align-items: center;
+    position: fixed;
+    background-color: #FD8900;
+    width: 100vw;
+    height: 100vh;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    gap: 32px;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    padding: 25px;
+}
+
+.logo {
+    width: auto;
+}
+
+.loginLink {
+    position: absolute;
+    top: 25px;
+    right: 25px;
+    z-index: 2;
+    white-space: nowrap;
+
+    font-family: 'Roboto', sans-serif;
+    color: #FFFFFF;
+}
+
+.description {
+    font-family: 'Roboto', sans-serif;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 24px;
+    text-align: center;
+
+    color: #FFFFFF;
+}
+
+.passwordInput {
+    color: black;
+    padding: 10px 8px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.burger {
+    position: absolute;
+    top: 5vh;
+    right: 10vw;
+    width: 110px;
+    height: auto;
+
+    animation-name: BurgerSmall;
+    animation-iteration-count: infinite;
+    animation-duration: 10s;
+}
+
+.pizza {
+    position: absolute;
+    top: 18vh;
+    left: 18vw;
+    width: 180px;
+    height: auto;
+    transform: rotate(35deg);
+
+    animation-name: PizzaSmall;
+    animation-iteration-count: infinite;
+    animation-duration: 20s;
+}
+
+.hotDog {
+    position: absolute;
+    bottom: -3vh;
+    left: 40vw;
+    width: 210px;
+    height: auto;
+
+    animation-name: HotDogSmall;
+    animation-iteration-count: infinite;
+    animation-duration: 20s;
+}
+
+.prize {
+    position: absolute;
+    left: 5vw;
+    top: 70vh;
+    width: 150px;
+    height: auto;
+
+    animation-name: PrizeSmall;
+    animation-iteration-count: infinite;
+    animation-duration: 20s;
+}
+
+.donut {
+    position: absolute;
+    z-index: -1;
+    right: -15vw;
+    top: 5vh;
+    width: 250px;
+    height: auto;
+    filter: blur(5px);
+    transform: rotate(-36deg);
+
+    animation-name: DonutSmall;
+    animation-iteration-count: infinite;
+    animation-duration: 20s;
+}
+
+.hotDogBlur {
+    position: absolute;
+    z-index: -1;
+    left: -10vw;
+    top: -5vh;
+    width: 170px;
+    height: auto;
+    filter: blur(5px);
+    transform: rotate(55deg);
+
+    animation-name: HotDogBlurSmall;
+    animation-iteration-count: infinite;
+    animation-duration: 20s;
+}
+
+@media (min-width: 640px) {
+    .content {
+        padding: 40px;
+    }
+
+    .loginLink {
+        top: 25px;
+        right: 25px;
+        width: 100px;
+    }
+
+    .burger {
+        top: 5vh;
+        width: 160px;
+    }
+
+    .pizza {
+        top: 10vh;
+        left: 18vw;
+        width: 280px;
+    }
+
+    .hotDog {
+        bottom: -5vh;
+        left: 50vw;
+        width: 280px;
+    }
+
+    .prize {
+        width: 220px;
+        top: 60vh;
+    }
+
+    .donut {
+        right: -5vw;
+        top: 5vh;
+        width: 280px;
+    }
+
+    .hotDogBlur {
+        left: -5vw;
+        top: -5vh;
+        width: 310px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .loginLink {
+        top: 40px;
+        right: 40px;
+    }
+
+    .burger {
+        top: 5vh;
+        right: 20vw;
+        width: 200px;
+    }
+
+    .pizza {
+        top: 50vh;
+        left: 15vw;
+        width: 340px;
+
+        animation-name: PizzaDesktop;
+        transform: rotate(0deg);
+    }
+
+    .hotDog {
+        width: 380px;
+    }
+
+    .prize {
+        width: 250px;
+        top: 50vh;
+        left: 8vw;
+    }
+
+    .donut {
+        right: -5vw;
+        top: 0;
+        width: 400px;
+    }
+
+    .hotDogBlur {
+        left: -8vw;
+        top: -15vh;
+        width: 500px;
+    }
+}
+
+@media (min-width: 1500px) {
+    .loginLink {
+        top: 50px;
+        right: 60px;
+    }
+
+    .burger {
+        right: 25vw;
+        width: 220px;
+    }
+
+    .pizza {
+        top: 50vh;
+        left: 20vw;
+        width: 400px;
+    }
+
+    .prize {
+        width: 300px;
+        top: 50vh;
+        left: 20vw;
+    }
+
+    .hotDogBlur {
+        left: -5vw;
+        top: -15vh;
+        width: 570px;
+    }
+}
+
+@keyframes BurgerSmall {
+    0%,100% {
+        transform: translate(0,0);
+    }
+    33% {
+        transform: translate(20px, 100px) rotate(35deg);
+    }
+    66% {
+        transform: translate(-20px, 90px);
+    }
+}
+
+@keyframes PizzaSmall {
+    0%,100% {
+        transform: translate(0,0);
+    }
+    33% {
+        transform: translate(-60px, -10px) rotate(-25deg);
+    }
+    66% {
+        transform: translate(-30px, -90px) rotate(-15deg);
+    }
+}
+
+@keyframes PizzaDesktop {
+    0%,100% {
+        transform: translate(0,0);
+    }
+    33% {
+        transform: translate(-90px, -100px) rotate(-40deg);
+    }
+    66% {
+        transform: translate(-30px, -280px) rotate(-20deg);
+    }
+}
+
+@keyframes HotDogSmall {
+    0%,100% {
+        transform: translate(0,0);
+    }
+    33% {
+        transform: translate(30px, 5px) rotate(5deg);
+    }
+    66% {
+        transform: translate(50px, -80px) rotate(-5deg);
+    }
+}
+
+@keyframes PrizeSmall {
+    0%,100% {
+        transform: translate(0,0);
+    }
+    15% {
+        transform: translate(10px, 30px) rotate(5deg);
+    }
+    50% {
+        transform: translate(120px, 80px) rotate(25deg);
+    }
+    60% {
+        transform: translate(110px, -20px) rotate(-5deg);
+    }
+}
+@keyframes DonutSmall {
+    0%,100% {
+        transform: translate(0,0);
+    }
+    33% {
+        transform: translate(35px, 10px) rotate(-30deg);
+    }
+    66% {
+        transform: translate(10px, -80px) rotate(-40deg);
+    }
+}
+
+@keyframes HotDogBlurSmall {
+    0%,100% {
+        transform: translate(0,0);
+    }
+    33% {
+        transform: translate(100px, 15px) rotate(65deg);
+    }
+    66% {
+        transform: translate(30px, -40px) rotate(65deg);
+    }
+}
