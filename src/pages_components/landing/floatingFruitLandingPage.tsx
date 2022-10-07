@@ -1,12 +1,14 @@
 import styles from '../../styles/index.module.css';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 const FloatingFruitLandingPage = () => {
+  const router = useRouter();
   return (
     <div className={styles.app}>
       <div className={styles.loginLink}>
-        <Link href="/login">Log in</Link>
+        <Link href={{ pathname: '/login', query: router.query }}>Log in</Link>
       </div>
       <div className={styles.content}>
         <div className={styles.logo}>
