@@ -6,7 +6,7 @@ const FloatingFruitLandingPage = () => {
   return (
     <div className={styles.app}>
       <div className={styles.loginLink}>
-        <Link href="#">Log in</Link>
+        <Link href="/login">Log in</Link>
       </div>
       <div className={styles.content}>
         <div className={styles.logo}>
