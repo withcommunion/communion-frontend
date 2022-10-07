@@ -1,25 +1,8 @@
-import { FC, useEffect, useState } from 'react';
 import styles from '../../styles/index.module.css';
 import Image from 'next/image';
 import Link from 'next/link';
 
-type Props = {
-  onPassword: (password: string) => void;
-  viewPresentation: boolean;
-};
-
-const FloatingFruitLandingPage: FC<Props> = ({
-  onPassword,
-  viewPresentation,
-}) => {
-  const [password, setPassword] = useState<string>('');
-  // eslint-disable-next-line
-  const [inputStyle, setInputStyle] = useState<{ outline: string } | {}>({});
-
-  useEffect(() => {
-    setInputStyle({});
-  }, [password]);
-
+const FloatingFruitLandingPage = () => {
   return (
     <div className={styles.app}>
       <div className={styles.loginLink}>
@@ -37,25 +20,13 @@ const FloatingFruitLandingPage: FC<Props> = ({
         <p className={styles.description}>
           Modernizing worker training/development for blue-collar businesses
         </p>
-        <input
-          className={styles.passwordInput}
-          type="password"
-          value={password}
-          style={inputStyle}
-          onChange={(e) => {
-            setPassword(e.target.value);
-          }}
-        />
         <button
           className={styles.mainButton}
           onClick={() => {
-            if (!viewPresentation && password.length > 0) {
-              setInputStyle({ outline: 'red solid' });
-            }
-            onPassword(password);
+            return true;
           }}
         >
-          Enter
+          Get Invite!
         </button>
       </div>
       <div className={styles.burger}>
