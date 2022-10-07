@@ -21,15 +21,17 @@ const FloatingFruitLandingPage = () => {
           />
         </div>
         <p className={styles.description}>
-          Modernizing worker training/development for blue-collar businesses
+          Be a part of an owner, operator and worker-owned staffing network for
+          businesses like yours.
         </p>
+        <p>Solve understaffing, together as a community.</p>
         <a
           className={styles.mainButton}
           href="https://ieo7xyuo672.typeform.com/to/dZ9eGcAH"
           target="_blank"
           rel="noreferrer"
         >
-          Get Invite!
+          Get Invite
         </a>
       </div>
       <div className={styles.burger}>
