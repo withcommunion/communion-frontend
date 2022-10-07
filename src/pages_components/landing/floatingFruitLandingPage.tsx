@@ -13,6 +13,7 @@ const FloatingFruitLandingPage: FC<Props> = ({
   viewPresentation,
 }) => {
   const [password, setPassword] = useState<string>('');
+  // eslint-disable-next-line
   const [inputStyle, setInputStyle] = useState<{ outline: string } | {}>({});
 
   useEffect(() => {
