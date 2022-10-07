@@ -20,14 +20,15 @@ const FloatingFruitLandingPage = () => {
         <p className={styles.description}>
           Modernizing worker training/development for blue-collar businesses
         </p>
-        <button
-          className={styles.mainButton}
-          onClick={() => {
-            return true;
-          }}
-        >
-          Get Invite!
-        </button>
+        <div className={styles.mainButton}>
+          <a
+            href="https://ieo7xyuo672.typeform.com/to/dZ9eGcAH"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Get Invite!
+          </a>
+        </div>
       </div>
       <div className={styles.burger}>
         <Image
