@@ -3,7 +3,7 @@ import { FC, useState } from 'react';
 import Presentation from '@/pages_components/landing/Presentation';
 import FloatingFruitLandingPage from '@/pages_components/landing/floatingFruitLandingPage';
 
-import s from '@/styles/Index.module.css';
+import styles from '@/styles/Index.module.css';
 
 const LandingPage: FC = () => {
   const [viewPresentation, setViewPresentation] = useState<boolean>(false);
@@ -16,7 +16,7 @@ const LandingPage: FC = () => {
   };
 
   return (
-    <div className={s.app}>
+    <div className={styles.app}>
       {!viewPresentation ? (
         <FloatingFruitLandingPage
           onPassword={(password) => onPassword(password)}
