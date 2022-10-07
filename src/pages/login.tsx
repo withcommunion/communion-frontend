@@ -12,14 +12,16 @@ import { selectSelf, selectSelfStatus } from '@/features/selfSlice';
 
 import { useFetchSelf } from '@/shared_hooks/sharedHooks';
 
-import FloatingFruitLandingPage from '@/pages_components/landing/floatingFruitLandingPage';
-
-import styles from '@/styles/index.module.css';
+import {
+  AuthComponent,
+  WelcomeHeader,
+} from '../pages_components/indexPageComponents';
+import Footer from '@/shared_components/footer/footer';
 
 // https://docs.amplify.aws/lib/client-configuration/configuring-amplify-categories/q/platform/js/#general-configuration
 Amplify.configure({ ...AMPLIFY_CONFIG, ssr: false });
 
-const LandingPage: NextPage = () => {
+const Index: NextPage = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
 
@@ -64,17 +66,32 @@ const LandingPage: NextPage = () => {
   }, [dispatch, selfStatus, self, queryOrgId, router, user]);
 
   return (
-    <>
+    <div>
       <Head>
         <title>Communion</title>
         <meta name="description" content="Communion" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className={styles.app}>
-        <FloatingFruitLandingPage />)
-      </div>
-    </>
+
+      <main className="min-h-100vh">
+        <div className="container my-0 mx-auto w-full px-6 md:max-w-50vw">
+          <div className="flex flex-col items-center justify-center">
+            {!user && <WelcomeHeader />}
+            <div>
+              <AuthComponent />
+            </div>
+            {user ? (
+              <div className="flex h-90vh items-center">
+                <Footer />
+              </div>
+            ) : (
+              <Footer />
+            )}
+          </div>
+        </div>
+      </main>
+    </div>
   );
 };
 
-export default LandingPage;
+export default Index;

@@ -8,17 +8,6 @@
   height: 100vh;
 }
 
-.presentationContainer {
-  width: 75vw;
-  height: 80%;
-}
-
-.presentationIframeWrap {
-  width: min-content;
-  position: relative;
-  background-color: #fd8900;
-}
-
 .content {
   position: relative;
   z-index: 3;
@@ -39,18 +28,6 @@
   height: 85px;
 }
 
-.mainButtonWrap {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  width: 295px;
-  height: 45px;
-  color: #ffffff;
-  background-color: #ffa740;
-  border-radius: 23px;
-}
-
 .mainButton {
   width: 295px;
   height: 45px;
@@ -59,8 +36,9 @@
   justify-content: center;
 
   color: #ffffff;
-  background-color: #ffa740;
+  background-color: #0074fd;
   border-radius: 23px;
+  box-shadow: rgb(0 0 0 / 19%) 0px 10px 20px, rgb(0 0 0 / 23%) 0px 6px 6px
 }
 
 .loginLink {
@@ -88,17 +66,6 @@
   text-align: center;
 
   color: #ffffff;
-}
-
-.passwordInput {
-  color: black;
-  padding: 10px 8px;
-  text-align: center;
-
-  width: 295px;
-  height: 45px;
-  background-color: #ffffff;
-  border-radius: 23px;
 }
 
 .burger {
