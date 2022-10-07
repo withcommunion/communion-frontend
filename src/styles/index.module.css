@@ -28,18 +28,6 @@
   height: 85px;
 }
 
-.mainButtonWrap {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  width: 295px;
-  height: 45px;
-  color: #ffffff;
-  background-color: #ffa740;
-  border-radius: 23px;
-}
-
 .mainButton {
   width: 295px;
   height: 45px;
