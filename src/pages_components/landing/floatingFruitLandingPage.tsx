@@ -7,9 +7,9 @@ const FloatingFruitLandingPage = () => {
   const router = useRouter();
   return (
     <div className={styles.app}>
-      <div className={styles.loginLink}>
-        <Link href={{ pathname: '/login', query: router.query }}>Log in</Link>
-      </div>
+      <Link href={{ pathname: '/login', query: router.query }}>
+        <a className={styles.loginLink}>Log in</a>
+      </Link>
       <div className={styles.content}>
         <div className={styles.logo}>
           <Image
@@ -23,20 +23,20 @@ const FloatingFruitLandingPage = () => {
         <p className={styles.description}>
           Modernizing worker training/development for blue-collar businesses
         </p>
-        <div className={styles.mainButton}>
-          <a
-            href="https://ieo7xyuo672.typeform.com/to/dZ9eGcAH"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Get Invite!
-          </a>
-        </div>
+        <a
+          className={styles.mainButton}
+          href="https://ieo7xyuo672.typeform.com/to/dZ9eGcAH"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Get Invite!
+        </a>
       </div>
       <div className={styles.burger}>
         <Image
           src={'/images/landing/Burger.png'}
           layout="fill"
+          priority
           objectFit="contain"
           alt="burger"
         />
@@ -45,6 +45,7 @@ const FloatingFruitLandingPage = () => {
         <Image
           src={'/images/landing/Prize.png'}
           layout="fill"
+          priority
           objectFit="contain"
           alt="prize"
         />
@@ -53,6 +54,7 @@ const FloatingFruitLandingPage = () => {
         <Image
           src={'/images/landing/Pizza.png'}
           layout="fill"
+          priority
           objectFit="contain"
           alt="pizza"
         />
@@ -61,6 +63,7 @@ const FloatingFruitLandingPage = () => {
         <Image
           src={'/images/landing/HotDog.png'}
           layout="fill"
+          priority
           objectFit="contain"
           alt="hot dog"
         />
@@ -69,6 +72,7 @@ const FloatingFruitLandingPage = () => {
         <Image
           src={'/images/landing/Donut.png'}
           quality={20}
+          priority
           layout="fill"
           objectFit="contain"
           alt="Donut"
@@ -78,6 +82,7 @@ const FloatingFruitLandingPage = () => {
         <Image
           src={'/images/landing/HotDog.png'}
           quality={20}
+          priority
           layout="fill"
           objectFit="contain"
           alt="hot dog blur"
