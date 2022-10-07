@@ -12,6 +12,7 @@ const FloatingFruitLandingPage = () => {
         <div className={styles.logo}>
           <Image
             src={'/images/landing/Logo.svg'}
+            priority
             layout="fill"
             objectFit="contain"
             alt="Communion Logo"
@@ -65,6 +66,7 @@ const FloatingFruitLandingPage = () => {
       <div className={styles.donut}>
         <Image
           src={'/images/landing/Donut.png'}
+          quality={20}
           layout="fill"
           objectFit="contain"
           alt="Donut"
@@ -73,6 +75,7 @@ const FloatingFruitLandingPage = () => {
       <div className={styles.hotDogBlur}>
         <Image
           src={'/images/landing/HotDog.png'}
+          quality={20}
           layout="fill"
           objectFit="contain"
           alt="hot dog blur"

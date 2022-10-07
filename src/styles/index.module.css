@@ -8,17 +8,6 @@
   height: 100vh;
 }
 
-.presentationContainer {
-  width: 75vw;
-  height: 80%;
-}
-
-.presentationIframeWrap {
-  width: min-content;
-  position: relative;
-  background-color: #fd8900;
-}
-
 .content {
   position: relative;
   z-index: 3;
@@ -88,17 +77,6 @@
   text-align: center;
 
   color: #ffffff;
-}
-
-.passwordInput {
-  color: black;
-  padding: 10px 8px;
-  text-align: center;
-
-  width: 295px;
-  height: 45px;
-  background-color: #ffffff;
-  border-radius: 23px;
 }
 
 .burger {
