@@ -13,7 +13,7 @@ const PrimaryButton = ({ text, onClick, size, disabled, loading }: Props) => {
     <button
       disabled={disabled}
       className={cx(
-          { 'w-100px bg-primaryOrange': size === 'tiny' },
+        { 'w-100px bg-primaryOrange': size === 'tiny' },
         { 'w-155px': size === 'small' },
         { 'w-275px': size === 'middle' },
         { 'w-295px': size === 'big' },

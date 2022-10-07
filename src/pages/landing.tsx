@@ -1,22 +1,30 @@
-import StartPage from '@/pages_components/landing/StartPage';
+import { FC, useState } from 'react';
 
-const LandingPage = () => {
+import Presentation from '@/pages_components/landing/Presentation';
+import FloatingFruitLandingPage from '@/pages_components/landing/floatingFruitLandingPage';
+
+import s from '@/styles/Index.module.css';
+
+const LandingPage: FC = () => {
+  const [viewPresentation, setViewPresentation] = useState<boolean>(false);
+  const PASSWORD = 'bettertogether';
+
+  const onPassword = (password: string): void => {
+    password === PASSWORD
+      ? setViewPresentation(true)
+      : setViewPresentation(false);
+  };
+
   return (
-    // <div className="min-h-100vh bg-secondaryLightGray pb-2 ">
-    //   <div className="container my-0 mx-auto flex w-full justify-center px-6 md:max-w-50vw"></div>
-    //   <div className="h-0 w-100vw">
-    //     <iframe
-    //       allowFullScreen
-    //       className="h-75vh w-75vw"
-    //       src="https://www.beautiful.ai/embed/-NDEC9_cwOc82ysWvrNe?utm_source=beautiful_player&utm_medium=embed&utm_campaign=-NC0yRqzCjtieL2CA_e1"
-    //     ></iframe>
-    //     <a href="https://www.beautiful.ai/embed/-NDEC9_cwOc82ysWvrNe?utm_source=beautiful_player&utm_medium=embed&utm_campaign=-NC0yRqzCjtieL2CA_e1">
-    //       Communion Overview
-    //     </a>
-    //   </div>
-    // </div>
-
-    <StartPage />
+    <div className={s.app}>
+      {!viewPresentation ? (
+        <FloatingFruitLandingPage
+          onPassword={(password) => onPassword(password)}
+          viewPresentation={viewPresentation}
+        />
+      ) : null}
+      {viewPresentation ? <Presentation /> : null}
+    </div>
   );
 };
 
