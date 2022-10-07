@@ -24,7 +24,7 @@ const FloatingFruitLandingPage = () => {
           Be a part of an owner, operator and worker-owned staffing network for
           businesses like yours.
         </p>
-        <p>Solve understaffing, together as a community.</p>
+        <p>Solve understaffing together as a community.</p>
         <a
           className={styles.mainButton}
           href="https://ieo7xyuo672.typeform.com/to/dZ9eGcAH"
